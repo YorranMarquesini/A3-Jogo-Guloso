@@ -1,9 +1,9 @@
 {
   "FolderOrderSettings":[
-    {"name":"Scripts","order":3,"path":"folders/Scripts.yy",},
     {"name":"Objetos","order":2,"path":"folders/Objetos.yy",},
     {"name":"Cenarios","order":2,"path":"folders/Objetos/Cenarios.yy",},
     {"name":"Player","order":1,"path":"folders/Objetos/Player.yy",},
+    {"name":"Scripts","order":3,"path":"folders/Scripts.yy",},
     {"name":"Sprites","order":1,"path":"folders/Sprites.yy",},
     {"name":"Cenarios","order":2,"path":"folders/Sprites/Cenarios.yy",},
     {"name":"Player","order":1,"path":"folders/Sprites/Player.yy",},
