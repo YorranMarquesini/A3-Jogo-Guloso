@@ -2,15 +2,17 @@
   "FolderOrderSettings":[
     {"name":"Objetos","order":2,"path":"folders/Objetos.yy",},
     {"name":"Cenarios","order":2,"path":"folders/Objetos/Cenarios.yy",},
+    {"name":"Camera e pah","order":4,"path":"folders/Objetos/Camera e pah.yy",},
     {"name":"Player","order":1,"path":"folders/Objetos/Player.yy",},
     {"name":"Scripts","order":3,"path":"folders/Scripts.yy",},
     {"name":"Sprites","order":1,"path":"folders/Sprites.yy",},
     {"name":"Cenarios","order":2,"path":"folders/Sprites/Cenarios.yy",},
     {"name":"Player","order":1,"path":"folders/Sprites/Player.yy",},
-    {"name":"Walk","order":5,"path":"folders/Sprites/Player/Walk.yy",},
     {"name":"Idle","order":2,"path":"folders/Sprites/Player/Idle.yy",},
+    {"name":"Walk","order":5,"path":"folders/Sprites/Player/Walk.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"oGameController","order":1,"path":"objects/oGameController/oGameController.yy",},
     {"name":"oSky","order":1,"path":"objects/oSky/oSky.yy",},
     {"name":"oWall","order":2,"path":"objects/oWall/oWall.yy",},
     {"name":"player_left_walk","order":1,"path":"sprites/player_left_walk/player_left_walk.yy",},
