@@ -7,10 +7,13 @@
     {"name":"Sprites","order":1,"path":"folders/Sprites.yy",},
     {"name":"Cenarios","order":2,"path":"folders/Sprites/Cenarios.yy",},
     {"name":"Player","order":1,"path":"folders/Sprites/Player.yy",},
+    {"name":"Right_walk","order":5,"path":"folders/Sprites/Player/Right_walk.yy",},
+    {"name":"Left_Idle","order":2,"path":"folders/Sprites/Player/Left_Idle.yy",},
+    {"name":"Left_walk","order":4,"path":"folders/Sprites/Player/Left_walk.yy",},
+    {"name":"Right_idle","order":3,"path":"folders/Sprites/Player/Right_idle.yy",},
   ],
   "ResourceOrderSettings":[
     {"name":"oSky","order":1,"path":"objects/oSky/oSky.yy",},
-    {"name":"player_spr","order":1,"path":"sprites/player_spr/player_spr.yy",},
     {"name":"sky_spr","order":1,"path":"sprites/sky_spr/sky_spr.yy",},
   ],
 }
