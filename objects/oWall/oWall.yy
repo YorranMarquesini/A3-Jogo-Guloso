@@ -1,9 +1,9 @@
 {
   "$GMObject":"",
-  "%Name":"oGround",
+  "%Name":"oWall",
   "eventList":[],
   "managed":true,
-  "name":"oGround",
+  "name":"oWall",
   "overriddenProperties":[],
   "parent":{
     "name":"Cenarios",
@@ -28,8 +28,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"ground_1_spr",
-    "path":"sprites/ground_1_spr/ground_1_spr.yy",
+    "name":"wall_1_spr",
+    "path":"sprites/wall_1_spr/wall_1_spr.yy",
   },
   "spriteMaskId":null,
   "visible":true,
