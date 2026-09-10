@@ -15,7 +15,7 @@ air_acc = 0.35;
 // VERTICAL / PULO
 // ============================
 vsp = 0;
-grav = 0.35;
+grav = 0.25;
 jump_force = -8;
 max_fall = 10;
 
