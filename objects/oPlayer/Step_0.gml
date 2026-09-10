@@ -8,23 +8,76 @@ var _jump_released = keyboard_check_released(vk_space);
 var _dash_pressed = keyboard_check_pressed(vk_shift);
 var _move = _right - _left;
 
+// --- DIRECTION BUFFER ---
+if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) {
+    dir_buffer_dir = 1;
+    dir_buffer_counter = dir_buffer_time;
+} else if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))) {
+    dir_buffer_dir = -1;
+    dir_buffer_counter = dir_buffer_time;
+} else {
+    dir_buffer_counter = max(dir_buffer_counter - 1, 0);
+}
+var _effective_move = (dir_buffer_counter > 0) ? dir_buffer_dir : _move;
+
 // --- GROUND CHECK ---
-var _on_ground = place_meeting(x, y+1, oGround);
+var _on_ground = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);
 
 if (_on_ground) {
     coyote_counter = coyote_time;
     jump_count = 0;
     can_dash = true;
+    wall_jump_used_dir = 0;
+    wall_jump_stage = 0;
 } else {
     coyote_counter = max(coyote_counter - 1, 0);
 }
 
-// --- JUMP BUFFER (sempre atualiza, mesmo durante dash) ---
-if (_jump_pressed) {
-    jump_buffer_counter = jump_buffer;
+// --- WALL CHECK ---
+// Só contra oWall (objeto separado do chão), numa altura acima dos pés
+var _wall_y = y - wall_check_yoffset;
+var _wall_right = place_meeting(x + wall_check_dist, _wall_y, oWall);
+var _wall_left  = place_meeting(x - wall_check_dist, _wall_y, oWall);
+
+if (_wall_right) {
+    wall_dir = 1;
+} else if (_wall_left) {
+    wall_dir = -1;
 } else {
-    jump_buffer_counter = max(jump_buffer_counter - 1, 0);
+    wall_dir = 0;
 }
+
+var _touching_wall = (wall_dir != 0 && !_on_ground);
+var _new_wall_contact = (_touching_wall && !wall_touch_prev);
+
+// --- WALL RELEASE BUFFER ---
+// Segurando a direção CONTRÁRIA à parede por tempo suficiente solta o "grudado"
+if (_touching_wall && wall_dir != 0 && _move == -wall_dir) {
+    wall_release_counter += 1;
+} else {
+    wall_release_counter = 0;
+}
+var _wall_release = (wall_release_counter >= wall_release_time);
+
+is_wall_sliding = (_touching_wall && vsp > 0 && !is_dashing && !_wall_release);
+
+if (_touching_wall) {
+    wall_coyote_counter = wall_coyote_time;
+} else {
+    wall_coyote_counter = max(wall_coyote_counter - 1, 0);
+}
+
+// Só reseta dash/double jump em contato NOVO com parede DIFERENTE da última usada
+if (_new_wall_contact && wall_dir != wall_jump_used_dir) {
+    can_dash = true;
+    jump_count = 0;
+    wall_jump_stage = 0;
+}
+
+wall_touch_prev = _touching_wall;
+
+// --- JUMP BUFFER ---
+jump_buffer_counter = _jump_pressed ? jump_buffer : max(jump_buffer_counter - 1, 0);
 
 // --- DASH COOLDOWN ---
 if (dash_cooldown > 0) {
@@ -42,7 +95,7 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
     var _dy = _down - _up;
 
     if (_dx == 0 && _dy == 0) {
-        dash_dir_x = image_xscale; // dash pra frente se não houver input direcional
+        dash_dir_x = (facing == "right") ? 1 : -1;
         dash_dir_y = 0;
     } else {
         var _len = point_distance(0, 0, _dx, _dy);
@@ -55,10 +108,15 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
 // LÓGICA PRINCIPAL
 // ============================
 if (is_dashing) {
-    // --- DURANTE O DASH ---
     dash_timer -= 1;
     hsp = dash_dir_x * dash_speed;
     vsp = dash_dir_y * dash_speed;
+
+    if (place_meeting(x + hsp, y, oGround) || place_meeting(x + hsp, y, oWall)) {
+        is_dashing = false;
+        dash_timer = 0;
+        hsp = 0;
+    }
 
     if (dash_timer <= 0) {
         is_dashing = false;
@@ -70,20 +128,55 @@ if (is_dashing) {
     // --- MOVIMENTO HORIZONTAL ---
     var _current_acc = _on_ground ? acc : air_acc;
 
-    if (_move != 0) {
+    if (wall_jump_lock > 0) {
+        // Durante o lock, o impulso do wall jump fica intocado
+        wall_jump_lock -= 1;
+
+    } else if (_touching_wall && !_wall_release) {
+        // Grudado na parede: ignora input horizontal.
+        // Só solta com wall jump, tocando o chão, ou segurando o lado contrário
+        // tempo suficiente (wall release buffer).
+        hsp = 0;
+
+    } else if (_move != 0) {
         hsp = approach(hsp, _move * move_speed, _current_acc);
-        image_xscale = _move; // flipa o sprite conforme a direção
     } else {
         hsp = approach(hsp, 0, _on_ground ? dec : air_acc);
     }
 
-    // --- PULO (normal + coyote + double jump) ---
+    // --- PULO ---
     if (jump_buffer_counter > 0) {
         if (coyote_counter > 0) {
             vsp = jump_force;
             jump_count = 1;
             jump_buffer_counter = 0;
             coyote_counter = 0;
+
+        } else if (wall_coyote_counter > 0 && wall_dir != 0 && wall_dir != wall_jump_used_dir) {
+            // 1º wall jump: o jogador escolhe a direção pelo input.
+            // Se segurar pra longe da parede, já sai "pra longe" (e acaba o combo).
+            // Se não segurar nada (ou segurar pra parede), sai reto "pra cima"
+            // e ainda ganha um 2º pulo "pra longe" de bônus.
+            vsp = wall_jump_force_y;
+            hsp = (_effective_move == -wall_dir) ? (-wall_dir * wall_jump_force_x) : 0;
+
+            jump_count = max_jumps;
+            jump_buffer_counter = 0;
+            wall_coyote_counter = 0;
+            wall_jump_lock = wall_jump_lock_time;
+            wall_jump_used_dir = wall_dir;
+            wall_jump_stage = (hsp == 0) ? 1 : 2; // só libera o 2º pulo se o 1º saiu reto pra cima
+            dir_buffer_counter = 0;
+
+        } else if (wall_jump_stage == 1 && _effective_move == -wall_jump_used_dir) {
+            vsp = wall_jump_force_y;
+            hsp = -wall_jump_used_dir * wall_jump_force_x;
+
+            jump_buffer_counter = 0;
+            wall_jump_lock = wall_jump_lock_time;
+            wall_jump_stage = 2;
+            dir_buffer_counter = 0;
+
         } else if (jump_count < max_jumps) {
             vsp = jump_force * 0.9;
             jump_count += 1;
@@ -91,33 +184,48 @@ if (is_dashing) {
         }
     }
 
-    // --- PULO VARIÁVEL (corta o impulso se soltar o botão) ---
+    // --- PULO VARIÁVEL ---
     if (_jump_released && vsp < 0) {
         vsp *= jump_cut_multiplier;
     }
 
     // --- GRAVIDADE ---
-    vsp = min(vsp + grav, max_fall);
+    vsp = is_wall_sliding ? min(vsp + grav, wall_slide_speed) : min(vsp + grav, max_fall);
 }
 
 // ============================
-// COLISÃO (sempre roda, dash ou não)
+// COLISÃO
 // ============================
-
-// Horizontal
-if (place_meeting(x + hsp, y, oGround)) {
-    while (!place_meeting(x + sign(hsp), y, oGround)) {
+if (place_meeting(x + hsp, y - 2, oGround) || place_meeting(x + hsp, y - 2, oWall)) {
+    while (!(place_meeting(x + sign(hsp), y - 2, oGround) || place_meeting(x + sign(hsp), y - 2, oWall))) {
         x += sign(hsp);
     }
     hsp = 0;
 }
 x += hsp;
 
-// Vertical
-if (place_meeting(x, y + vsp, oGround)) {
-    while (!place_meeting(x, y + sign(vsp), oGround)) {
+if (place_meeting(x, y + vsp, oGround) || place_meeting(x, y + vsp, oWall)) {
+    while (!(place_meeting(x, y + sign(vsp), oGround) || place_meeting(x, y + sign(vsp), oWall))) {
         y += sign(vsp);
     }
     vsp = 0;
 }
 y += vsp;
+
+x = round(x);
+y = round(y);
+
+// ============================
+// FACING E ANIMAÇÃO
+// ============================
+if (hsp != 0) {
+    facing = (hsp > 0) ? "right" : "left";
+}
+
+state = (hsp != 0 || is_dashing || !_on_ground) ? "walk" : "idle";
+
+if (state == "idle") {
+    sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
+} else {
+    sprite_index = (facing == "right") ? player_right_walk : player_left_walk;
+}

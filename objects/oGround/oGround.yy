@@ -26,7 +26,7 @@
   "properties":[],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
-  "solid":true,
+  "solid":false,
   "spriteId":{
     "name":"ground_1_spr",
     "path":"sprites/ground_1_spr/ground_1_spr.yy",
