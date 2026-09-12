@@ -90,12 +90,20 @@ var _mudar_resolucao = function(_direcao) {
     var _w = _nova_res[0];
     var _h = _nova_res[1];
     
-    window_set_size(_w, _h);
-    surface_resize(application_surface, _w, _h);
-    
-    call_later(1, time_source_units_frames, function() {
-        window_center();
-    });
+    // Aqui muda SO o tamanho da janela.
+    // A resolucao interna do jogo continua BASE_WIDTH x BASE_HEIGHT --
+    // e por isso que a quantidade de cenario visivel nunca muda.
+    if (window_get_fullscreen()) {
+        window_set_fullscreen(false);
+        fullscreen = false;
+        opcoes[1]  = "Tela Cheia: DESLIGADO";
+    }
+
+    // Nao chamamos window_set_size direto aqui: sair da tela cheia leva
+    // alguns frames, e no caminho o Windows restaura o tamanho ANTIGO da
+    // janela, passando por cima do que acabamos de pedir.
+    // window_request_size anota o pedido e insiste ate a janela obedecer.
+    window_request_size(_w, _h);
 };
 
 // --- 5. AÇÕES PARA TECLADO (SETAS ESQUERDA/DIREITA) ---
@@ -126,6 +134,12 @@ if (_entra) {
             fullscreen = !fullscreen;
             window_set_fullscreen(fullscreen);
             opcoes[1] = fullscreen ? "Tela Cheia: LIGADO" : "Tela Cheia: DESLIGADO";
+
+            if (!fullscreen) {
+                // voltando pra janela: devolve a resolucao escolhida na lista
+                var _r = lista_resolucoes[res_index];
+                window_request_size(_r[0], _r[1]);
+            }
             break;
             
         case 3: // Voltar
