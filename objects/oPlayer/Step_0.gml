@@ -1,3 +1,7 @@
+// ============================
+// STEP EVENT - oPlayer
+// ============================
+
 // --- INPUT ---
 var _left = keyboard_check(vk_left) || keyboard_check(ord("A"));
 var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
@@ -6,6 +10,7 @@ var _down = keyboard_check(vk_down) || keyboard_check(ord("S"));
 var _jump_pressed = keyboard_check_pressed(vk_space);
 var _jump_released = keyboard_check_released(vk_space);
 var _dash_pressed = keyboard_check_pressed(vk_shift);
+var _attack_pressed = mouse_check_button_pressed(mb_left);
 var _move = _right - _left;
 
 // --- DIRECTION BUFFER ---
@@ -34,7 +39,6 @@ if (_on_ground) {
 }
 
 // --- WALL CHECK ---
-// Só contra oWall (objeto separado do chão), numa altura acima dos pés
 var _wall_y = y - wall_check_yoffset;
 var _wall_right = place_meeting(x + wall_check_dist, _wall_y, oWall);
 var _wall_left  = place_meeting(x - wall_check_dist, _wall_y, oWall);
@@ -51,7 +55,6 @@ var _touching_wall = (wall_dir != 0 && !_on_ground);
 var _new_wall_contact = (_touching_wall && !wall_touch_prev);
 
 // --- WALL RELEASE BUFFER ---
-// Segurando a direção CONTRÁRIA à parede por tempo suficiente solta o "grudado"
 if (_touching_wall && wall_dir != 0 && _move == -wall_dir) {
     wall_release_counter += 1;
 } else {
@@ -67,7 +70,6 @@ if (_touching_wall) {
     wall_coyote_counter = max(wall_coyote_counter - 1, 0);
 }
 
-// Só reseta dash/double jump em contato NOVO com parede DIFERENTE da última usada
 if (_new_wall_contact && wall_dir != wall_jump_used_dir) {
     can_dash = true;
     jump_count = 0;
@@ -82,6 +84,49 @@ jump_buffer_counter = _jump_pressed ? jump_buffer : max(jump_buffer_counter - 1,
 // --- DASH COOLDOWN ---
 if (dash_cooldown > 0) {
     dash_cooldown -= 1;
+}
+
+// --- ATTACK COOLDOWN ---
+if (attack_cooldown > 0) {
+    attack_cooldown -= 1;
+}
+
+// --- INICIA O ATAQUE ---
+if (_attack_pressed && has_weapon && attack_cooldown <= 0 && !is_attacking && !is_dashing) {
+    is_attacking = true;
+    attack_timer = attack_duration;
+    attack_cooldown = attack_cooldown_max;
+}
+
+// --- ANIMA O SWING (bonk de cima pra baixo) ---
+if (is_attacking) {
+    attack_timer -= 1;
+
+    var _progress = 1 - (attack_timer / attack_duration);
+    weapon_angle = lerp(70, -50, _progress);
+
+    if (_progress > 0.35 && _progress < 0.7) {
+        var _hb_x = x + (weapon_offset_x * (facing == "right" ? 1 : -1));
+        var _hb_y = y + weapon_offset_y + 10;
+
+        // Só checa colisão com inimigos se o objeto oEnemy já existir no projeto
+        // (evita o erro "not set before reading it" enquanto oEnemy não é criado)
+        if (asset_get_index("oEnemy") != -1) {
+            var _hit = instance_place(_hb_x, _hb_y, oEnemy);
+            if (_hit != noone) {
+                with (_hit) {
+                    instance_destroy();
+                }
+            }
+        }
+    }
+
+    if (attack_timer <= 0) {
+        is_attacking = false;
+        weapon_angle = 0;
+    }
+} else {
+    weapon_angle = 0;
 }
 
 // --- INICIA O DASH ---
@@ -129,13 +174,9 @@ if (is_dashing) {
     var _current_acc = _on_ground ? acc : air_acc;
 
     if (wall_jump_lock > 0) {
-        // Durante o lock, o impulso do wall jump fica intocado
         wall_jump_lock -= 1;
 
     } else if (_touching_wall && !_wall_release) {
-        // Grudado na parede: ignora input horizontal.
-        // Só solta com wall jump, tocando o chão, ou segurando o lado contrário
-        // tempo suficiente (wall release buffer).
         hsp = 0;
 
     } else if (_move != 0) {
@@ -153,10 +194,6 @@ if (is_dashing) {
             coyote_counter = 0;
 
         } else if (wall_coyote_counter > 0 && wall_dir != 0 && wall_dir != wall_jump_used_dir) {
-            // 1º wall jump: o jogador escolhe a direção pelo input.
-            // Se segurar pra longe da parede, já sai "pra longe" (e acaba o combo).
-            // Se não segurar nada (ou segurar pra parede), sai reto "pra cima"
-            // e ainda ganha um 2º pulo "pra longe" de bônus.
             vsp = wall_jump_force_y;
             hsp = (_effective_move == -wall_dir) ? (-wall_dir * wall_jump_force_x) : 0;
 
@@ -165,7 +202,7 @@ if (is_dashing) {
             wall_coyote_counter = 0;
             wall_jump_lock = wall_jump_lock_time;
             wall_jump_used_dir = wall_dir;
-            wall_jump_stage = (hsp == 0) ? 1 : 2; // só libera o 2º pulo se o 1º saiu reto pra cima
+            wall_jump_stage = (hsp == 0) ? 1 : 2;
             dir_buffer_counter = 0;
 
         } else if (wall_jump_stage == 1 && _effective_move == -wall_jump_used_dir) {

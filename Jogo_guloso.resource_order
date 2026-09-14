@@ -1,4 +1,9 @@
 {
-  "FolderOrderSettings":[],
-  "ResourceOrderSettings":[],
+  "FolderOrderSettings":[
+    {"name":"Arma","order":1,"path":"folders/Objetos/Arma.yy",},
+    {"name":"Weapons","order":1,"path":"folders/Sprites/Player/Weapons.yy",},
+  ],
+  "ResourceOrderSettings":[
+    {"name":"arpao_spr","order":1,"path":"sprites/arpao_spr/arpao_spr.yy",},
+  ],
 }

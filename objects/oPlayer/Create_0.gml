@@ -76,3 +76,24 @@ wall_release_counter = 0;
 
 // --- WALL JUMP EM 2 ESTÁGIOS (1 pra cima, 1 pra longe) ---
 wall_jump_stage = 0;      // 0 = nenhum usado, 1 = já fez o pulo pra cima (pode fazer o pra longe), 2 = já usou os dois
+
+// ============================
+// ARMA / COMBATE
+// ============================
+has_weapon = false;
+weapon_type = "";
+weapon_sprite = noone;
+
+is_attacking = false;
+attack_timer = 0;
+attack_duration = 20;       // frames que o ataque dura
+attack_cooldown = 0;
+attack_cooldown_max = 20;
+
+weapon_angle = 0;           // ângulo atual da arma (pra animar o swing)
+weapon_offset_x = 4;       // distância da arma em relação ao player (ajusta visualmente depois)
+weapon_offset_y = -24;
+
+// Hitbox do ataque
+attack_hitbox_width = 20;
+attack_hitbox_height = 24;
