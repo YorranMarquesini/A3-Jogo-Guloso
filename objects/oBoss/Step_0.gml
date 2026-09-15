@@ -76,6 +76,7 @@ switch (state) {
     case "idle2":
         sprite_index = boss1_fase2_idle_spr;
         // TODO: ataques da fase 2 entram aqui depois
+		hp = 60;
     break;
 }
 

@@ -9,7 +9,7 @@ invuln_time = 20;      // frames de invencibilidade após cada hit (evita 1 golp
 
 // --- ATAQUE ---
 attack_cooldown = 0;
-attack_cooldown_max = 60;   // ~1s entre ataques (60fps)
+attack_cooldown_max = 40;   // ~1s entre ataques (60fps)
 attack_windup = 0;
 attack_windup_time = 10;    // tempo de "preparação" antes de soltar o projétil
 
