@@ -3,7 +3,7 @@ state = "idle";       // idle, attack_windup, transforming, idle2
 phase = 1;
 
 // --- VIDA / HITS ---
-hp = 2;
+hp = 35;
 invuln_timer = 0;
 invuln_time = 20;      // frames de invencibilidade após cada hit (evita 1 golpe contar 2x)
 

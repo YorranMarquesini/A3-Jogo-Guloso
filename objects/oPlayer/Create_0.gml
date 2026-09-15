@@ -82,13 +82,20 @@ wall_release_counter = 0;
 // --- WALL JUMP EM 2 ESTÁGIOS (1 pra cima, 1 pra longe) ---
 wall_jump_stage = 0;      // 0 = nenhum usado, 1 = já fez o pulo pra cima (pode fazer o pra longe), 2 = já usou os dois
 
+// --- CARREGA ARMA PERSISTENTE ENTRE ROOMS ---
+if (!variable_global_exists("has_weapon")) {
+    global.has_weapon = false;
+    global.weapon_type = "";
+    global.weapon_sprite = noone;
+}
+
+has_weapon = global.has_weapon;
+weapon_type = global.weapon_type;
+weapon_sprite = global.weapon_sprite;
+
 // ============================
 // ARMA / COMBATE
 // ============================
-has_weapon = false;
-weapon_type = "";
-weapon_sprite = noone;
-
 is_attacking = false;
 attack_timer = 0;
 attack_duration = 20;       // frames que o ataque dura
@@ -102,3 +109,7 @@ weapon_offset_y = -24;
 // Hitbox do ataque
 attack_hitbox_width = 20;
 attack_hitbox_height = 24;
+
+// --- ARREMESSO DE ARMA ---
+throw_cooldown = 0;
+throw_cooldown_max = 45;

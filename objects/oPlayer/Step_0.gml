@@ -92,6 +92,28 @@ if (invuln_timer > 0) {
 }
 is_invincible = (invuln_timer > 0);
 
+// --- ATIRAR A ARMA (SO NA SALA DO BOSS) ---
+var _throw_pressed = mouse_check_button_pressed(mb_right);
+
+if (throw_cooldown > 0) {
+    throw_cooldown -= 1;
+}
+
+// Só pode arremessar dentro da sala do boss (detecta pela existência da câmera de boss)
+if (_throw_pressed && has_weapon && throw_cooldown <= 0 && !is_attacking && !is_dashing
+    && instance_exists(oCameraController_boss)) {
+
+    throw_cooldown = throw_cooldown_max;
+
+    var _dir = (facing == "right") ? 1 : -1;
+    var _spawn_x = x + (weapon_offset_x * _dir);
+    var _spawn_y = y + weapon_offset_y;
+
+    var _proj = instance_create_depth(_spawn_x, _spawn_y, depth, oPlayerWeaponProjectile);
+    _proj.sprite_index = weapon_sprite;
+    _proj.dir_x = _dir;
+}
+
 // --- ATTACK COOLDOWN ---
 if (attack_cooldown > 0) {
     attack_cooldown -= 1;
