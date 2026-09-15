@@ -1,3 +1,10 @@
+// --- COR DO PLAYER (feedback visual de invencibilidade) ---
+if (is_invincible) {
+    image_blend = c_aqua;
+} else {
+    image_blend = c_white;
+}
+
 // Desenha o player normalmente
 draw_self();
 

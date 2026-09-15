@@ -86,6 +86,12 @@ if (dash_cooldown > 0) {
     dash_cooldown -= 1;
 }
 
+// --- INVENCIBILIDADE (dura mais que o dash em si) ---
+if (invuln_timer > 0) {
+    invuln_timer -= 1;
+}
+is_invincible = (invuln_timer > 0);
+
 // --- ATTACK COOLDOWN ---
 if (attack_cooldown > 0) {
     attack_cooldown -= 1;
@@ -118,9 +124,25 @@ if (is_attacking) {
 						hp -= 1;
 						invuln_timer = invuln_time;
 						
+						// --- FEEDBACK DE HIT ---
+						hit_flash_timer = 8; // frames de flash branco/vermelho
+						repeat (10) {
+							var _p = instance_create_layer(x, y - 20, layer, oHitParticle);
+							var _ang = random(360);
+							_p.dir_x = lengthdir_x(1, _ang);
+							_p.dir_y = lengthdir_y(1, _ang);
+							}
+							if (instance_exists(oCameraController_boss)) {
+								oCameraController_boss.shake_amount = 4;
+								}
+						
 						if (hp <= 0 && phase == 1 && state != "transforming") {
 							state = "transforming";
 							transform_timer = transform_duration;
+							// Shake mais forte na transformação
+							if (instance_exists(oCameraController_boss)) {
+								oCameraController_boss.shake_amount = 10;
+								}
 							}
 						}
 					}
@@ -141,6 +163,7 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
     can_dash = false;
     dash_timer = dash_time;
     dash_cooldown = dash_cooldown_max;
+	 invuln_timer = dash_invuln_time;
 
     var _dx = _right - _left;
     var _dy = _down - _up;
@@ -153,7 +176,16 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
         dash_dir_x = _dx / _len;
         dash_dir_y = _dy / _len;
     }
-}
+	// --- EFEITO DE PARTÍCULA NA SAÍDA DO DASH ---
+    repeat (14) { // era 10, mais partículas
+		var _p = instance_create_layer(x, y - 20, layer, oHitParticle);
+		var _ang = random(360);
+		var _spd_mult = random_range(1.5, 3); // partículas voam mais longe também
+		_p.dir_x = lengthdir_x(1, _ang) * _spd_mult;
+		_p.dir_y = lengthdir_y(1, _ang) * _spd_mult;
+		_p.radius = random_range(4, 4); // <<< maiores especificamente aqui
+		}
+	}
 
 // ============================
 // LÓGICA PRINCIPAL
@@ -161,9 +193,18 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
 if (is_dashing) {
     dash_timer -= 1;
     hsp = dash_dir_x * dash_speed;
-    vsp = dash_dir_y * dash_speed;
+    vsp = dash_dir_y * dash_speed;	
 	
-	is_invincible = true;
+	// --- CRIA AFTERIMAGE ---
+    afterimage_timer -= 1;
+    if (afterimage_timer <= 0) {
+        afterimage_timer = afterimage_interval;
+        var _ghost = instance_create_layer(x, y, layer, oAfterimage);
+        _ghost.sprite_index = sprite_index;
+        _ghost.image_index = image_index;
+        _ghost.image_xscale = image_xscale;
+        _ghost.image_yscale = image_yscale;
+    }
 
     if (place_meeting(x + hsp, y, oGround) || place_meeting(x + hsp, y, oWall)) {
         is_dashing = false;
@@ -178,7 +219,6 @@ if (is_dashing) {
     }
 
 } else {
-	 is_invincible = false;
     // --- MOVIMENTO HORIZONTAL ---
     var _current_acc = _on_ground ? acc : air_acc;
 

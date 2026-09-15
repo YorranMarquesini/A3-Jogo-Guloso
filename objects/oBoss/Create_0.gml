@@ -16,6 +16,7 @@ attack_windup_time = 10;    // tempo de "preparação" antes de soltar o projét
 // --- TRANSFORMAÇÃO ---
 transform_timer = 0;
 transform_duration = 40;
+hit_flash_timer = 0;
 
 sprite_index = boss1_idle_spr;
 image_speed = 1;

@@ -1,6 +1,7 @@
 {
   "FolderOrderSettings":[
     {"name":"Arma","order":1,"path":"folders/Objetos/Arma.yy",},
+    {"name":"Effects","order":3,"path":"folders/Objetos/Effects.yy",},
     {"name":"Inimigos","order":2,"path":"folders/Objetos/Inimigos.yy",},
     {"name":"Boss1","order":2,"path":"folders/Objetos/Inimigos/Boss1.yy",},
     {"name":"Inimigos","order":1,"path":"folders/Sprites/Inimigos.yy",},
@@ -15,6 +16,9 @@
   "ResourceOrderSettings":[
     {"name":"oBossProjectile","order":1,"path":"objects/oBossProjectile/oBossProjectile.yy",},
     {"name":"oBossRoom","order":1,"path":"objects/oBossRoom/oBossRoom.yy",},
+    {"name":"oCameraController_boss","order":2,"path":"objects/oCameraController_boss/oCameraController_boss.yy",},
+    {"name":"oDashParticle","order":1,"path":"objects/oDashParticle/oDashParticle.yy",},
+    {"name":"oHitParticle","order":2,"path":"objects/oHitParticle/oHitParticle.yy",},
     {"name":"BossRoom","order":1,"path":"rooms/BossRoom/BossRoom.yy",},
     {"name":"arpao_spr","order":1,"path":"sprites/arpao_spr/arpao_spr.yy",},
     {"name":"boss1_projectile_spr","order":1,"path":"sprites/boss1_projectile_spr/boss1_projectile_spr.yy",},

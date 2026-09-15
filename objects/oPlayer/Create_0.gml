@@ -42,7 +42,11 @@ dash_cooldown = 0;
 dash_cooldown_max = 60; //Frames ou seja 1s
 dash_dir_x = 0;
 dash_dir_y = 0;
-is_invincible = false;
+dash_invuln_time = 40; // 0.5s a 60fps
+invuln_timer = 0;
+// --- AFTERIMAGE (rastro do dash) ---
+afterimage_timer = 0;
+afterimage_interval = 2; // cria uma cópia a cada N frames durante o dash
 
 // ============================
 // DIRECTION BUFFER (pro wall jump)
