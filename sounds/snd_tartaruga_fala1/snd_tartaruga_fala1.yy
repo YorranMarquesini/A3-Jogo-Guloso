@@ -1,0 +1,26 @@
+{
+  "$GMSound":"v2",
+  "%Name":"snd_tartaruga_fala1",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "channelFormat":0,
+  "compression":0,
+  "compressionQuality":4,
+  "conversionMode":0,
+  "duration":5.733515,
+  "exportDir":"",
+  "name":"snd_tartaruga_fala1",
+  "parent":{
+    "name":"Tartaruga",
+    "path":"folders/Objetos/Dublagens/Tartaruga.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_tartaruga_fala1.ogg",
+  "volume":1.0,
+}

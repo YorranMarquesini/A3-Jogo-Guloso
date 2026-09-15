@@ -1,7 +1,12 @@
 {
   "FolderOrderSettings":[
+    {"name":"Diálogo","order":2,"path":"folders/Diálogo.yy",},
     {"name":"Arma","order":1,"path":"folders/Objetos/Arma.yy",},
+    {"name":"Dublagens","order":4,"path":"folders/Objetos/Dublagens.yy",},
+    {"name":"Tartaruga","order":1,"path":"folders/Objetos/Dublagens/Tartaruga.yy",},
     {"name":"Effects","order":3,"path":"folders/Objetos/Effects.yy",},
+    {"name":"Fontes","order":5,"path":"folders/Objetos/Fontes.yy",},
+    {"name":"Sprites","order":6,"path":"folders/Objetos/Sprites.yy",},
     {"name":"Inimigos","order":2,"path":"folders/Objetos/Inimigos.yy",},
     {"name":"Boss1","order":2,"path":"folders/Objetos/Inimigos/Boss1.yy",},
     {"name":"Inimigos","order":1,"path":"folders/Sprites/Inimigos.yy",},
@@ -21,7 +26,10 @@
     {"name":"oHitParticle","order":2,"path":"objects/oHitParticle/oHitParticle.yy",},
     {"name":"oPlayerWeaponProjectile","order":1,"path":"objects/oPlayerWeaponProjectile/oPlayerWeaponProjectile.yy",},
     {"name":"BossRoom","order":1,"path":"rooms/BossRoom/BossRoom.yy",},
+    {"name":"scr_iniciar_dialogo","order":1,"path":"scripts/scr_iniciar_dialogo/scr_iniciar_dialogo.yy",},
     {"name":"scr_weapon","order":1,"path":"scripts/scr_weapon/scr_weapon.yy",},
+    {"name":"snd_tartaruga_fala2","order":2,"path":"sounds/snd_tartaruga_fala2/snd_tartaruga_fala2.yy",},
+    {"name":"snd_tartaruga_fala3","order":1,"path":"sounds/snd_tartaruga_fala3/snd_tartaruga_fala3.yy",},
     {"name":"arpao_spr","order":1,"path":"sprites/arpao_spr/arpao_spr.yy",},
     {"name":"boss1_projectile_spr","order":1,"path":"sprites/boss1_projectile_spr/boss1_projectile_spr.yy",},
     {"name":"trash_spr","order":2,"path":"sprites/trash_spr/trash_spr.yy",},

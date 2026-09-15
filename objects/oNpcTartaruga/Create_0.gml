@@ -1,0 +1,1 @@
+distancia_interacao = 140; // Distância mínima do player

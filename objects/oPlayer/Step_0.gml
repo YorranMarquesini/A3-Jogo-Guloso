@@ -13,6 +13,37 @@ var _dash_pressed = keyboard_check_pressed(vk_shift);
 var _attack_pressed = mouse_check_button_pressed(mb_left);
 var _move = _right - _left;
 
+// =========================================================
+// --- TRAVA DE MOVIMENTO DURANTE O DIÁLOGO ---
+// =========================================================
+if (instance_exists(obj_dialogo)) {
+    hsp = 0; // Zera velocidade horizontal
+    
+    // Aplica gravidade básica para o player não ficar flutuando se abrir o diálogo no ar
+    var _on_ground_dialog = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);
+    if (!_on_ground_dialog) {
+        vsp = min(vsp + grav, max_fall);
+    } else {
+        vsp = 0;
+    }
+    
+    // Executa a colisão vertical simples para ele pousar no chão se estiver caindo
+    if (place_meeting(x, y + vsp, oGround) || place_meeting(x, y + vsp, oWall)) {
+        while (!(place_meeting(x, y + sign(vsp), oGround) || place_meeting(x, y + sign(vsp), oWall))) {
+            y += sign(vsp);
+        }
+        vsp = 0;
+    }
+    y += vsp;
+    
+    // Mantém a animação de Idle (parado)
+    state = "idle";
+    sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
+    
+    exit; // INTERROMPE O RESTO DO STEP (Impede andar, pular, dar dash ou atacar)
+}
+// =========================================================
+
 // --- DIRECTION BUFFER ---
 if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) {
     dir_buffer_dir = 1;
