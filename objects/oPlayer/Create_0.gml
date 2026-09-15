@@ -39,9 +39,10 @@ dash_speed = 12;
 dash_time = 8;
 dash_timer = 0;
 dash_cooldown = 0;
-dash_cooldown_max = 20;
+dash_cooldown_max = 60; //Frames ou seja 1s
 dash_dir_x = 0;
 dash_dir_y = 0;
+is_invincible = false;
 
 // ============================
 // DIRECTION BUFFER (pro wall jump)

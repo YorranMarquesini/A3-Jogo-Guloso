@@ -109,25 +109,31 @@ if (is_attacking) {
         var _hb_x = x + (weapon_offset_x * (facing == "right" ? 1 : -1));
         var _hb_y = y + weapon_offset_y + 10;
 
-        // Só checa colisão com inimigos se o objeto oEnemy já existir no projeto
-        // (evita o erro "not set before reading it" enquanto oEnemy não é criado)
-        if (asset_get_index("oEnemy") != -1) {
-            var _hit = instance_place(_hb_x, _hb_y, oEnemy);
-            if (_hit != noone) {
-                with (_hit) {
-                    instance_destroy();
-                }
-            }
-        }
-    }
-
-    if (attack_timer <= 0) {
-        is_attacking = false;
-        weapon_angle = 0;
-    }
-} else {
-    weapon_angle = 0;
-}
+        // Acerta o boss (ou qualquer inimigo filho de oEnemy)
+		if (asset_get_index("oEnemy") != -1) {
+			var _hit = instance_place(_hb_x, _hb_y, oEnemy);
+			if (_hit != noone) {
+				with (_hit) {
+					if (invuln_timer <= 0) {
+						hp -= 1;
+						invuln_timer = invuln_time;
+						
+						if (hp <= 0 && phase == 1 && state != "transforming") {
+							state = "transforming";
+							transform_timer = transform_duration;
+							}
+						}
+					}
+				}
+			}
+		}
+			if (attack_timer <= 0) {
+				is_attacking = false;
+				weapon_angle = 0;
+				}
+			} else {
+				weapon_angle = 0;
+	}
 
 // --- INICIA O DASH ---
 if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
@@ -156,6 +162,8 @@ if (is_dashing) {
     dash_timer -= 1;
     hsp = dash_dir_x * dash_speed;
     vsp = dash_dir_y * dash_speed;
+	
+	is_invincible = true;
 
     if (place_meeting(x + hsp, y, oGround) || place_meeting(x + hsp, y, oWall)) {
         is_dashing = false;
@@ -170,6 +178,7 @@ if (is_dashing) {
     }
 
 } else {
+	 is_invincible = false;
     // --- MOVIMENTO HORIZONTAL ---
     var _current_acc = _on_ground ? acc : air_acc;
 

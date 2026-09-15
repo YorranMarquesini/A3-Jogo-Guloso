@@ -1,1 +1,0 @@
-weapon_type = "arpao";

@@ -1,9 +1,23 @@
 {
   "FolderOrderSettings":[
     {"name":"Arma","order":1,"path":"folders/Objetos/Arma.yy",},
+    {"name":"Inimigos","order":2,"path":"folders/Objetos/Inimigos.yy",},
+    {"name":"Boss1","order":2,"path":"folders/Objetos/Inimigos/Boss1.yy",},
+    {"name":"Inimigos","order":1,"path":"folders/Sprites/Inimigos.yy",},
+    {"name":"Boss","order":1,"path":"folders/Sprites/Inimigos/Boss.yy",},
+    {"name":"Attack","order":2,"path":"folders/Sprites/Inimigos/Boss/Attack.yy",},
+    {"name":"Fase 2","order":3,"path":"folders/Sprites/Inimigos/Boss/Fase 2.yy",},
+    {"name":"Idle","order":2,"path":"folders/Sprites/Inimigos/Boss/Fase 2/Idle.yy",},
+    {"name":"Transforming","order":1,"path":"folders/Sprites/Inimigos/Boss/Fase 2/Transforming.yy",},
+    {"name":"Idle","order":1,"path":"folders/Sprites/Inimigos/Boss/Idle.yy",},
     {"name":"Weapons","order":1,"path":"folders/Sprites/Player/Weapons.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"oBossProjectile","order":1,"path":"objects/oBossProjectile/oBossProjectile.yy",},
+    {"name":"oBossRoom","order":1,"path":"objects/oBossRoom/oBossRoom.yy",},
+    {"name":"BossRoom","order":1,"path":"rooms/BossRoom/BossRoom.yy",},
     {"name":"arpao_spr","order":1,"path":"sprites/arpao_spr/arpao_spr.yy",},
+    {"name":"boss1_projectile_spr","order":1,"path":"sprites/boss1_projectile_spr/boss1_projectile_spr.yy",},
+    {"name":"trash_spr","order":2,"path":"sprites/trash_spr/trash_spr.yy",},
   ],
 }
