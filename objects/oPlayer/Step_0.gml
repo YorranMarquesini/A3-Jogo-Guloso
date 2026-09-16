@@ -143,6 +143,7 @@ if (_throw_pressed && has_weapon && throw_cooldown <= 0 && !is_attacking && !is_
     var _proj = instance_create_depth(_spawn_x, _spawn_y, depth, oPlayerWeaponProjectile);
     _proj.sprite_index = weapon_sprite;
     _proj.dir_x = _dir;
+	_proj.thrown_weapon_type = weapon_type;
 }
 
 // --- ATTACK COOLDOWN ---
@@ -174,7 +175,8 @@ if (is_attacking) {
 			if (_hit != noone) {
 				with (_hit) {
 					if (invuln_timer <= 0 && hittable) {
-						hp -= 1;
+						var _dmg = scr_get_weapon_damage(other.weapon_type, material);
+						hp -= _dmg;
 						invuln_timer = invuln_time;
 						
 						// --- FEEDBACK DE HIT ---

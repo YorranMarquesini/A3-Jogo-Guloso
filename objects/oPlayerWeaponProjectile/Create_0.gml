@@ -2,6 +2,7 @@ move_spd = 20;
 dir_x = 1;
 spin_speed = 25; // graus por frame — efeito de "girando no ar"
 lifetime = 180;
+thrown_weapon_type = "";
 
 image_xscale = 2;
 image_yscale = 2;

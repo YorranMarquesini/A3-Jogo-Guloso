@@ -1,6 +1,7 @@
 // --- ESTADO ---
 state = "idle";       // idle, attack_windup, transforming, idle2
 phase = 1;
+oEnemy.material = "plastico";
 
 // --- VIDA / HITS ---
 hp = 35;

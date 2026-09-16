@@ -38,7 +38,8 @@ if (asset_get_index("oEnemy") != -1) {
     if (_hit != noone) {
         with (_hit) {
             if (invuln_timer <= 0 && hittable) {
-                hp -= 1;
+                var _dmg = scr_get_weapon_damage(other.thrown_weapon_type, material);
+				hp -= _dmg;
                 invuln_timer = invuln_time;
                 hit_flash_timer = 8;
 

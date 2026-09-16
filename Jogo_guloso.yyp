@@ -81,6 +81,7 @@
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
     {"id":{"name":"scr_approach","path":"scripts/scr_approach/scr_approach.yy",},},
     {"id":{"name":"scr_config","path":"scripts/scr_config/scr_config.yy",},},
+    {"id":{"name":"scr_get_weapon_damage","path":"scripts/scr_get_weapon_damage/scr_get_weapon_damage.yy",},},
     {"id":{"name":"scr_iniciar_dialogo","path":"scripts/scr_iniciar_dialogo/scr_iniciar_dialogo.yy",},},
     {"id":{"name":"scr_weapon","path":"scripts/scr_weapon/scr_weapon.yy",},},
     {"id":{"name":"snd_tartaruga_fala1","path":"sounds/snd_tartaruga_fala1/snd_tartaruga_fala1.yy",},},

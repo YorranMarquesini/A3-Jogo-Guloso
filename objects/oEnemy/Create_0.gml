@@ -1,0 +1,1 @@
+material = ""; // ou "metal", "organico", "carne", etc — define por instância/objeto
