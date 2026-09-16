@@ -47,6 +47,7 @@ else {
             }
         } else {
             // Fim dos dialogos
+			scr_give_weapon("arpao");
             instance_destroy();
         }
     }

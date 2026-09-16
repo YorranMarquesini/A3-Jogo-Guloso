@@ -173,7 +173,7 @@ if (is_attacking) {
 			var _hit = instance_place(_hb_x, _hb_y, oEnemy);
 			if (_hit != noone) {
 				with (_hit) {
-					if (invuln_timer <= 0) {
+					if (invuln_timer <= 0 && hittable) {
 						hp -= 1;
 						invuln_timer = invuln_time;
 						

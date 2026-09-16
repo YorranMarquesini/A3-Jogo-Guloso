@@ -47,10 +47,11 @@ switch (state) {
         sprite_index = boss1_fase2_transformation_spr;
         image_index = 0;
         image_speed = 1;
+		hittable = false;
 
         // Explosão de partículas no momento que entra na transformação
         repeat (20) {
-			var _tp = instance_create_layer(x, y - 60, layer, oHitParticle);
+			var _tp = instance_create_depth(x, y - 60, depth, oHitParticle);
 			var _ang = random(360);
 			var _spd_mult = random_range(1, 2);
 			_tp.dir_x = lengthdir_x(1, _ang) * _spd_mult;
@@ -69,6 +70,7 @@ switch (state) {
     if (image_index >= image_number -1 && transform_timer <= 0) {
         phase = 2;
         state = "idle2";
+		hittable = true;
         image_blend = c_white;
     }
 	break;

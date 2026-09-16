@@ -12,6 +12,7 @@ attack_cooldown = 0;
 attack_cooldown_max = 40;   // ~1s entre ataques (60fps)
 attack_windup = 0;
 attack_windup_time = 10;    // tempo de "preparação" antes de soltar o projétil
+hittable = true;
 
 // --- TRANSFORMAÇÃO ---
 transform_timer = 0;

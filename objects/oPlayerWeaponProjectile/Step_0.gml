@@ -37,7 +37,7 @@ if (asset_get_index("oEnemy") != -1) {
     var _hit = instance_place(x, y, oEnemy);
     if (_hit != noone) {
         with (_hit) {
-            if (invuln_timer <= 0) {
+            if (invuln_timer <= 0 && hittable) {
                 hp -= 1;
                 invuln_timer = invuln_time;
                 hit_flash_timer = 8;
@@ -64,6 +64,8 @@ if (asset_get_index("oEnemy") != -1) {
                 }
             }
         }
-        instance_destroy();
+		if (_hit.hittable) {
+        instance_destroy(); // só destrói o próprio projétil se realmente acertou algo vulnerável
+		}
     }
 }
