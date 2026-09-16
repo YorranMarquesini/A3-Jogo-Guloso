@@ -1,38 +1,148 @@
-// Movimento horizontal
+// --- VARIÁVEIS DE DIREÇÃO E ANIMAÇÃO (PREVINE ERRO DE LEITURA) ---
+facing = "right";
+state = "idle";
+
+// --- SISTEMA DE VIDA E POLUIÇÃO ---
+if (!variable_global_exists("player_hp")) {
+    global.player_hp = 1;          // Vida inicial do jogo
+    global.player_hp_max = 4;      // Vida máxima
+    global.player_poluicao = 100;  // Poluição inicial
+}
+
+// Associa as variáveis locais com as globais
+hp_max = global.player_hp_max;
+hp = global.player_hp;
+poluicao = global.player_poluicao;
+
+// ============================
+// MOVIMENTO HORIZONTAL
+// ============================
 hsp = 0;
 move_speed = 4;
-acc = 0.5;      // aceleração
-dec = 0.5;      // desaceleração (fricção no chão)
-air_acc = 0.35; // aceleração no ar (um pouco menor)
+acc = 0.5;
+dec = 0.5;
+air_acc = 0.35;
 
-// Vertical / pulo
+// ============================
+// VERTICAL / PULO
+// ============================
 vsp = 0;
-grav = 0.35;
+grav = 0.25;
 jump_force = -8;
 max_fall = 10;
 
-// Coyote time (permite pular um pouco depois de sair da plataforma)
 coyote_time = 6;
 coyote_counter = 0;
 
-// Jump buffer (permite apertar pulo um pouco antes de tocar o chão)
 jump_buffer = 6;
 jump_buffer_counter = 0;
 
-// Pulo variável (solta o botão = pulo mais curto)
 jump_cut_multiplier = 0.5;
 
-// Double jump
 max_jumps = 2;
 jump_count = 0;
 
-// Dash
+// ============================
+// DASH
+// ============================
 can_dash = true;
 is_dashing = false;
 dash_speed = 12;
-dash_time = 8;        // duração do dash em frames
+dash_time = 8;
 dash_timer = 0;
 dash_cooldown = 0;
-dash_cooldown_max = 20; // tempo até poder dar dash de novo
+dash_cooldown_max = 60; //Frames ou seja 1s
 dash_dir_x = 0;
 dash_dir_y = 0;
+dash_invuln_time = 40; // 0.5s a 60fps
+invuln_timer = 0;
+// --- AFTERIMAGE (rastro do dash) ---
+afterimage_timer = 0;
+afterimage_interval = 2; // cria uma cópia a cada N frames durante o dash
+
+// ============================
+// DIRECTION BUFFER (pro wall jump)
+// ============================
+dir_buffer_time = 8;      // frames que o input de direção "conta" depois de apertado
+dir_buffer_counter = 0;
+dir_buffer_dir = 0;       // -1 esquerda, 1 direita, 0 nenhum
+
+// ============================
+// WALL INTERACTION
+// ============================
+wall_check_dist = 2;
+wall_check_yoffset = 8;   // altura acima dos pés pra checar parede (evita confundir com chão)
+wall_slide_speed = 2;
+is_wall_sliding = false;
+wall_dir = 0;
+
+wall_coyote_time = 5;
+wall_coyote_counter = 0;
+
+wall_jump_force_x = 9;
+wall_jump_force_y = -7.5;
+wall_jump_lock = 0;
+wall_jump_lock_time = 10;
+
+wall_jump_used_dir = 0;
+wall_touch_prev = false;
+
+// --- WALL RELEASE BUFFER (soltar segurando o lado contrário) ---
+wall_release_time = 12;   // frames segurando a direção contrária pra soltar da parede
+wall_release_counter = 0;
+
+// --- WALL JUMP EM 2 ESTÁGIOS (1 pra cima, 1 pra longe) ---
+wall_jump_stage = 0;      // 0 = nenhum usado, 1 = já fez o pulo pra cima (pode fazer o pra longe), 2 = já usou os dois
+
+// --- CARREGA ARMA PERSISTENTE ENTRE ROOMS ---
+if (!variable_global_exists("has_weapon")) {
+    global.has_weapon = false;
+    global.weapon_type = "";
+    global.weapon_sprite = noone;
+}
+
+has_weapon = global.has_weapon;
+weapon_type = global.weapon_type;
+weapon_sprite = global.weapon_sprite;
+
+// ============================
+// ARMA / COMBATE
+// ============================
+is_attacking = false;
+attack_timer = 0;
+attack_duration = 20;       // frames que o ataque dura
+attack_cooldown = 0;
+attack_cooldown_max = 20;
+
+weapon_angle = 0;           // ângulo atual da arma (pra animar o swing)
+weapon_offset_x = 4;       // distância da arma em relação ao player (ajusta visualmente depois)
+weapon_offset_y = -24;
+
+// Hitbox do ataque
+attack_hitbox_width = 20;
+attack_hitbox_height = 24;
+
+// --- ARREMESSO DE ARMA ---
+throw_cooldown = 0;
+throw_cooldown_max = 45;
+
+
+// --- SISTEMA DE DANO E INVENCIBILIDADE ---
+invuln_timer = 0;
+invuln_time_max = 60; // 1 segundo de invencibilidade após tomar dano (a 60 fps)
+
+function tomar_dano(_quantidade) {
+    if (invuln_timer > 0 || is_dashing) exit;
+    
+    hp = max(hp - _quantidade, 0);
+    global.player_hp = hp;
+    
+    invuln_timer = invuln_time_max;
+    
+    // --- LÓGICA DE MORTE ---
+    if (hp <= 0) {
+        show_debug_message("VOCÊ MORREU!");
+        
+        // INSERIR AQUI A LÓGICA DE MORTE DEPOIS
+    }
+}
