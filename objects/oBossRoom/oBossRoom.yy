@@ -30,8 +30,8 @@
   "resourceVersion":"2.0",
   "solid":true,
   "spriteId":{
-    "name":"trash_spr",
-    "path":"sprites/trash_spr/trash_spr.yy",
+    "name":"nextroom_spr",
+    "path":"sprites/nextroom_spr/nextroom_spr.yy",
   },
   "spriteMaskId":null,
   "visible":true,

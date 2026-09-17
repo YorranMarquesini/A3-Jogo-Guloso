@@ -12,6 +12,9 @@ var _jump_released = keyboard_check_released(vk_space);
 var _dash_pressed = keyboard_check_pressed(vk_shift);
 var _attack_pressed = mouse_check_button_pressed(mb_left);
 var _move = _right - _left;
+if (keyboard_check_pressed(ord("Q"))) {
+    scr_switch_weapon(1);
+}
 
 // =========================================================
 // --- TRAVA DE MOVIMENTO DURANTE O DIÁLOGO ---
@@ -115,6 +118,10 @@ jump_buffer_counter = _jump_pressed ? jump_buffer : max(jump_buffer_counter - 1,
 // --- DASH COOLDOWN ---
 if (dash_cooldown > 0) {
     dash_cooldown -= 1;
+}
+// --- INVENCIBILIDADE (Depois de tomar dano) ---
+if (hp_invuln_timer > 0) {
+    hp_invuln_timer -= 1;
 }
 
 // --- INVENCIBILIDADE (dura mais que o dash em si) ---

@@ -83,15 +83,11 @@ wall_release_counter = 0;
 wall_jump_stage = 0;      // 0 = nenhum usado, 1 = já fez o pulo pra cima (pode fazer o pra longe), 2 = já usou os dois
 
 // --- CARREGA ARMA PERSISTENTE ENTRE ROOMS ---
-if (!variable_global_exists("has_weapon")) {
-    global.has_weapon = false;
-    global.weapon_type = "";
-    global.weapon_sprite = noone;
+if (!variable_global_exists("owned_weapons")) {
+    global.owned_weapons = [];
+    global.current_weapon_index = -1;
 }
-
-has_weapon = global.has_weapon;
-weapon_type = global.weapon_type;
-weapon_sprite = global.weapon_sprite;
+scr_refresh_equipped_weapon();
 
 // ============================
 // ARMA / COMBATE
@@ -113,3 +109,18 @@ attack_hitbox_height = 24;
 // --- ARREMESSO DE ARMA ---
 throw_cooldown = 0;
 throw_cooldown_max = 45;
+
+// ============================
+// VIDA
+// ============================
+if (!variable_global_exists("bonus_hearts")) {
+    global.bonus_hearts = 0;
+}
+
+max_hp = 3 + global.bonus_hearts;
+hp = max_hp;
+
+hp_invuln_time = 60;      // ~1s de invencibilidade após tomar dano
+hp_invuln_timer = 0;
+
+knockback_force = 6;

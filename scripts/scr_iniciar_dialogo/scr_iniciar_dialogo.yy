@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scr_iniciar_dialogo",
   "parent":{
-    "name":"Diálogo",
-    "path":"folders/Diálogo.yy",
+    "name":"Dialogo",
+    "path":"folders/Dialogo.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -17,7 +17,7 @@ if (x < _view_x - _margin || x > _view_x + _view_w + _margin ||
 // Dano no player (respeitando invencibilidade do dash)
 if (place_meeting(x, y, oPlayer)) {
     if (!oPlayer.is_invincible) {
-        // TODO: aplicar dano de verdade quando tiver o sistema de vida
+        scr_damage_player(1, x);// Sistema de dano so adicionar isso em qualquer coisa que da dano
         instance_destroy();
     }
 }

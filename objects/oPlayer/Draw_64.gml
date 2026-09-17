@@ -21,3 +21,21 @@ draw_set_color(c_white);
 draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, true);
 
 draw_set_color(c_white); // reset pra não afetar outros draws
+
+// --- HUD DE VIDA (corações) ---
+var _heart_size = 32;
+var _heart_spacing = 36;
+var _heart_x = 20;
+var _heart_y = 20;
+
+for (var _i = 0; _i < max_hp; _i++) {
+    var _hx = _heart_x + (_i * _heart_spacing);
+
+    if (_i < hp) {
+        // Coração cheio
+        draw_sprite_ext(spr_heart, 0, _hx, _heart_y, 1, 1, 0, c_white, 1);
+    } else {
+        // Coração vazio (mais escuro/transparente, já que não temos sprite separado ainda)
+        draw_sprite_ext(spr_heart, 0, _hx, _heart_y, 1, 1, 0, c_gray, 0.4);
+    }
+}

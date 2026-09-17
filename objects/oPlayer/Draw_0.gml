@@ -1,6 +1,9 @@
-// --- COR DO PLAYER (feedback visual de invencibilidade) ---
+// --- COR/PISCAR DO PLAYER ---
 if (is_invincible) {
-    image_blend = c_aqua;
+    image_blend = c_aqua; // invencibilidade do dash
+} else if (hp_invuln_timer > 0) {
+    // Pisca durante i-frames de dano
+    image_blend = (hp_invuln_timer div 4) % 2 == 0 ? c_white : c_red;
 } else {
     image_blend = c_white;
 }

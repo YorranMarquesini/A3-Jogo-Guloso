@@ -62,9 +62,13 @@ if (asset_get_index("oEnemy") != -1) {
                     if (instance_exists(oCameraController_boss)) {
                         oCameraController_boss.shake_amount = 10;
                     }
-                }
-            }
-        }
+				} else if (hp <= 0 && phase == 2 && state != "dying") {
+					state = "dying";
+					hittable = false;
+					death_timer = death_duration;
+					}
+				}
+			}
 		if (_hit.hittable) {
         instance_destroy(); // só destrói o próprio projétil se realmente acertou algo vulnerável
 		}

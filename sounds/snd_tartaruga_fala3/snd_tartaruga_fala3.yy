@@ -15,7 +15,7 @@
   "name":"snd_tartaruga_fala3",
   "parent":{
     "name":"Tartaruga",
-    "path":"folders/Objetos/Dublagens/Tartaruga.yy",
+    "path":"folders/Audios/Dublagens/Tartaruga.yy",
   },
   "preload":false,
   "resourceType":"GMSound",
