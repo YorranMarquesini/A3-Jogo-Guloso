@@ -1,7 +1,7 @@
 sprite_index = boss1fase2_projectile_spr;
 
 image_xscale = 0.1;
-image_yscale = 7;
+image_yscale = 5;
 depth = -100;
 
 dir = 0;
