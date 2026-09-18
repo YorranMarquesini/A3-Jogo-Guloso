@@ -35,7 +35,6 @@ if (has_weapon && weapon_sprite != noone && (is_attacking || is_heavy_attacking 
         _draw_index = clamp(floor(_shot_progress * _frame_count), 0, _frame_count - 1);
         _draw_angle = -40;
 		weapon_offset_y = -30;
-		afterimage_interval = 10;
     }
 
     draw_sprite_ext(
