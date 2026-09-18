@@ -2,6 +2,18 @@
 facing = "right";
 state = "idle";
 
+// --- VISUAL: CORPO ESPECTRAL (CABEÇA FLUTUANTE) ---
+spirit_bob_timer = 0;
+spirit_bob_speed = 0.05;
+spirit_bob_height = 8; // amplitude do flutuar
+visual_float_height = 40; // distância visual entre o "pé" (x,y real) e a cabeça
+
+// --- TELECINESE NOS ATAQUES ---
+telekinesis_push_x = 40;      // quanto a arma se afasta no eixo X durante bonk/forte
+telekinesis_orbit_speed = 6;  // graus por frame que as partículas giram
+telekinesis_orbit_radius = 18;
+telekinesis_angle = 0;
+
 // ============================
 // MOVIMENTO HORIZONTAL
 // ============================

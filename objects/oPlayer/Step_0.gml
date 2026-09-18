@@ -196,7 +196,7 @@ if (is_heavy_attacking) {
 		// Afasta a arma do corpo durante o meio do swing (arco maior, não só girando no lugar)
 		var _swing_reach = sin(_sweep_progress * pi) * sweep_extra_reach;
 
-		var _sweep_hb_x = x + (weapon_offset_x + _swing_reach) * _hdir;
+		var _sweep_hb_x = x + ((weapon_offset_x + telekinesis_push_x) * _hdir);
 		var _sweep_hb_y = y + weapon_offset_y + 10;
 	
 		scr_try_hit_enemy(_sweep_hb_x, _sweep_hb_y, weapon_type, true);
@@ -212,7 +212,7 @@ if (is_heavy_attacking) {
 
 		weapon_angle = stab_angle_offset // <<< ângulo fixo pra deixar reto, espelha conforme o lado
 
-		var _stab_hb_x = x + (weapon_offset_x + stab_reach) * _hdir;
+		var _stab_hb_x = x + ((weapon_offset_x + telekinesis_push_x + stab_reach) * _hdir);
 		var _stab_hb_y = y + weapon_offset_y;
 
 		scr_try_hit_enemy(_stab_hb_x, _stab_hb_y, weapon_type, true);
@@ -240,7 +240,7 @@ if (is_attacking) {
     weapon_angle = lerp(70, -50, _progress);
 
     if (_progress > 0.35 && _progress < 0.7) {
-        var _hb_x = x + (weapon_offset_x * (facing == "right" ? 1 : -1));
+        var _hb_x = x + ((weapon_offset_x + telekinesis_push_x) * (facing == "right" ? 1 : -1));
         var _hb_y = y + weapon_offset_y + 10;
 
         scr_try_hit_enemy(_hb_x, _hb_y, weapon_type, false);
@@ -382,8 +382,8 @@ if (is_dashing) {
 // ============================
 // COLISÃO
 // ============================
-if (place_meeting(x + hsp, y - 2, oGround) || place_meeting(x + hsp, y - 2, oWall)) {
-    while (!(place_meeting(x + sign(hsp), y - 2, oGround) || place_meeting(x + sign(hsp), y - 2, oWall))) {
+if (place_meeting(x + hsp, y - 4, oGround) || place_meeting(x + hsp, y - 4, oWall)) {
+    while (!(place_meeting(x + sign(hsp), y - 4, oGround) || place_meeting(x + sign(hsp), y - 4, oWall))) {
         x += sign(hsp);
     }
     hsp = 0;
@@ -415,3 +415,6 @@ if (state == "idle") {
 } else {
     sprite_index = (facing == "right") ? player_right_walk : player_left_walk;
 }
+
+spirit_bob_timer += spirit_bob_speed;
+telekinesis_angle += telekinesis_orbit_speed;
