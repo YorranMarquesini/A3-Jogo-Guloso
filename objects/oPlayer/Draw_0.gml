@@ -28,13 +28,13 @@ if (has_weapon && weapon_sprite != noone && (is_attacking || is_heavy_attacking 
 		}
 
     if (is_throwing && weapon_type == "arpao") {
-        // Toca a animação de "soltar a ponta" (arpaoShot_spr)
         var _shot_progress = 1 - (throw_anim_timer / throw_anim_duration);
         var _frame_count = sprite_get_number(arpaoShot_spr);
 
         _draw_sprite = arpaoShot_spr;
         _draw_index = clamp(floor(_shot_progress * _frame_count), 0, _frame_count - 1);
-        _draw_angle = 0;
+        _draw_angle = -40;
+		weapon_offset_y = -30;
     }
 
     draw_sprite_ext(
