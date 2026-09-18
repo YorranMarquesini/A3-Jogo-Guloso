@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":0,
   "parent":{
-    "name":"Cenarios",
-    "path":"folders/Sprites/Cenarios.yy",
+    "name":"Fase 1",
+    "path":"folders/Sprites/Cenarios/Fase 1.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

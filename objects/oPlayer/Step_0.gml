@@ -341,6 +341,7 @@ if (is_dashing) {
             jump_count = 1;
             jump_buffer_counter = 0;
             coyote_counter = 0;
+			scr_spawn_jump_burst(x, y + 4, false);
 
         } else if (wall_coyote_counter > 0 && wall_dir != 0 && wall_dir != wall_jump_used_dir) {
             vsp = wall_jump_force_y;
@@ -353,6 +354,7 @@ if (is_dashing) {
             wall_jump_used_dir = wall_dir;
             wall_jump_stage = (hsp == 0) ? 1 : 2;
             dir_buffer_counter = 0;
+			scr_spawn_jump_burst(x, y + 4, false);
 
         } else if (wall_jump_stage == 1 && _effective_move == -wall_jump_used_dir) {
             vsp = wall_jump_force_y;
@@ -362,11 +364,13 @@ if (is_dashing) {
             wall_jump_lock = wall_jump_lock_time;
             wall_jump_stage = 2;
             dir_buffer_counter = 0;
+			scr_spawn_jump_burst(x, y + 4, false);
 
         } else if (jump_count < max_jumps) {
             vsp = jump_force * 0.9;
             jump_count += 1;
             jump_buffer_counter = 0;
+			scr_spawn_jump_burst(x, y + 4, true);
         }
     }
 
