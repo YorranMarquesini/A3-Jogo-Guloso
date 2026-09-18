@@ -4,7 +4,7 @@ phase = 1;
 oEnemy.material = "plastico";
 
 // --- VIDA / HITS ---
-hp = 30;
+hp = 4;
 invuln_timer = 0;
 invuln_time = 20;      // frames de invencibilidade após cada hit (evita 1 golpe contar 2x)
 
@@ -39,6 +39,6 @@ eyedrop_warning_time = 60;
 eyedrop_warning_timer = 0;
 
 // --- MORTE ---
-phase2_max_hp = 60;
+phase2_max_hp = 8;
 death_duration = 90;
 death_timer = 0;

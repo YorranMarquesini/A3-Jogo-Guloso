@@ -61,15 +61,7 @@ function scr_refresh_equipped_weapon() {
         } else {
             has_weapon = true;
             weapon_type = global.owned_weapons[global.current_weapon_index];
-
-            switch (weapon_type) {
-                case "arpao":
-                    weapon_sprite = arpao_spr;
-                    break;
-                case "tesoura":
-                    weapon_sprite = tesoura_spr;
-                    break;
-            }
+            weapon_sprite = scr_get_weapon_sprite(weapon_type);
         }
     }
 }

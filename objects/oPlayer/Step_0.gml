@@ -11,7 +11,10 @@ var _jump_pressed = keyboard_check_pressed(vk_space);
 var _jump_released = keyboard_check_released(vk_space);
 var _dash_pressed = keyboard_check_pressed(vk_shift);
 var _attack_pressed = mouse_check_button_pressed(mb_left);
+var _heavy_pressed = keyboard_check_pressed(ord("R"));
+var _throw_pressed = mouse_check_button_pressed(mb_right);
 var _move = _right - _left;
+
 if (keyboard_check_pressed(ord("Q"))) {
     scr_switch_weapon(1);
 }
@@ -20,17 +23,15 @@ if (keyboard_check_pressed(ord("Q"))) {
 // --- TRAVA DE MOVIMENTO DURANTE O DIÁLOGO ---
 // =========================================================
 if (instance_exists(obj_dialogo)) {
-    hsp = 0; // Zera velocidade horizontal
-    
-    // Aplica gravidade básica para o player não ficar flutuando se abrir o diálogo no ar
+    hsp = 0;
+
     var _on_ground_dialog = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);
     if (!_on_ground_dialog) {
         vsp = min(vsp + grav, max_fall);
     } else {
         vsp = 0;
     }
-    
-    // Executa a colisão vertical simples para ele pousar no chão se estiver caindo
+
     if (place_meeting(x, y + vsp, oGround) || place_meeting(x, y + vsp, oWall)) {
         while (!(place_meeting(x, y + sign(vsp), oGround) || place_meeting(x, y + sign(vsp), oWall))) {
             y += sign(vsp);
@@ -38,12 +39,11 @@ if (instance_exists(obj_dialogo)) {
         vsp = 0;
     }
     y += vsp;
-    
-    // Mantém a animação de Idle (parado)
+
     state = "idle";
     sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
-    
-    exit; // INTERROMPE O RESTO DO STEP (Impede andar, pular, dar dash ou atacar)
+
+    exit;
 }
 // =========================================================
 
@@ -115,57 +115,124 @@ wall_touch_prev = _touching_wall;
 // --- JUMP BUFFER ---
 jump_buffer_counter = _jump_pressed ? jump_buffer : max(jump_buffer_counter - 1, 0);
 
-// --- DASH COOLDOWN ---
-if (dash_cooldown > 0) {
-    dash_cooldown -= 1;
-}
-// --- INVENCIBILIDADE (Depois de tomar dano) ---
+// --- COOLDOWNS ---
+if (dash_cooldown > 0)   dash_cooldown -= 1;
+if (attack_cooldown > 0) attack_cooldown -= 1;
+if (heavy_cooldown > 0)  heavy_cooldown -= 1;
+if (throw_cooldown > 0)  throw_cooldown -= 1;
+
+// --- INVENCIBILIDADE POR DANO ---
 if (hp_invuln_timer > 0) {
     hp_invuln_timer -= 1;
 }
 
-// --- INVENCIBILIDADE (dura mais que o dash em si) ---
+// --- INVENCIBILIDADE (DASH, dura mais que o dash em si) ---
 if (invuln_timer > 0) {
     invuln_timer -= 1;
 }
 is_invincible = (invuln_timer > 0);
 
-// --- ATIRAR A ARMA (SO NA SALA DO BOSS) ---
-var _throw_pressed = mouse_check_button_pressed(mb_right);
-
-if (throw_cooldown > 0) {
-    throw_cooldown -= 1;
-}
-
-// Só pode arremessar dentro da sala do boss (detecta pela existência da câmera de boss)
-if (_throw_pressed && has_weapon && throw_cooldown <= 0 && !is_attacking && !is_dashing
-    && instance_exists(oCameraController_boss)) {
+// ============================
+// ARREMESSO DE ARMA (SÓ NA SALA DO BOSS)
+// ============================
+if (_throw_pressed && has_weapon && throw_cooldown <= 0 && !is_attacking && !is_heavy_attacking && !is_dashing && instance_exists(oCameraController_boss)) {
 
     throw_cooldown = throw_cooldown_max;
+    is_throwing = true;
+    throw_anim_timer = throw_anim_duration;
 
-    var _dir = (facing == "right") ? 1 : -1;
-    var _spawn_x = x + (weapon_offset_x * _dir);
+    var _throw_dir = (facing == "right") ? 1 : -1;
+    var _spawn_x = x + (weapon_offset_x * _throw_dir);
     var _spawn_y = y + weapon_offset_y;
 
-    var _proj = instance_create_depth(_spawn_x, _spawn_y, depth, oPlayerWeaponProjectile);
-    _proj.sprite_index = weapon_sprite;
-    _proj.dir_x = _dir;
-	_proj.thrown_weapon_type = weapon_type;
+    if (weapon_type == "arpao") {
+        // Lança só a PONTA — a arma na mão vira arpaoShot_spr (sem ponta)
+        var _tip = instance_create_depth(_spawn_x, _spawn_y, depth, oPlayerWeaponProjectile);
+        _tip.sprite_index = arpaoPonta_spr;
+        _tip.dir_x = _throw_dir;
+        _tip.thrown_weapon_type = weapon_type;
+		weapon_angle = stab_angle_offset;
+        _tip.spin_speed = 0;           // a ponta não gira, já nasce alinhada (origem esquerda-centro)
+        _tip.image_angle = 0;
+        _tip.image_xscale = 2 * _throw_dir; // espelha pro lado certo
+
+    } else {
+        // Tesoura: comportamento de sempre (arma inteira gira e voa)
+        var _proj = instance_create_depth(_spawn_x, _spawn_y, depth, oPlayerWeaponProjectile);
+        _proj.sprite_index = weapon_sprite;
+        _proj.dir_x = _throw_dir;
+        _proj.thrown_weapon_type = weapon_type;
+    }
 }
 
-// --- ATTACK COOLDOWN ---
-if (attack_cooldown > 0) {
-    attack_cooldown -= 1;
+if (is_throwing) {
+    throw_anim_timer -= 1;
+    if (throw_anim_timer <= 0) {
+        is_throwing = false;
+    }
 }
 
-// --- INICIA O ATAQUE ---
-if (_attack_pressed && has_weapon && attack_cooldown <= 0 && !is_attacking && !is_dashing) {
+// ============================
+// ATAQUE FORTE (R)
+// ============================
+if (_heavy_pressed && has_weapon && heavy_cooldown <= 0 && !is_attacking && !is_heavy_attacking && !is_dashing && !instance_exists(oCameraController_boss)) {
+    is_heavy_attacking = true;
+    heavy_cooldown = heavy_cooldown_max;
+    heavy_attack_timer = (weapon_type == "tesoura") ? sweep_duration : stab_duration;
+}
+
+if (is_heavy_attacking) {
+    heavy_attack_timer -= 1;
+    var _hdir = (facing == "right") ? 1 : -1;
+
+    if (weapon_type == "tesoura") {
+		var _sweep_progress = 1 - (heavy_attack_timer / sweep_duration);
+
+		// Curva "ease out" — rápido no início, desacelera no fim (mais "cortante")
+		var _eased = 1 - power(1 - _sweep_progress, 3);
+
+		weapon_angle = lerp(sweep_angle_start, sweep_angle_end, _eased) * _hdir;
+
+		// Afasta a arma do corpo durante o meio do swing (arco maior, não só girando no lugar)
+		var _swing_reach = sin(_sweep_progress * pi) * sweep_extra_reach;
+
+		var _sweep_hb_x = x + (weapon_offset_x + _swing_reach) * _hdir;
+		var _sweep_hb_y = y + weapon_offset_y + 10;
+	
+		scr_try_hit_enemy(_sweep_hb_x, _sweep_hb_y, weapon_type, true);
+	
+	} else if (weapon_type == "arpao") {
+		var _stab_progress = 1 - (heavy_attack_timer / stab_duration);
+
+		if (_stab_progress < 0.5) {
+			hsp = _hdir * stab_lunge_speed;
+		} else {
+			hsp = approach(hsp, 0, 1);
+		}
+
+		weapon_angle = stab_angle_offset // <<< ângulo fixo pra deixar reto, espelha conforme o lado
+
+		var _stab_hb_x = x + (weapon_offset_x + stab_reach) * _hdir;
+		var _stab_hb_y = y + weapon_offset_y;
+
+		scr_try_hit_enemy(_stab_hb_x, _stab_hb_y, weapon_type, true);
+	}
+
+    if (heavy_attack_timer <= 0) {
+        is_heavy_attacking = false;
+        weapon_angle = 0;
+    }
+}
+
+// ============================
+// ATAQUE NORMAL (bonk de cima pra baixo)
+// ============================
+if (_attack_pressed && has_weapon && attack_cooldown <= 0 && !is_attacking && !is_heavy_attacking && !is_dashing && !instance_exists(oCameraController_boss)) {
     is_attacking = true;
     attack_timer = attack_duration;
     attack_cooldown = attack_cooldown_max;
 }
 
-// --- ANIMA O SWING (bonk de cima pra baixo) ---
 if (is_attacking) {
     attack_timer -= 1;
 
@@ -176,56 +243,26 @@ if (is_attacking) {
         var _hb_x = x + (weapon_offset_x * (facing == "right" ? 1 : -1));
         var _hb_y = y + weapon_offset_y + 10;
 
-        // Acerta o boss (ou qualquer inimigo filho de oEnemy)
-		if (asset_get_index("oEnemy") != -1) {
-			var _hit = instance_place(_hb_x, _hb_y, oEnemy);
-			if (_hit != noone) {
-				with (_hit) {
-					if (invuln_timer <= 0 && hittable) {
-						var _dmg = scr_get_weapon_damage(other.weapon_type, material);
-						hp -= _dmg;
-						invuln_timer = invuln_time;
-						
-						// --- FEEDBACK DE HIT ---
-						hit_flash_timer = 8; // frames de flash branco/vermelho
-						repeat (10) {
-							var _p = instance_create_layer(x, y - 20, layer, oHitParticle);
-							var _ang = random(360);
-							_p.dir_x = lengthdir_x(1, _ang);
-							_p.dir_y = lengthdir_y(1, _ang);
-							}
-							if (instance_exists(oCameraController_boss)) {
-								oCameraController_boss.shake_amount = 4;
-								}
-						
-						if (hp <= 0 && phase == 1 && state != "transforming") {
-							state = "transforming";
-							transform_timer = transform_duration;
-							// Shake mais forte na transformação
-							if (instance_exists(oCameraController_boss)) {
-								oCameraController_boss.shake_amount = 10;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-			if (attack_timer <= 0) {
-				is_attacking = false;
-				weapon_angle = 0;
-				}
-			} else {
-				weapon_angle = 0;
-	}
+        scr_try_hit_enemy(_hb_x, _hb_y, weapon_type, false);
+    }
 
-// --- INICIA O DASH ---
+    if (attack_timer <= 0) {
+        is_attacking = false;
+        weapon_angle = 0;
+    }
+} else if (!is_heavy_attacking) {
+    weapon_angle = 0;
+}
+
+// ============================
+// DASH
+// ============================
 if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
     is_dashing = true;
     can_dash = false;
     dash_timer = dash_time;
     dash_cooldown = dash_cooldown_max;
-	 invuln_timer = dash_invuln_time;
+    invuln_timer = dash_invuln_time;
 
     var _dx = _right - _left;
     var _dy = _down - _up;
@@ -238,30 +275,31 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
         dash_dir_x = _dx / _len;
         dash_dir_y = _dy / _len;
     }
-	// --- EFEITO DE PARTÍCULA NA SAÍDA DO DASH ---
-    repeat (14) { // era 10, mais partículas
-		var _p = instance_create_layer(x, y - 20, layer, oHitParticle);
-		var _ang = random(360);
-		var _spd_mult = random_range(1.5, 3); // partículas voam mais longe também
-		_p.dir_x = lengthdir_x(1, _ang) * _spd_mult;
-		_p.dir_y = lengthdir_y(1, _ang) * _spd_mult;
-		_p.radius = random_range(4, 4); // <<< maiores especificamente aqui
-		}
-	}
+
+    // --- PARTÍCULA NA SAÍDA DO DASH ---
+    repeat (14) {
+        var _p = instance_create_depth(x, y - 20, depth, oHitParticle);
+        var _ang = random(360);
+        var _spd_mult = random_range(1.5, 3);
+        _p.dir_x = lengthdir_x(1, _ang) * _spd_mult;
+        _p.dir_y = lengthdir_y(1, _ang) * _spd_mult;
+        _p.radius = random_range(4, 6);
+    }
+}
 
 // ============================
-// LÓGICA PRINCIPAL
+// LÓGICA PRINCIPAL (movimento / pulo / dash em andamento)
 // ============================
 if (is_dashing) {
     dash_timer -= 1;
     hsp = dash_dir_x * dash_speed;
-    vsp = dash_dir_y * dash_speed;	
-	
-	// --- CRIA AFTERIMAGE ---
+    vsp = dash_dir_y * dash_speed;
+
+    // --- AFTERIMAGE ---
     afterimage_timer -= 1;
     if (afterimage_timer <= 0) {
         afterimage_timer = afterimage_interval;
-        var _ghost = instance_create_layer(x, y, layer, oAfterimage);
+        var _ghost = instance_create_depth(x, y, depth, oAfterimage);
         _ghost.sprite_index = sprite_index;
         _ghost.image_index = image_index;
         _ghost.image_xscale = image_xscale;
@@ -290,14 +328,14 @@ if (is_dashing) {
     } else if (_touching_wall && !_wall_release) {
         hsp = 0;
 
-    } else if (_move != 0) {
+    } else if (_move != 0 && !is_heavy_attacking) {
         hsp = approach(hsp, _move * move_speed, _current_acc);
-    } else {
+    } else if (!is_heavy_attacking) {
         hsp = approach(hsp, 0, _on_ground ? dec : air_acc);
     }
 
     // --- PULO ---
-    if (jump_buffer_counter > 0) {
+    if (jump_buffer_counter > 0 && !is_attacking && !is_heavy_attacking) {
         if (coyote_counter > 0) {
             vsp = jump_force;
             jump_count = 1;
@@ -366,7 +404,7 @@ y = round(y);
 // ============================
 // FACING E ANIMAÇÃO
 // ============================
-if (hsp != 0) {
+if (hsp != 0 && !is_heavy_attacking) {
     facing = (hsp > 0) ? "right" : "left";
 }
 

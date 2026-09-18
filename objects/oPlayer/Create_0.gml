@@ -110,6 +110,29 @@ attack_hitbox_height = 24;
 throw_cooldown = 0;
 throw_cooldown_max = 45;
 
+// --- ANIMAÇÃO DE ARREMESSO (arpão) ---
+is_throwing = false;
+throw_anim_timer = 0;
+throw_anim_duration = 12; // ajusta pra bater com a quantidade de frames do arpaoShot_spr
+
+// --- ATAQUE FORTE (R) ---
+is_heavy_attacking = false;
+heavy_attack_timer = 0;
+heavy_cooldown = 0;
+heavy_cooldown_max = 50;
+
+// Tesoura: swep largo e mais lento
+sweep_duration = 30;
+sweep_angle_start = 100;
+sweep_angle_end = -100;
+sweep_extra_reach = 20; // quanto a arma "se afasta" do corpo durante o giro
+
+// Arpão: estocada rápida com lunge
+stab_duration = 18;
+stab_lunge_speed = 7;
+stab_reach = 30;
+stab_angle_offset = -35; // ajusta até a lança ficar reta/horizontal
+
 // ============================
 // VIDA
 // ============================
@@ -124,3 +147,17 @@ hp_invuln_time = 60;      // ~1s de invencibilidade após tomar dano
 hp_invuln_timer = 0;
 
 knockback_force = 6;
+
+// ============================
+// UI DE TROCA DE ARMA (ajusta esses valores à vontade)
+// ============================
+weapon_ui_slot_size = 60;
+weapon_ui_spacing = 8;
+weapon_ui_x = 20;
+weapon_ui_y = 100;          // ajusta pra não bater na barra de vida/dash
+
+weapon_ui_bg_color = c_black;
+weapon_ui_bg_alpha = 0.5;
+weapon_ui_border_color = c_white;
+weapon_ui_selected_color = c_yellow;
+weapon_ui_icon_padding = 0.7; // % do slot que o ícone ocupa (0.7 = 70%)
