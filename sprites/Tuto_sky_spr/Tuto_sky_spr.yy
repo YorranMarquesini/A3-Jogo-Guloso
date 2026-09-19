@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"Tutoras",
-    "path":"folders/Sprites/Cenarios/Tutoras.yy",
+    "path":"folders/Sprites/Tutoras.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
