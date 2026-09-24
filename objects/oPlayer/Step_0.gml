@@ -299,18 +299,19 @@ if (is_dashing) {
     afterimage_timer -= 1;
     if (afterimage_timer <= 0) {
         afterimage_timer = afterimage_interval;
-        var _ghost = instance_create_depth(x, y, depth, oAfterimage);
-        _ghost.sprite_index = sprite_index;
-        _ghost.image_index = image_index;
-        _ghost.image_xscale = image_xscale;
-        _ghost.image_yscale = image_yscale;
-    }
+        var _ghost_y = y - visual_float_height + sin(spirit_bob_timer) * spirit_bob_height;
+		var _ghost = instance_create_depth(x, _ghost_y, depth, oAfterimage);
+		_ghost.sprite_index = sprite_index;
+		_ghost.image_index = image_index;
+		_ghost.image_xscale = image_xscale;
+		_ghost.image_yscale = image_yscale;
+		}
 
-    if (place_meeting(x + hsp, y, oGround) || place_meeting(x + hsp, y, oWall)) {
-        is_dashing = false;
-        dash_timer = 0;
-        hsp = 0;
-    }
+    if (place_meeting(x + hsp, y - dash_hitbox_yoffset, oGround) || place_meeting(x + hsp, y - dash_hitbox_yoffset, oWall)) {
+		is_dashing = false;
+		dash_timer = 0;
+		hsp = 0;
+	}
 
     if (dash_timer <= 0) {
         is_dashing = false;

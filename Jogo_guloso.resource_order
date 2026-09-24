@@ -71,8 +71,10 @@
     {"name":"boss1fase2_projectile_spr","order":1,"path":"sprites/boss1fase2_projectile_spr/boss1fase2_projectile_spr.yy",},
     {"name":"BossTutoras_spr","order":2,"path":"sprites/BossTutoras_spr/BossTutoras_spr.yy",},
     {"name":"sky_spr","order":1,"path":"sprites/sky_spr/sky_spr.yy",},
+    {"name":"Tileset_spr","order":3,"path":"sprites/Tileset_spr/Tileset_spr.yy",},
     {"name":"trash_spr","order":1,"path":"sprites/trash_spr/trash_spr.yy",},
     {"name":"Tuto_chao_spr","order":1,"path":"sprites/Tuto_chao_spr/Tuto_chao_spr.yy",},
     {"name":"wall_1_spr","order":2,"path":"sprites/wall_1_spr/wall_1_spr.yy",},
+    {"name":"TileSet1","order":12,"path":"tilesets/TileSet1/TileSet1.yy",},
   ],
 }

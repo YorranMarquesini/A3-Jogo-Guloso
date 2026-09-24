@@ -47,6 +47,7 @@ jump_count = 0;
 // ============================
 can_dash = true;
 is_dashing = false;
+dash_hitbox_yoffset = 4;
 dash_speed = 12;
 dash_time = 8;
 dash_timer = 0;
