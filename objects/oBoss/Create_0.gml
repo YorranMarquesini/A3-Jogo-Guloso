@@ -1,7 +1,7 @@
 // --- ESTADO ---
 state = "idle";       // idle, attack_windup, transforming, idle2
 phase = 1;
-oEnemy.material = "plastico";
+material = "plastico";
 
 // --- VIDA / HITS ---
 hp = 30;
@@ -14,6 +14,12 @@ attack_cooldown_max = 40;   // ~0.8s entre ataques (60fps)
 attack_windup = 0;
 attack_windup_time = 10;    // tempo de "preparação" antes de soltar o projétil
 hittable = true;
+
+boss_speed_mult = 1;
+absorb_duration = 90;
+absorb_timer = absorb_duration;
+pollution_absorbed_pct = 0; // captura de verdade no 1º Step (ver abaixo)
+state = "absorbing_pollution"; // <<< TROCA o state inicial de "idle" pra esse
 
 // --- TRANSFORMAÇÃO ---
 transform_timer = 0;

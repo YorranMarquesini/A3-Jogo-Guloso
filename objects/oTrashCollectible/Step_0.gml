@@ -1,7 +1,11 @@
 if (place_meeting(x, y, oPlayer)) {
-    // Cura 1 de vida (sem passar do máximo)
     if (oPlayer.hp < oPlayer.max_hp) {
         oPlayer.hp += 1;
+    }
+
+    // --- REDUZ A POLUIÇÃO (dinâmico conforme o total da fase) ---
+    if (variable_global_exists("pollution_pct")) {
+        global.pollution_pct = max(0, global.pollution_pct - global.pollution_reduction_per_item);
     }
 
     // Feedback visual de coleta
