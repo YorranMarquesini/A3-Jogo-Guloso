@@ -61,10 +61,6 @@ switch (state) {
             image_speed = boss_speed_mult;
         }
 
-        // Pisca em amarelo/vermelho durante o windup como aviso
-        image_blend = (hit_flash_timer > 0) ? c_white :
-                      (sin(current_time / 60) > 0 ? c_yellow : c_white);
-
         if (image_index >= image_number - 1) {
             var _spawn_x = x;
             var _spawn_y = y - 20;
@@ -263,8 +259,6 @@ switch (state) {
 }
 
 // --- INVENCIBILIDADE E FLASH DE DANO ---
-// Só aplica esse flash genérico em states que não controlam a própria cor
-// (absorbing_pollution, transforming, dying e attack_windup já calculam o image_blend deles mesmos)
 if (invuln_timer > 0) {
     invuln_timer -= 1;
 }
@@ -272,7 +266,7 @@ if (hit_flash_timer > 0) {
     hit_flash_timer -= 1;
 }
 
-if (state != "absorbing_pollution" && state != "transforming" && state != "dying" && state != "attack_windup") {
+if (state != "absorbing_pollution" && state != "transforming" && state != "dying") {
     image_blend = (hit_flash_timer > 0) ? c_white : c_red;
     if (invuln_timer <= 0) {
         image_blend = c_white;
