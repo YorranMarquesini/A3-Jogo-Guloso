@@ -31,9 +31,9 @@ draw_set_valign(fa_middle);
 
 // Sombra curta para continuar legível tanto no vermelho quanto no verde.
 draw_set_color(c_black);
-draw_text(_text_x + 2, _text_y + 2, _label);
+draw_text_transformed(_text_x + 1, _text_y + 1, _label, bar_text_scale, bar_text_scale, 0);
 draw_set_color(c_white);
-draw_text(_text_x, _text_y, _label);
+draw_text_transformed(_text_x, _text_y, _label, bar_text_scale, bar_text_scale, 0);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);

@@ -5,9 +5,10 @@ tracked_room = room;
 total_collectibles = -1;
 
 bar_x = 20;
-bar_y = 92;
-bar_width = 260;
-bar_height = 32;
+bar_y = 88;
+bar_width = 190;
+bar_height = 20;
+bar_text_scale = 0.55;
 
 global.pollution_pct = 100;
 
