@@ -20,6 +20,10 @@ transform_timer = 0;
 transform_duration = 40;
 hit_flash_timer = 0;
 
+// Quanto mais poluída a fase 1 terminou, mais rápido este boss age.
+if (!variable_global_exists("fase1_pollution_pct")) global.fase1_pollution_pct = 100;
+boss_speed_multiplier = scr_get_pollution_speed_bonus(global.fase1_pollution_pct);
+
 sprite_index = boss1_idle_spr;
 image_speed = 1;
 

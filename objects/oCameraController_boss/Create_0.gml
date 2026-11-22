@@ -69,8 +69,9 @@ view_visible[0] = true;
 cam_x = initial_cam_x;
 cam_y = initial_cam_y;
 
-// Nas duas arenas o enquadramento é calculado uma vez e fica 100% travado.
-camera_locked = (room == BossRoom || room == Fase2Boss);
+// O primeiro boss usa a câmera dinâmica da Tutorial-Room. A arena gigante
+// do Cagliostro mantém o enquadramento travado calculado acima.
+camera_locked = (room == Fase2Boss);
 locked_cam_x = clamp(cam_x - cam_width * 0.5, 0, max(0, room_width - cam_width));
 locked_cam_y = clamp(cam_y - cam_height * 0.5, 0, max(0, room_height - cam_height));
 

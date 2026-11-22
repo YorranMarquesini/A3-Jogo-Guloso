@@ -32,7 +32,7 @@ switch (state) {
     case "combat":
         sprite_index = spr_cagliostro_idle;
         image_speed = 0.12;
-        attack_timer--;
+        attack_timer -= boss_speed_multiplier;
         if (attack_timer <= 0) {
             var _next_attack;
 
@@ -75,7 +75,7 @@ switch (state) {
     case "smoke_attack":
         sprite_index = spr_cagliostro_idle;
         image_speed = 0.18;
-        smoke_shot_timer--;
+        smoke_shot_timer -= boss_speed_multiplier;
 
         if (smoke_shots_remaining > 0 && smoke_shot_timer <= 0) {
             if (instance_exists(oPlayer)) {
@@ -109,7 +109,7 @@ switch (state) {
 
                 var _ring = instance_create_depth(_smoke_x, _smoke_y, depth - 1, oCagliostroSmoke);
                 _ring.direction = point_direction(_smoke_x, _smoke_y, _target_x, _target_y);
-                _ring.speed = 6.5;
+                _ring.speed = 6.5 * boss_speed_multiplier;
             }
 
             smoke_shots_remaining--;
@@ -127,7 +127,7 @@ switch (state) {
     case "hat_attack":
         sprite_index = spr_cagliostro_no_hat;
         image_speed = 0;
-        attack_timer--;
+        attack_timer -= boss_speed_multiplier;
 
         if (!attack_fired && attack_timer <= 34) {
             attack_fired = true;
@@ -135,6 +135,8 @@ switch (state) {
             var _hat_y = y - (28 * abs(image_yscale));
             var _hat = instance_create_depth(_hat_x, _hat_y, depth - 2, oCagliostroHat);
             _hat.owner = id;
+            _hat.move_speed *= boss_speed_multiplier;
+            _hat.travel_timer = ceil(_hat.travel_timer / boss_speed_multiplier);
         }
 
         if (attack_timer <= 0 && !instance_exists(oCagliostroHat)) {

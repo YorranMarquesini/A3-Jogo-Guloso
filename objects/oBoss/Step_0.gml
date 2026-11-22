@@ -2,7 +2,7 @@ switch (state) {
 
     case "idle":
         sprite_index = boss1_idle_spr;
-        attack_cooldown -= 1;
+        attack_cooldown -= boss_speed_multiplier;
 
         if (attack_cooldown <= 0) {
             state = "attack_windup";
@@ -14,7 +14,7 @@ switch (state) {
     if (sprite_index != boss1_attack_spr) {
         sprite_index = boss1_attack_spr;
         image_index = 0;
-        image_speed = 1;
+        image_speed = boss_speed_multiplier;
     }
 
     // Pisca em amarelo/vermelho durante o windup como aviso
@@ -27,6 +27,7 @@ switch (state) {
 		
 		audio_play_sound(snd_boss1_attack, 1, false);
         var _p = instance_create_layer(_spawn_x, _spawn_y, layer, oBossProjectile);
+        _p.move_spd *= boss_speed_multiplier;
 
         // Pequeno flash/partícula no momento do disparo também
         repeat (5) {
@@ -82,7 +83,7 @@ switch (state) {
     if (sprite_index != boss1fase2_attack1_spr) {
         sprite_index = boss1fase2_attack1_spr;
         image_index = 0;
-        image_speed = 1;
+        image_speed = boss_speed_multiplier;
         water_spawned = false; // reseta a trava toda vez que entra no ataque
     }
 
@@ -98,6 +99,8 @@ switch (state) {
         water_projectile = instance_create_depth(_spawn_x, _spawn_y, depth, oBossWaterProjectile);
         water_projectile.dir = _dir + 180; // ou o offset que você calibrou
         water_projectile.image_xscale = 0.1;
+        water_projectile.grow_speed *= boss_speed_multiplier;
+        water_projectile.active_time = ceil(water_projectile.active_time / boss_speed_multiplier);
     }
 
     // Espera a animação terminar de verdade antes de trocar de estado
@@ -125,7 +128,7 @@ switch (state) {
     if (sprite_index != boss1fase2_attack2_spr) {
         sprite_index = boss1fase2_attack2_spr;
         image_index = 0;
-        image_speed = 1;
+        image_speed = boss_speed_multiplier;
     }
 
     if (image_index >= image_number - 1) {
@@ -173,7 +176,7 @@ switch (state) {
     case "idle2":
     sprite_index = boss1_fase2_idle_spr;
 
-    phase2_attack_cooldown -= 1;
+    phase2_attack_cooldown -= boss_speed_multiplier;
     if (phase2_attack_cooldown <= 0) {
         state = (irandom(1) == 0) ? "attack_water_windup" : "attack_eyedrop_windup";
     }

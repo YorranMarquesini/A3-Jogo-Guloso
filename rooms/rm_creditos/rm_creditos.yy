@@ -18,7 +18,7 @@
   "name":"rm_creditos",
   "parent":{
     "name":"Menu",
-    "path":"folders/Objetos/Menu.yy",
+    "path":"folders/Menu.yy",
   },
   "parentRoom":null,
   "physicsSettings":{

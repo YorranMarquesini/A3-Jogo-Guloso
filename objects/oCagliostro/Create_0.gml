@@ -9,6 +9,10 @@ invuln_timer = 0;
 invuln_time = 16;
 hit_flash_timer = 0;
 
+// A poluição deixada na fase 2 acelera os ataques do Cagliostro.
+if (!variable_global_exists("fase2_pollution_pct")) global.fase2_pollution_pct = 100;
+boss_speed_multiplier = scr_get_pollution_speed_bonus(global.fase2_pollution_pct);
+
 attack_timer = 90;
 attack_cooldown_min = 70;
 attack_cooldown_max = 150;

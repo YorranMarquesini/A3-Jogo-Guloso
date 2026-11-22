@@ -14,7 +14,7 @@
     {"name":"Boss1","order":2,"path":"folders/Objetos/Inimigos/Boss1.yy",},
     {"name":"Fase 2","order":2,"path":"folders/Objetos/Inimigos/Boss1/Fase 2.yy",},
     {"name":"Itens","order":8,"path":"folders/Objetos/Itens.yy",},
-    {"name":"Menu","order":9,"path":"folders/Objetos/Menu.yy",},
+    {"name":"Menu","order":9,"path":"folders/Menu.yy",},
     {"name":"Npcs","order":2,"path":"folders/Objetos/Npcs.yy",},
     {"name":"Player","order":3,"path":"folders/Objetos/Player.yy",},
     {"name":"Scripts","order":3,"path":"folders/Scripts.yy",},
