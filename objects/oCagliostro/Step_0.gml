@@ -2,23 +2,24 @@ if (invuln_timer > 0) invuln_timer--;
 if (hit_flash_timer > 0) hit_flash_timer--;
 if (smoke_break_cooldown > 0) smoke_break_cooldown--;
 if (hat_break_cooldown > 0) hat_break_cooldown--;
+if (hat_cut_flash_timer > 0) hat_cut_flash_timer--;
 if (hat_disabled_timer > 0) {
     hat_disabled_timer--;
 
     // Fiapos e fragmentos saindo do chapéu enquanto ele está rasgado.
-    if (hat_disabled_timer mod 12 == 0 && state != "cutscene" && state != "dying") {
-        var _torn_y = y - (29 * abs(image_yscale));
+    if (hat_disabled_timer mod 10 == 0 && state != "cutscene" && state != "dying") {
+        var _torn_y = y - (35 * abs(image_yscale));
         var _torn_particle = instance_create_depth(
-            x + random_range(-55, 55),
-            _torn_y + random_range(-22, 22),
+            x + random_range(-85, 85),
+            _torn_y + random_range(-18, 18),
             depth - 5,
             oHitParticle
         );
-        _torn_particle.dir_x = random_range(-1.4, 1.4);
-        _torn_particle.dir_y = random_range(-1.8, -0.4);
-        _torn_particle.color = choose(c_black, c_dkgray, c_red);
-        _torn_particle.radius = random_range(4, 9);
-        _torn_particle.fade_speed = 0.035;
+        _torn_particle.dir_x = random_range(-1.8, 1.8);
+        _torn_particle.dir_y = random_range(-2.2, -0.6);
+        _torn_particle.color = choose(c_dkgray, c_gray, c_silver, c_white);
+        _torn_particle.radius = random_range(3, 7);
+        _torn_particle.fade_speed = 0.045;
     }
 }
 image_blend = (hit_flash_timer > 0) ? c_red : c_white;

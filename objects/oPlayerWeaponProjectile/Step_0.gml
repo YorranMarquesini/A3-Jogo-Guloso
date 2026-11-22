@@ -70,6 +70,7 @@ if (instance_exists(oCagliostro)) {
 
             _cagliostro.hat_break_cooldown = _cagliostro.hat_break_cooldown_max;
             _cagliostro.hat_disabled_timer = _cagliostro.hat_disabled_duration;
+            _cagliostro.hat_cut_flash_timer = _cagliostro.hat_cut_flash_duration;
             _cagliostro.state = "combat";
             _cagliostro.attack_fired = false;
             _cagliostro.attack_timer = max(_cagliostro.attack_timer, 45);

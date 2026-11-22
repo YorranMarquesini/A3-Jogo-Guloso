@@ -34,6 +34,8 @@ hat_break_cooldown = 0;
 hat_break_cooldown_max = 60 * 60;
 hat_disabled_timer = 0;
 hat_disabled_duration = 30 * 60;
+hat_cut_flash_timer = 0;
+hat_cut_flash_duration = 22;
 
 if (!variable_global_exists("fase1_collectibles_complete")) {
     global.fase1_collectibles_complete = false;
