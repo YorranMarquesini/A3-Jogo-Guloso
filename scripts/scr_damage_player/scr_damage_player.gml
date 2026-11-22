@@ -30,8 +30,12 @@ function scr_damage_player(_amount, _source_x) {
 
         if (hp <= 0) {
             hp = 0;
-            // TODO: game over / respawn — por enquanto só zera
-            show_debug_message("PLAYER MORREU");
+
+            // Abre a tela de morte. Ela congela o jogo e oferece
+            // recomecar a fase (scr_reiniciar_fase).
+            if (!instance_exists(oGameOver)) {
+                instance_create_depth(0, 0, -9999, oGameOver);
+            }
         }
     }
 }
