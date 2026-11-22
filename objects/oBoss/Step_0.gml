@@ -226,8 +226,7 @@ switch (state) {
             oCameraController_boss.shake_amount = 16;
         }
 
-        // TODO: acionar aqui o que acontece depois (abrir porta, dar item, trocar de room, etc)
-        instance_destroy();
+        room_goto(Fase2);
     }
 	break;
 }

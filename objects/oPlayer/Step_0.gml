@@ -22,7 +22,7 @@ if (keyboard_check_pressed(ord("Q"))) {
 // =========================================================
 // --- TRAVA DE MOVIMENTO DURANTE O DIÁLOGO ---
 // =========================================================
-if (instance_exists(obj_dialogo)) {
+if (instance_exists(obj_dialogo) || instance_exists(oCagliostroCutscene)) {
     hsp = 0;
 
     var _on_ground_dialog = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);

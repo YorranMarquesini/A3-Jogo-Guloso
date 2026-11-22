@@ -57,6 +57,7 @@ dash_dir_x = 0;
 dash_dir_y = 0;
 dash_invuln_time = 40; // 0.5s a 60fps
 invuln_timer = 0;
+is_invincible = false; // Draw pode rodar antes do Step durante cutscenes
 // --- AFTERIMAGE (rastro do dash) ---
 afterimage_timer = 0;
 afterimage_interval = 2; // cria uma cópia a cada N frames durante o dash

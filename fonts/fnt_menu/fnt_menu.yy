@@ -240,7 +240,7 @@
   "name":"fnt_menu",
   "parent":{
     "name":"Menu",
-    "path":"folders/Menu.yy",
+    "path":"folders/Objetos/Menu.yy",
   },
   "pointRounding":0,
   "ranges":[

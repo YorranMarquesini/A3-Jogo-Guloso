@@ -20,7 +20,7 @@
   "name":"rm_menu",
   "parent":{
     "name":"Menu",
-    "path":"folders/Menu.yy",
+    "path":"folders/Objetos/Menu.yy",
   },
   "parentRoom":null,
   "physicsSettings":{
