@@ -1,4 +1,13 @@
 if (place_meeting(x, y, oPlayer)) {
+    // Guarda separadamente quais fases tiveram todos os coletáveis pegos.
+    // Esses bônus persistem durante a execução do jogo e são usados no boss 2.
+    if (!variable_global_exists("fase1_collectibles_complete")) {
+        global.fase1_collectibles_complete = false;
+    }
+    if (!variable_global_exists("fase2_collectibles_complete")) {
+        global.fase2_collectibles_complete = false;
+    }
+
     // Cura 1 de vida (sem passar do máximo)
     if (oPlayer.hp < oPlayer.max_hp) {
         oPlayer.hp += 1;
@@ -19,6 +28,12 @@ if (place_meeting(x, y, oPlayer)) {
     // Se esse era o último da fase, ganha coração permanente
     if (instance_number(oTrashCollectible) == 0) {
         scr_grant_permanent_heart();
+
+        if (room == Room1) {
+            global.fase1_collectibles_complete = true;
+        } else if (room == Fase2) {
+            global.fase2_collectibles_complete = true;
+        }
 
         // Efeito mais chamativo pra reforçar a conquista
         repeat (20) {

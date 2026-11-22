@@ -17,6 +17,31 @@ attack_fired = false;
 last_attack_kind = -1;
 attack_repeat_count = 0;
 max_attack_repeats = 3;
+
+// Rajada de fumaça: cada ataque sorteia de 3 a 6 disparos. O intervalo
+// deixa uma janela para o jogador pousar e preparar a próxima esquiva.
+smoke_shots_remaining = 0;
+smoke_shot_timer = 0;
+smoke_shot_interval_min = 52;
+smoke_shot_interval_max = 64;
+smoke_end_lag = 28;
+
+// Bônus por completar os coletáveis das fases anteriores.
+// O projeto trabalha a 60 FPS: 30 s = 1800 frames; 60 s = 3600 frames.
+smoke_break_cooldown = 0;
+smoke_break_cooldown_max = 30 * 60;
+hat_break_cooldown = 0;
+hat_break_cooldown_max = 60 * 60;
+hat_disabled_timer = 0;
+hat_disabled_duration = 30 * 60;
+
+if (!variable_global_exists("fase1_collectibles_complete")) {
+    global.fase1_collectibles_complete = false;
+}
+if (!variable_global_exists("fase2_collectibles_complete")) {
+    global.fase2_collectibles_complete = false;
+}
+
 death_duration = 100;
 death_timer = death_duration;
 
