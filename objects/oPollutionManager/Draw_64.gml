@@ -17,20 +17,23 @@ if (_pollution > 0) {
 }
 
 draw_set_alpha(1);
-draw_set_color(_state_color);
+draw_set_color(c_white);
 draw_rectangle(bar_x, bar_y, bar_x + bar_width, bar_y + bar_height, true);
 
-draw_set_font(-1);
-draw_set_halign(fa_left);
-draw_set_valign(fa_bottom);
+// Texto dentro da própria barra, usando a mesma fonte do menu.
+var _label = "POLUICAO " + string(round(global.pollution_pct)) + "%";
+var _text_x = bar_x + bar_width * 0.5;
+var _text_y = bar_y + bar_height * 0.5;
+
+draw_set_font(fnt_menu);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+// Sombra curta para continuar legível tanto no vermelho quanto no verde.
+draw_set_color(c_black);
+draw_text(_text_x + 2, _text_y + 2, _label);
 draw_set_color(c_white);
-var _boss_speed = scr_get_pollution_speed_bonus(global.pollution_pct);
-draw_text(
-    bar_x,
-    bar_y - 3,
-    "POLUICAO " + string(round(global.pollution_pct))
-    + "%   BOSS " + string_format(_boss_speed, 1, 2) + "x"
-);
+draw_text(_text_x, _text_y, _label);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);

@@ -168,7 +168,7 @@ knockback_force = 6;
 weapon_ui_slot_size = 60;
 weapon_ui_spacing = 8;
 weapon_ui_x = 20;
-weapon_ui_y = 100;          // ajusta pra não bater na barra de vida/dash
+weapon_ui_y = 140;          // abaixo dos corações e da barra de poluição
 
 weapon_ui_bg_color = c_black;
 weapon_ui_bg_alpha = 0.5;
