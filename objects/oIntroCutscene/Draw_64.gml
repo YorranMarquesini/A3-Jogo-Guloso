@@ -231,13 +231,13 @@ else if (_elapsed >= 9.3 && _elapsed < 14.2) {
     _caption = "ATE QUE A TERRA COMECOU A MORRER.";
     _caption_alpha = min(1, (_elapsed - 9.3) / 0.8) * min(1, (14.2 - _elapsed) / 0.8);
 }
-else if (_elapsed >= 44.8 && _elapsed < 47.3) {
+else if (_elapsed >= 44.3 && _elapsed < 47.7) {
     _caption = "MAS A NATUREZA NAO ESQUECE.";
-    _caption_alpha = min(1, (_elapsed - 44.8) / 0.6) * min(1, (47.3 - _elapsed) / 0.6);
+    _caption_alpha = min(1, (_elapsed - 44.3) / 0.6) * min(1, (47.7 - _elapsed) / 0.6);
 }
-else if (_elapsed >= 52.4 && _elapsed < 55.3) {
+else if (_elapsed >= 51.6 && _elapsed < 55.9) {
     _caption = "E ELA ESCOLHEU VOCE O ULTIMO GUARDIÃO.";
-    _caption_alpha = min(1, (_elapsed - 52.4) / 0.6) * min(1, (55.3 - _elapsed) / 0.6);
+    _caption_alpha = min(1, (_elapsed - 51.6) / 0.6) * min(1, (55.9 - _elapsed) / 0.6);
 }
 
 if (_caption != "") {

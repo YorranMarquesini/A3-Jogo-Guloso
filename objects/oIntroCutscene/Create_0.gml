@@ -26,6 +26,20 @@ effects_stream = audio_create_stream(intro_path + "efeitos_cinematicos.ogg");
 effects_instance = audio_play_sound(effects_stream, 1, false);
 audio_sound_gain(effects_instance, 0.88, 0);
 
+// Dublagem das quatro cartelas, na mesma ordem em que aparecem na tela.
+voice_streams = [
+    audio_create_stream(intro_path + "narracao_01.mp3"),
+    audio_create_stream(intro_path + "narracao_02.mp3"),
+    audio_create_stream(intro_path + "narracao_03.mp3"),
+    audio_create_stream(intro_path + "narracao_04.mp3")
+];
+voice_instances = array_create(4, -1);
+voice_started = array_create(4, false);
+voice_start_times = [1.15, 9.3, 44.6, 51.7];
+voice_end_times = [3.35, 11.95, 47.75, 55.55];
+voice_duck_until = -1;
+voice_ducking = false;
+
 function finish_intro() {
     if (finished) return;
     finished = true;
