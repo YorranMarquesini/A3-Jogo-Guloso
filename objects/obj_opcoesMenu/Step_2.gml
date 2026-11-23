@@ -17,3 +17,13 @@ if (screen_needs_fix()) {
 // (sair da tela cheia demora alguns frames e o Windows restaura o
 //  tamanho antigo no caminho — por isso precisa insistir)
 window_apply_pending();
+
+// A trilha acompanha Menu e Opcoes, mas silencia no jogo e nos Creditos.
+var _menu_music_allowed = (room == rm_menu || room == rm_opcoes);
+if (_menu_music_allowed) {
+    if (!audio_is_playing(menu_music_handle)) {
+        menu_music_handle = audio_play_sound(menu_music_stream, 0, true);
+    }
+} else if (audio_is_playing(menu_music_handle)) {
+    audio_stop_sound(menu_music_handle);
+}

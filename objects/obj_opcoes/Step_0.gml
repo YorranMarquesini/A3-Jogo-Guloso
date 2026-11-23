@@ -1,3 +1,5 @@
+ui_time += delta_time / 1000000;
+
 // --- 1. ENTRADAS DE TECLADO E MOUSE ---
 var _cima           = keyboard_check_pressed(vk_up)    || keyboard_check_pressed(ord("W"));
 var _baixo          = keyboard_check_pressed(vk_down)  || keyboard_check_pressed(ord("S"));
@@ -36,10 +38,12 @@ var _mouse_x = device_mouse_x_to_gui(0);
 var _mouse_y = device_mouse_y_to_gui(0);
 
 // Posições da barra de volume (devem bater com o Draw GUI)
-var _barra_w = 160;
-var _barra_h = 24; // Altura da área clicável
-var _x_barra = (_gui_w / 2) - 30;
-var _pos_y_vol = (_gui_h / 2) - 60 + (2 * 50); // Posição Y da opção 2 (Volume)
+var _base_y = _gui_h * 0.40;
+var _espaco = _gui_h * 0.105;
+var _barra_w = 260;
+var _barra_h = 34; // Altura da área clicável
+var _x_barra = (_gui_w / 2) - 70;
+var _pos_y_vol = _base_y + (2 * _espaco); // Posição Y da opção 2 (Volume)
 
 // Verifica se o clique inicial começou dentro da barra de volume
 if (_clique_press) {
@@ -65,7 +69,7 @@ if (arrastando_volume && _clique_hold) {
 // Destaque visual pelo mouse nas outras opções (quando não estiver arrastando a barra)
 if (!arrastando_volume) {
     for (var i = 0; i < total_opcoes; i++) {
-        var _pos_y = (_gui_h / 2) - 60 + (i * 50);
+        var _pos_y = _base_y + (i * _espaco);
         var _x1 = (_gui_w / 2) - (largura_opcao / 2);
         var _x2 = (_gui_w / 2) + (largura_opcao / 2);
         var _y1 = _pos_y - (altura_opcao / 2);

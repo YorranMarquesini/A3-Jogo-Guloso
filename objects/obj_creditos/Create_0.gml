@@ -1,21 +1,16 @@
-// --- TEXTO DOS CRÉDITOS ---
-// Use \n para quebrar linhas e dar espaçamento entre cargos/nomes
-texto_creditos = 
-    "[ NOME DO SEU JOGO ]\n\n\n" +
-    "PROGRAMACAO\n" +
-    "Tiago\n" +
-    "Yorran\n" +
-    "Joao Pedro\n\n\n" +
-    "ARTE\n" +
-    "Joao Pedro\n" +
-    "Rayane\n\n\n" +
-    "ASSISTENTE PREMIUM\n" +
-    "Arthur\n\n\n\n\n" +
-    "Pressione ESC, ENTER ou CLIQUE para voltar ao Menu";
+ui_time = 0;
+var _variant = variable_global_exists("menu_variant") ? global.menu_variant : 0;
+var _names = ["menu_dawn.png", "menu_temple.png", "menu_wasteland.png"];
+var _colors = [make_color_rgb(125, 255, 113), make_color_rgb(77, 255, 177), make_color_rgb(187, 255, 73)];
+ui_accent = _colors[_variant];
+ui_background = sprite_add(working_directory + "menu/" + _names[_variant], 1, false, false, 0, 0);
 
-// --- POSICIONAMENTO DA ROLAGEM ---
-// Inicia o texto logo abaixo do limite inferior do monitor
-pos_y = display_get_gui_height() + 50; 
+credit_sections = [
+    ["PROGRAMACAO", ["Tiago", "Yorran", "Joao Pedro"]],
+    ["ARTE", ["Joao Pedro", "Rayane"]],
+    ["ASSISTENTE PREMIUM", ["Arthur"]]
+];
 
-// Velocidade com que o texto sobe (ajuste se quiser mais rápido ou devagar)
-velocidade = 1.5;
+pos_y = display_get_gui_height() * 0.58;
+velocidade = 0.58;
+credit_height = 620;

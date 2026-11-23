@@ -66,3 +66,13 @@ total_opcoes = array_length(opcoes);
 
 largura_opcao = 320;
 altura_opcao = 40;
+
+// Identidade visual compartilhada com a tela inicial.
+ui_time = 0;
+var _variant = variable_global_exists("menu_variant") ? global.menu_variant : 0;
+var _names = ["menu_dawn.png", "menu_temple.png", "menu_wasteland.png"];
+var _colors = [make_color_rgb(125, 255, 113), make_color_rgb(77, 255, 177), make_color_rgb(187, 255, 73)];
+ui_accent = _colors[_variant];
+ui_background = sprite_add(working_directory + "menu/" + _names[_variant], 1, false, false, 0, 0);
+largura_opcao = 620;
+altura_opcao = 58;
