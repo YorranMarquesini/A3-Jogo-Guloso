@@ -2,6 +2,7 @@
 start_ms = current_time;
 finished = false;
 video_started = false;
+video_mix_restored = false;
 
 intro_path = working_directory + "intro/";
 scene_sprites = [
