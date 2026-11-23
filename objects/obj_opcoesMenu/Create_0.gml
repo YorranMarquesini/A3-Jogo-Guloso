@@ -26,7 +26,7 @@ window_set_fullscreen(false);
 // 5. ÁUDIO GLOBAL EM 100%
 audio_master_gain(1.0);
 
-// Trilha persistente do menu. Este objeto atravessa as trocas de sala,
-// entao a musica nao reinicia ao abrir Opcoes.
-menu_music_stream = audio_create_stream(working_directory + "menu/menu_fantasy.wav");
-menu_music_handle = audio_play_sound(menu_music_stream, 0, true);
+// Recurso nativo: o compilador converte e empacota a trilha com seguranca.
+// Este objeto atravessa as salas, entao a musica nao reinicia em Opcoes.
+menu_music_handle = audio_play_sound(snd_menu_fantasy, 0, true);
+audio_sound_gain(menu_music_handle, 0.62, 0);

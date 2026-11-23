@@ -22,7 +22,8 @@ window_apply_pending();
 var _menu_music_allowed = (room == rm_menu || room == rm_opcoes);
 if (_menu_music_allowed) {
     if (!audio_is_playing(menu_music_handle)) {
-        menu_music_handle = audio_play_sound(menu_music_stream, 0, true);
+        menu_music_handle = audio_play_sound(snd_menu_fantasy, 0, true);
+        audio_sound_gain(menu_music_handle, 0.62, 0);
     }
 } else if (audio_is_playing(menu_music_handle)) {
     audio_stop_sound(menu_music_handle);

@@ -159,6 +159,7 @@
     {"id":{"name":"snd_intro_narracao_02","path":"sounds/snd_intro_narracao_02/snd_intro_narracao_02.yy",},},
     {"id":{"name":"snd_intro_narracao_03","path":"sounds/snd_intro_narracao_03/snd_intro_narracao_03.yy",},},
     {"id":{"name":"snd_intro_narracao_04","path":"sounds/snd_intro_narracao_04/snd_intro_narracao_04.yy",},},
+    {"id":{"name":"snd_menu_fantasy","path":"sounds/snd_menu_fantasy/snd_menu_fantasy.yy",},},
     {"id":{"name":"snd_tartaruga_fala1","path":"sounds/snd_tartaruga_fala1/snd_tartaruga_fala1.yy",},},
     {"id":{"name":"snd_tartaruga_fala2","path":"sounds/snd_tartaruga_fala2/snd_tartaruga_fala2.yy",},},
     {"id":{"name":"snd_tartaruga_fala3","path":"sounds/snd_tartaruga_fala3/snd_tartaruga_fala3.yy",},},
