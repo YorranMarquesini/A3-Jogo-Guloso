@@ -1,6 +1,6 @@
 var _w = display_get_gui_width();
 var _h = display_get_gui_height();
-var _elapsed = (current_time - start_us) / 1000000;
+var _elapsed = (current_time - start_ms) / 1000;
 
 draw_clear(c_black);
 gpu_set_texfilter(false);
@@ -8,7 +8,7 @@ draw_set_alpha(1);
 draw_set_color(c_white);
 
 // Cinco lembrancas da destruicao, com cortes suaves e um zoom bem lento.
-if (_elapsed < 15) {
+if (_elapsed < 15 && scenes_ready) {
     var _scene = clamp(floor(_elapsed / 3), 0, 4);
     var _local = _elapsed - (_scene * 3);
     var _zoom = 1.02 + (_local / 3) * 0.035;
@@ -31,6 +31,27 @@ if (_elapsed < 15) {
     draw_set_alpha(clamp(_edge_fade, 0, 1));
     draw_rectangle_color(0, 0, _w, _h, c_black, c_black, c_black, c_black, false);
     draw_set_alpha(1);
+}
+
+// Se um arquivo externo falhar, mostra uma introducao simples em vez de tela preta muda.
+if (_elapsed < 15 && !scenes_ready) {
+    var _fallback_fade = 0.22 + sin(_elapsed * 1.7) * 0.06;
+    draw_rectangle_color(0, 0, _w, _h,
+        make_color_rgb(3, 18, 10),
+        make_color_rgb(8, 40, 20),
+        make_color_rgb(1, 8, 5),
+        make_color_rgb(3, 22, 12), false);
+    gpu_set_blendmode(bm_add);
+    draw_set_alpha(_fallback_fade);
+    draw_set_color(make_color_rgb(40, 255, 100));
+    for (var f = 0; f < 12; f++) {
+        var _fx = ((_elapsed * 46) + f * 127) mod (_w + 120) - 60;
+        var _fy = _h * 0.35 + sin(_elapsed * 1.4 + f) * 180;
+        draw_circle(_fx, _fy, 5 + (f mod 4) * 2, false);
+    }
+    gpu_set_blendmode(bm_normal);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
 }
 
 // Nave pousando e destruindo a floresta. O arquivo ja esta recortado, mudo e pixelado.
