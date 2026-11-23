@@ -16,14 +16,37 @@ if (_elapsed < 15 && scenes_ready) {
     var _dh = _h * _zoom;
     var _pan_dir = ((_scene mod 2) * 2) - 1;
     var _pan = ((_local / 3) - 0.5) * 24 * _pan_dir;
-    var _dx = (_w - _dw) * 0.5 + _pan;
-    var _dy = (_h - _dh) * 0.5 + sin((_local / 3) * pi) * 5;
+    var _scene_shake = ((_scene == 1) || (_scene == 2)) ? 2.2 : 0.65;
+    var _dx = (_w - _dw) * 0.5 + _pan + sin(_elapsed * 17) * _scene_shake;
+    var _dy = (_h - _dh) * 0.5 + sin((_local / 3) * pi) * 5 + cos(_elapsed * 13) * _scene_shake * 0.55;
 
     draw_sprite_stretched_ext(scene_sprites[_scene], 0, _dx, _dy, _dw, _dh, c_white, 1);
 
     if (_local > 2.1 && _scene < 4) {
-        var _fade = (_local - 2.1) / 0.9;
+        var _fade_linear = (_local - 2.1) / 0.9;
+        var _fade = _fade_linear * _fade_linear * (3 - 2 * _fade_linear);
         draw_sprite_stretched_ext(scene_sprites[_scene + 1], 0, 0, 0, _w, _h, c_white, _fade);
+
+        // Separacao de cores e vazamento de luz durante a troca de imagem.
+        var _burn = sin(_fade * pi);
+        gpu_set_blendmode(bm_add);
+        draw_sprite_stretched_ext(scene_sprites[_scene + 1], 0, -3, 0, _w, _h, make_color_rgb(255, 80, 35), _burn * 0.07);
+        draw_sprite_stretched_ext(scene_sprites[_scene + 1], 0, 3, 0, _w, _h, make_color_rgb(30, 150, 255), _burn * 0.045);
+        draw_set_alpha(_burn * 0.15);
+        draw_rectangle_color(0, 0, _w, _h,
+            make_color_rgb(255, 65, 8),
+            make_color_rgb(255, 195, 65),
+            make_color_rgb(20, 5, 0),
+            make_color_rgb(65, 8, 0), false);
+        gpu_set_blendmode(bm_normal);
+        draw_set_alpha(1);
+    }
+
+    // Flash curto no corte, como uma emenda de pelicula aquecida.
+    if (_local < 0.18 && _scene > 0) {
+        draw_set_alpha((1 - _local / 0.18) * 0.22);
+        draw_rectangle_color(0, 0, _w, _h, c_white, make_color_rgb(255, 180, 90), c_black, c_black, false);
+        draw_set_alpha(1);
     }
 
     // Pequeno fade preto em cada ponta deixa a sequencia cinematografica.
@@ -213,7 +236,7 @@ else if (_elapsed >= 44.8 && _elapsed < 47.3) {
     _caption_alpha = min(1, (_elapsed - 44.8) / 0.6) * min(1, (47.3 - _elapsed) / 0.6);
 }
 else if (_elapsed >= 52.4 && _elapsed < 55.3) {
-    _caption = "E ELA ESCOLHEU VOCE.";
+    _caption = "E ELA ESCOLHEU VOCE O ULTIMO GUARDIÃO.";
     _caption_alpha = min(1, (_elapsed - 52.4) / 0.6) * min(1, (55.3 - _elapsed) / 0.6);
 }
 

@@ -5,14 +5,14 @@ if (!video_started && _elapsed >= 14.5) {
     video_started = true;
     video_open(intro_path + "nave_destruicao_pixel.mp4");
     video_set_volume(0.82);
-    audio_sound_gain(music_instance, 0.18, 700);
+    audio_sound_gain(music_instance, 0.14, 700);
     audio_sound_gain(effects_instance, 0.46, 700);
 }
 
 // Abre espaco para o audio original do filme e restaura a mixagem ao final.
 if (!video_mix_restored && _elapsed >= 44) {
     video_mix_restored = true;
-    audio_sound_gain(music_instance, 0.62, 900);
+    audio_sound_gain(music_instance, 0.78, 900);
     audio_sound_gain(effects_instance, 0.88, 900);
 }
 
