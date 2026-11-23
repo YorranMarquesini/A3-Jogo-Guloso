@@ -19,7 +19,11 @@ for (var i = 0; i < array_length(scene_sprites); i++) {
 
 music_stream = audio_create_stream(intro_path + "musica_natureza_original.ogg");
 music_instance = audio_play_sound(music_stream, 0, false);
-audio_sound_gain(music_instance, 0.72, 0);
+audio_sound_gain(music_instance, 0.62, 0);
+
+effects_stream = audio_create_stream(intro_path + "efeitos_cinematicos.ogg");
+effects_instance = audio_play_sound(effects_stream, 1, false);
+audio_sound_gain(effects_instance, 0.88, 0);
 
 function finish_intro() {
     if (finished) return;

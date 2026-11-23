@@ -11,16 +11,18 @@ draw_set_color(c_white);
 if (_elapsed < 15 && scenes_ready) {
     var _scene = clamp(floor(_elapsed / 3), 0, 4);
     var _local = _elapsed - (_scene * 3);
-    var _zoom = 1.02 + (_local / 3) * 0.035;
+    var _zoom = 1.015 + (_local / 3) * 0.025;
     var _dw = _w * _zoom;
     var _dh = _h * _zoom;
-    var _dx = (_w - _dw) * 0.5;
-    var _dy = (_h - _dh) * 0.5;
+    var _pan_dir = ((_scene mod 2) * 2) - 1;
+    var _pan = ((_local / 3) - 0.5) * 24 * _pan_dir;
+    var _dx = (_w - _dw) * 0.5 + _pan;
+    var _dy = (_h - _dh) * 0.5 + sin((_local / 3) * pi) * 5;
 
     draw_sprite_stretched_ext(scene_sprites[_scene], 0, _dx, _dy, _dw, _dh, c_white, 1);
 
-    if (_local > 2.35 && _scene < 4) {
-        var _fade = (_local - 2.35) / 0.65;
+    if (_local > 2.1 && _scene < 4) {
+        var _fade = (_local - 2.1) / 0.9;
         draw_sprite_stretched_ext(scene_sprites[_scene + 1], 0, 0, 0, _w, _h, c_white, _fade);
     }
 
@@ -69,31 +71,56 @@ if (_elapsed >= 15 && _elapsed < 44.5 && video_started) {
     draw_set_alpha(1);
 }
 
-// O espirito atravessa o vazio e desperta o personagem.
-if (_elapsed >= 47 && _elapsed < 55) {
+// O espirito atravessa o vazio, entra pelo olho e desperta o personagem.
+if (_elapsed >= 47 && _elapsed < 56.5) {
     var _spirit_time = clamp((_elapsed - 47) / 5.2, 0, 1);
     var _ease = _spirit_time * _spirit_time * (3 - 2 * _spirit_time);
     var _player_x = _w * 0.68;
     var _player_y = _h * 0.55;
     var _player_alpha = clamp((_elapsed - 47.2) / 1.1, 0, 1);
     var _pulse = 1 + sin(_elapsed * 7) * 0.025;
+    var _player_scale = 4 * _pulse;
+    var _awakened = _spirit_time >= 0.88;
+    var _impact_amount = clamp((_spirit_time - 0.88) / 0.12, 0, 1);
+    var _shake = 0;
+    if (_awakened) _shake = sin(_elapsed * 75) * 7 * (1 - _impact_amount);
+    _player_x += _shake;
 
-    draw_sprite_ext(player_right_idle, 0, _player_x, _player_y, 4 * _pulse, 4 * _pulse, 0, c_white, _player_alpha);
+    // Posicao do pixel verde dentro do sprite 64x64 (origem 24,60).
+    var _eye_x = _player_x + (46.5 - 24) * _player_scale;
+    var _eye_y = _player_y + (23.5 - 60) * _player_scale;
 
-    var _sx = lerp(-100, _player_x - 16, _ease);
-    var _sy = lerp(_h * 0.34, _player_y - 22, _ease) + sin(_spirit_time * pi * 5) * 72 * (1 - _spirit_time);
+    draw_sprite_ext(player_right_idle, 0, _player_x, _player_y, _player_scale, _player_scale, 0, c_white, _player_alpha);
+
+    // Antes do espirito chegar, o olho fica completamente apagado.
+    if (!_awakened) {
+        draw_set_alpha(_player_alpha);
+        draw_set_color(make_color_rgb(10, 11, 14));
+        draw_rectangle(
+            _player_x + (45 - 24) * _player_scale,
+            _player_y + (22 - 60) * _player_scale,
+            _player_x + (48 - 24) * _player_scale,
+            _player_y + (25 - 60) * _player_scale,
+            false
+        );
+        draw_set_alpha(1);
+        draw_set_color(c_white);
+    }
+
+    var _sx = lerp(-120, _eye_x, _ease);
+    var _sy = lerp(_h * 0.34, _eye_y, _ease) + sin(_spirit_time * pi * 5) * 72 * (1 - _spirit_time);
     var _shrink = 1 - clamp((_spirit_time - 0.86) / 0.14, 0, 1);
 
     gpu_set_blendmode(bm_add);
-    for (var i = 14; i >= 0; i--) {
-        var _trail_p = max(0, _spirit_time - i * 0.012);
+    for (var i = 20; i >= 0; i--) {
+        var _trail_p = max(0, _spirit_time - i * 0.009);
         var _trail_ease = _trail_p * _trail_p * (3 - 2 * _trail_p);
-        var _tx = lerp(-100, _player_x - 16, _trail_ease);
-        var _ty = lerp(_h * 0.34, _player_y - 22, _trail_ease) + sin(_trail_p * pi * 5) * 72 * (1 - _trail_p);
-        var _trail_alpha = (1 - i / 15) * 0.22 * _shrink;
+        var _tx = lerp(-120, _eye_x, _trail_ease);
+        var _ty = lerp(_h * 0.34, _eye_y, _trail_ease) + sin(_trail_p * pi * 5) * 72 * (1 - _trail_p);
+        var _trail_alpha = (1 - i / 21) * 0.18 * _shrink;
         draw_set_alpha(_trail_alpha);
         draw_set_color(make_color_rgb(70, 255, 125));
-        draw_circle(_tx, _ty, 7 + (14 - i) * 0.55, false);
+        draw_circle(_tx, _ty, 5 + (20 - i) * 0.42, false);
     }
 
     draw_set_alpha(0.18 * _shrink);
@@ -106,31 +133,110 @@ if (_elapsed >= 47 && _elapsed < 55) {
     draw_set_color(c_white);
     draw_circle(_sx + 3, _sy - 3, 5 * _shrink, false);
 
-    if (_spirit_time > 0.86) {
-        var _flash = sin(((_spirit_time - 0.86) / 0.14) * pi);
-        draw_set_alpha(_flash * 0.45);
+    if (_awakened) {
+        var _flash = sin(_impact_amount * pi);
+        draw_set_alpha(_flash * 0.58);
         draw_set_color(make_color_rgb(80, 255, 130));
-        draw_circle(_player_x, _player_y - 18, 95 * _flash, false);
+        draw_circle(_eye_x, _eye_y, 135 * _flash, false);
+
+        // Ondas e estilhacos de energia no momento do despertar.
+        for (var r = 0; r < 3; r++) {
+            var _ring_p = clamp(_impact_amount * 1.35 - r * 0.18, 0, 1);
+            draw_set_alpha((1 - _ring_p) * 0.42);
+            draw_circle(_eye_x, _eye_y, 24 + _ring_p * (115 + r * 28), true);
+        }
+        for (var p = 0; p < 18; p++) {
+            var _angle = p * (360 / 18) + 12;
+            var _dist = 18 + _impact_amount * (75 + (p mod 4) * 18);
+            var _px = _eye_x + lengthdir_x(_dist, _angle);
+            var _py = _eye_y + lengthdir_y(_dist, _angle);
+            draw_set_alpha((1 - _impact_amount) * 0.75);
+            draw_circle(_px, _py, 2 + (p mod 3), false);
+        }
+
+        // O olho so acende depois que o espirito entra.
+        draw_set_alpha(0.35 + sin(_elapsed * 12) * 0.12);
+        draw_circle(_eye_x, _eye_y, 28, false);
+        draw_set_alpha(1);
+        draw_set_color(make_color_rgb(120, 255, 105));
+        draw_rectangle(_eye_x - 6, _eye_y - 6, _eye_x + 6, _eye_y + 6, false);
+        draw_set_color(c_white);
+        draw_rectangle(_eye_x - 2, _eye_y - 2, _eye_x + 2, _eye_y + 2, false);
     }
     gpu_set_blendmode(bm_normal);
     draw_set_alpha(1);
     draw_set_color(c_white);
 
-    if (_elapsed > 53.8) {
-        draw_set_alpha(clamp((_elapsed - 53.8) / 1.2, 0, 1));
+    if (_elapsed > 55.2) {
+        draw_set_alpha(clamp((_elapsed - 55.2) / 1.3, 0, 1));
         draw_rectangle_color(0, 0, _w, _h, c_black, c_black, c_black, c_black, false);
         draw_set_alpha(1);
     }
 }
 
+// Vinheta, poeira de filme e barras panoramicas unem as cenas visualmente.
+draw_set_alpha(0.38);
+draw_rectangle_color(0, 0, 80, _h, c_black, c_black, c_black, c_black, false);
+draw_rectangle_color(_w - 80, 0, _w, _h, c_black, c_black, c_black, c_black, false);
+draw_set_alpha(0.18);
+draw_rectangle_color(80, 0, 150, _h, c_black, c_black, c_black, c_black, false);
+draw_rectangle_color(_w - 150, 0, _w - 80, _h, c_black, c_black, c_black, c_black, false);
+
+gpu_set_blendmode(bm_add);
+for (var d = 0; d < 9; d++) {
+    var _dust_x = (d * 173 + floor(_elapsed * (19 + d))) mod _w;
+    var _dust_y = (d * 97 + sin(_elapsed * 0.7 + d) * 85 + _h) mod _h;
+    draw_set_alpha(0.05 + (d mod 3) * 0.018);
+    draw_set_color(make_color_rgb(210, 230, 200));
+    draw_circle(_dust_x, _dust_y, 1 + (d mod 2), false);
+}
+gpu_set_blendmode(bm_normal);
+
+draw_set_alpha(1);
+draw_set_color(c_black);
+draw_rectangle(0, 0, _w, 48, false);
+draw_rectangle(0, _h - 48, _w, _h, false);
+
+// Frases curtas, como cartelas de uma abertura de cinema.
+var _caption = "";
+var _caption_alpha = 0;
+if (_elapsed >= 1 && _elapsed < 5.4) {
+    _caption = "ELES CHAMARAM ISSO DE PROGRESSO.";
+    _caption_alpha = min(1, (_elapsed - 1) / 0.8) * min(1, (5.4 - _elapsed) / 0.8);
+}
+else if (_elapsed >= 9.3 && _elapsed < 14.2) {
+    _caption = "ATE QUE A TERRA COMECOU A MORRER.";
+    _caption_alpha = min(1, (_elapsed - 9.3) / 0.8) * min(1, (14.2 - _elapsed) / 0.8);
+}
+else if (_elapsed >= 44.8 && _elapsed < 47.3) {
+    _caption = "MAS A NATUREZA NAO ESQUECE.";
+    _caption_alpha = min(1, (_elapsed - 44.8) / 0.6) * min(1, (47.3 - _elapsed) / 0.6);
+}
+else if (_elapsed >= 52.4 && _elapsed < 55.3) {
+    _caption = "E ELA ESCOLHEU VOCE.";
+    _caption_alpha = min(1, (_elapsed - 52.4) / 0.6) * min(1, (55.3 - _elapsed) / 0.6);
+}
+
+if (_caption != "") {
+    draw_set_font(fnt_menu);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_bottom);
+    draw_set_color(c_black);
+    draw_set_alpha(_caption_alpha * 0.75);
+    draw_text_transformed(_w * 0.5 + 2, _h - 68 + 2, _caption, 0.72, 0.72, 0);
+    draw_set_color(c_white);
+    draw_set_alpha(_caption_alpha);
+    draw_text_transformed(_w * 0.5, _h - 68, _caption, 0.72, 0.72, 0);
+}
+
 // Aviso discreto, usando a mesma fonte do menu.
-if (_elapsed > 1 && _elapsed < 53.5) {
+if (_elapsed > 1 && _elapsed < 55.2) {
     draw_set_font(fnt_menu);
     draw_set_halign(fa_right);
     draw_set_valign(fa_bottom);
     draw_set_color(c_white);
-    draw_set_alpha(0.55 + sin(_elapsed * 3) * 0.15);
-    draw_text(_w - 28, _h - 20, "ESPACO PARA PULAR");
+    draw_set_alpha(0.42 + sin(_elapsed * 3) * 0.10);
+    draw_text_transformed(_w - 24, _h - 13, "ESPACO PARA PULAR", 0.58, 0.58, 0);
 }
 
 draw_set_alpha(1);

@@ -14,4 +14,4 @@ if (_elapsed > 1 && (keyboard_check_pressed(vk_space)
     finish_intro();
 }
 
-if (_elapsed >= 57) finish_intro();
+if (_elapsed >= 58.5) finish_intro();

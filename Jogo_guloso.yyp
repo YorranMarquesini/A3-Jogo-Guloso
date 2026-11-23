@@ -58,6 +58,7 @@
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"desmatamento.png","CopyToMask":-1,"filePath":"datafiles/intro","name":"desmatamento.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"efeitos_cinematicos.ogg","CopyToMask":-1,"filePath":"datafiles/intro","name":"efeitos_cinematicos.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"floresta_incendio.png","CopyToMask":-1,"filePath":"datafiles/intro","name":"floresta_incendio.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"lago_poluido.png","CopyToMask":-1,"filePath":"datafiles/intro","name":"lago_poluido.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"musica_natureza_original.ogg","CopyToMask":-1,"filePath":"datafiles/intro","name":"musica_natureza_original.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
