@@ -14,3 +14,6 @@ credit_sections = [
 pos_y = display_get_gui_height() * 0.58;
 velocidade = 0.58;
 credit_height = 620;
+
+credits_music_handle = audio_play_sound(snd_creditos_musica, 5, true);
+audio_sound_gain(credits_music_handle, 0.72, 250);
