@@ -20,18 +20,18 @@ for (var i = 0; i < array_length(scene_sprites); i++) {
 
 music_stream = audio_create_stream(intro_path + "musica_natureza_original.ogg");
 music_instance = audio_play_sound(music_stream, 0, false);
-audio_sound_gain(music_instance, 0.78, 0);
+audio_sound_gain(music_instance, 0.62, 0);
 
 effects_stream = audio_create_stream(intro_path + "efeitos_cinematicos.ogg");
 effects_instance = audio_play_sound(effects_stream, 1, false);
-audio_sound_gain(effects_instance, 0.88, 0);
+audio_sound_gain(effects_instance, 0.48, 0);
 
 // Dublagem das quatro cartelas, na mesma ordem em que aparecem na tela.
-voice_streams = [
-    audio_create_stream(intro_path + "narracao_01.mp3"),
-    audio_create_stream(intro_path + "narracao_02.mp3"),
-    audio_create_stream(intro_path + "narracao_03.mp3"),
-    audio_create_stream(intro_path + "narracao_04.mp3")
+voice_sounds = [
+    snd_intro_narracao_01,
+    snd_intro_narracao_02,
+    snd_intro_narracao_03,
+    snd_intro_narracao_04
 ];
 voice_instances = array_create(4, -1);
 voice_started = array_create(4, false);
