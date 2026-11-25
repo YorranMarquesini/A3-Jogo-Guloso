@@ -7,10 +7,39 @@ gpu_set_texfilter(false);
 draw_set_alpha(1);
 draw_set_color(c_white);
 
-// Cinco lembrancas da destruicao, com cortes suaves e um zoom bem lento.
-if (_elapsed < 15 && scenes_ready) {
-    var _scene = clamp(floor(_elapsed / 3), 0, 4);
-    var _local = _elapsed - (_scene * 3);
+// Recortes reais, mudos e levemente pixelados. Os flashes escondem os cortes
+// secos e mantem a linguagem cinematografica da abertura.
+if (_elapsed < 9.15 && destruction_video_started) {
+    var _destruction_video = video_draw();
+    if (array_length(_destruction_video) > 1
+    && _destruction_video[0] == 0
+    && surface_exists(_destruction_video[1])) {
+        draw_surface_stretched(_destruction_video[1], 0, 0, _w, _h);
+    }
+
+    var _clip_fade = 0;
+    if (_elapsed < 0.65) _clip_fade = 1 - (_elapsed / 0.65);
+    if (_elapsed > 8.45) _clip_fade = max(_clip_fade, (_elapsed - 8.45) / 0.7);
+    draw_set_alpha(clamp(_clip_fade, 0, 1));
+    draw_rectangle_color(0, 0, _w, _h, c_black, c_black, c_black, c_black, false);
+    draw_set_alpha(1);
+
+    var _cut_phase = _elapsed mod 2.25;
+    if (_elapsed > 2.15 && _cut_phase < 0.16) {
+        var _cut_flash = (1 - _cut_phase / 0.16) * 0.20;
+        draw_set_alpha(_cut_flash);
+        draw_rectangle_color(0, 0, _w, _h,
+            make_color_rgb(255, 198, 120), c_white,
+            make_color_rgb(88, 25, 5), c_black, false);
+        draw_set_alpha(1);
+    }
+}
+
+// As duas artes autorais permanecem antes da chegada da nave.
+if (_elapsed >= 9 && _elapsed < 15 && scenes_ready) {
+    var _scene_elapsed = _elapsed - 9;
+    var _scene = clamp(floor(_scene_elapsed / 3), 0, 1);
+    var _local = _scene_elapsed - (_scene * 3);
     var _zoom = 1.015 + (_local / 3) * 0.025;
     var _dw = _w * _zoom;
     var _dh = _h * _zoom;
@@ -22,7 +51,7 @@ if (_elapsed < 15 && scenes_ready) {
 
     draw_sprite_stretched_ext(scene_sprites[_scene], 0, _dx, _dy, _dw, _dh, c_white, 1);
 
-    if (_local > 2.1 && _scene < 4) {
+    if (_local > 2.1 && _scene < 1) {
         var _fade_linear = (_local - 2.1) / 0.9;
         var _fade = _fade_linear * _fade_linear * (3 - 2 * _fade_linear);
         draw_sprite_stretched_ext(scene_sprites[_scene + 1], 0, 0, 0, _w, _h, c_white, _fade);
@@ -51,7 +80,7 @@ if (_elapsed < 15 && scenes_ready) {
 
     // Pequeno fade preto em cada ponta deixa a sequencia cinematografica.
     var _edge_fade = 0;
-    if (_elapsed < 0.8) _edge_fade = 1 - (_elapsed / 0.8);
+    if (_elapsed < 9.7) _edge_fade = 1 - ((_elapsed - 9) / 0.7);
     if (_elapsed > 14.2) _edge_fade = max(_edge_fade, (_elapsed - 14.2) / 0.8);
     draw_set_alpha(clamp(_edge_fade, 0, 1));
     draw_rectangle_color(0, 0, _w, _h, c_black, c_black, c_black, c_black, false);
@@ -59,7 +88,7 @@ if (_elapsed < 15 && scenes_ready) {
 }
 
 // Se um arquivo externo falhar, mostra uma introducao simples em vez de tela preta muda.
-if (_elapsed < 15 && !scenes_ready) {
+if (_elapsed >= 9 && _elapsed < 15 && !scenes_ready) {
     var _fallback_fade = 0.22 + sin(_elapsed * 1.7) * 0.06;
     draw_rectangle_color(0, 0, _w, _h,
         make_color_rgb(3, 18, 10),

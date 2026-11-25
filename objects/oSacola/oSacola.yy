@@ -10,10 +10,13 @@
   "name":"oSacola",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 1",
+    "path":"folders/Objetos/Inimigos/Fase 1.yy",
   },
-  "parentObjectId":{"name":"oEnemy","path":"objects/oEnemy/oEnemy.yy",},
+  "parentObjectId":{
+    "name":"oEnemy",
+    "path":"objects/oEnemy/oEnemy.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

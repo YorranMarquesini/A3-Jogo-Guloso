@@ -10,10 +10,13 @@
   "name":"oCogumelo",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 2",
+    "path":"folders/Objetos/Inimigos/Fase 2.yy",
   },
-  "parentObjectId":{"name":"oEnemy","path":"objects/oEnemy/oEnemy.yy",},
+  "parentObjectId":{
+    "name":"oEnemy",
+    "path":"objects/oEnemy/oEnemy.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

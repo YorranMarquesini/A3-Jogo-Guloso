@@ -9,8 +9,9 @@
 //  tamanho base, pra dar mais espaço de visão pra luta inteira.
 // ============================================================
 
-// A view considera os limites visuais completos do boss e do jogador.
-boss_zoom_factor = 1.5;
+// A primeira arena e mais espalhada verticalmente por causa das plataformas.
+// Abre um pouco mais o enquadramento nela, mantendo a segunda luta como estava.
+boss_zoom_factor = (room == BossRoom) ? 1.65 : 1.5;
 camera_aspect = BASE_WIDTH / BASE_HEIGHT;
 frame_padding_x = 20;
 frame_padding_y = 20;

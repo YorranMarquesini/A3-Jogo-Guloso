@@ -10,6 +10,10 @@ if (!landed) {
         y = drop_target_y;
         landed = true;
 
+        var _impact_sfx = audio_play_sound(snd_harpoon_heavy, 2, false);
+        audio_sound_pitch(_impact_sfx, 0.52);
+        audio_sound_gain(_impact_sfx, 0.52, 0);
+
         repeat (12) {
             var _p = instance_create_depth(x, y, depth, oHitParticle);
             var _ang = random(360);

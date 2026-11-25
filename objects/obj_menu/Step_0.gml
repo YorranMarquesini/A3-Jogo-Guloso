@@ -1,5 +1,6 @@
 menu_time += delta_time / 1000000;
 menu_selection_time += delta_time / 1000000;
+if (instance_exists(oStudioIntro)) exit;
 
 var _cima   = keyboard_check_pressed(vk_up)    || keyboard_check_pressed(ord("W"));
 var _baixo  = keyboard_check_pressed(vk_down)  || keyboard_check_pressed(ord("S"));

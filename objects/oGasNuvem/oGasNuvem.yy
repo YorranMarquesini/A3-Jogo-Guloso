@@ -9,8 +9,8 @@
   "name":"oGasNuvem",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 2",
+    "path":"folders/Objetos/Inimigos/Fase 2.yy",
   },
   "parentObjectId":null,
   "persistent":false,

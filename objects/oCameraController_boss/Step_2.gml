@@ -1,6 +1,13 @@
 // As duas arenas usam o enquadramento calculado no Create sem movimento.
 if (camera_locked) {
-    camera_set_view_pos(camera, floor(locked_cam_x), floor(locked_cam_y));
+    var _locked_x = floor(locked_cam_x);
+    var _locked_y = floor(locked_cam_y);
+    if (shake_amount > 0) {
+        _locked_x += random_range(-shake_amount, shake_amount);
+        _locked_y += random_range(-shake_amount, shake_amount);
+        shake_amount = max(shake_amount - 0.5, 0);
+    }
+    camera_set_view_pos(camera, _locked_x, _locked_y);
     exit;
 }
 

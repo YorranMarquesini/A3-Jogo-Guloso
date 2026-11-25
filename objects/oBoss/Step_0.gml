@@ -25,7 +25,11 @@ switch (state) {
         var _spawn_x = x;
         var _spawn_y = y - 20;
 		
-		audio_play_sound(snd_boss1_attack, 1, false);
+		if (boss_attack_sound_handle != noone && audio_is_playing(boss_attack_sound_handle)) {
+			audio_stop_sound(boss_attack_sound_handle);
+		}
+		boss_attack_sound_handle = audio_play_sound(snd_boss1_attack, 2, false);
+		audio_sound_gain(boss_attack_sound_handle, 0.28, 0);
         var _p = instance_create_layer(_spawn_x, _spawn_y, layer, oBossProjectile);
         _p.move_spd *= boss_speed_multiplier;
 
@@ -90,6 +94,10 @@ switch (state) {
     // Dispara quase no fim da animação (1 frame antes do último, ajusta o "- 2" se quiser mais cedo/tarde)
     if (!water_spawned && image_index >= image_number - 2) {
         water_spawned = true;
+
+        var _water_sfx = audio_play_sound(snd_harpoon_heavy, 2, false);
+        audio_sound_pitch(_water_sfx, 0.68);
+        audio_sound_gain(_water_sfx, 0.58, 0);
 
         var _dir = point_direction(x, y, oPlayer.x, oPlayer.y);
 
@@ -178,58 +186,82 @@ switch (state) {
 
     phase2_attack_cooldown -= boss_speed_multiplier;
     if (phase2_attack_cooldown <= 0) {
-        state = (irandom(1) == 0) ? "attack_water_windup" : "attack_eyedrop_windup";
+        // Alterna os golpes para a luta variar sem repetir ataques injustos.
+        last_phase2_attack = 1 - last_phase2_attack;
+        state = (last_phase2_attack == 0) ? "attack_water_windup" : "attack_eyedrop_windup";
     }
 	break;
 	
 	case "dying":
     image_speed = 0; // congela a animação no frame atual
 
-    death_timer -= 1;
+    if (!final_explosion_started) {
+        death_timer -= 1;
 
-    // Pisca rápido tipo "carregando a explosão"
-    image_blend = (death_timer mod 6 < 3) ? c_white : c_red;
+        // Aceleracao visual: quanto mais perto de zero, mais rapido pisca.
+        var _blink_rate = max(2, ceil(death_timer / 18));
+        image_blend = (death_timer mod (_blink_rate * 2) < _blink_rate) ? c_white : c_red;
 
-    // Explosões pequenas indo e vindo durante o build-up
-    if (death_timer mod 6 == 0) {
-        repeat (15) {
-            var _ex = random_range(-sprite_width / 2, sprite_width / 2);
-            var _ey = random_range(-sprite_height / 2, sprite_height / 2);
-            var _p = instance_create_depth(x + _ex, y + _ey, depth - 10, oHitParticle);
-            var _ang = random(360);
-            var _spd = random_range(2, 6);
-            _p.dir_x = lengthdir_x(1, _ang) * _spd;
-            _p.dir_y = lengthdir_y(1, _ang) * _spd;
-            _p.color = choose(c_yellow, c_orange, c_red, c_white);
-            _p.radius = random_range(6, 16);
-            _p.fade_speed = 0.04;
+        if (death_timer mod 6 == 0) {
+            repeat (15) {
+                var _ex = random_range(-sprite_width / 2, sprite_width / 2);
+                var _ey = random_range(-sprite_height / 2, sprite_height / 2);
+                var _p = instance_create_depth(x + _ex, y + _ey, depth - 10, oHitParticle);
+                var _ang = random(360);
+                var _spd = random_range(2, 6);
+                _p.dir_x = lengthdir_x(1, _ang) * _spd;
+                _p.dir_y = lengthdir_y(1, _ang) * _spd;
+                _p.color = choose(c_aqua, c_white, c_yellow, c_orange, c_red);
+                _p.radius = random_range(7, 18);
+                _p.fade_speed = 0.035;
+            }
+            if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 7;
         }
 
-        if (instance_exists(oCameraController_boss)) {
-            oCameraController_boss.shake_amount = 6;
-        }
-    }
+        if (death_timer <= 0) {
+            final_explosion_started = true;
+            final_explosion_timer = 80;
+            image_alpha = 0;
 
-    if (death_timer <= 0) {
-        // --- EXPLOSÃO FINAL ---
-        repeat (60) {
-            var _fx = random_range(-sprite_width / 2, sprite_width / 2);
-            var _fy = random_range(-sprite_height / 2, sprite_height / 2);
-            var _p2 = instance_create_depth(x + _fx, y + _fy, depth - 10, oHitParticle);
-            var _ang2 = random(360);
-            var _spd2 = random_range(4, 10);
-            _p2.dir_x = lengthdir_x(1, _ang2) * _spd2;
-            _p2.dir_y = lengthdir_y(1, _ang2) * _spd2;
-            _p2.color = choose(c_yellow, c_orange, c_white, c_red, c_purple);
-            _p2.radius = random_range(10, 24);
-            _p2.fade_speed = 0.025;
+            var _boom_sfx = audio_play_sound(snd_boss_explosion, 10, false);
+            audio_sound_gain(_boom_sfx, 0.78, 0);
+
+            // Nucleo da explosao: fragmentos quentes, agua e energia.
+            repeat (120) {
+                var _fx = random_range(-sprite_width, sprite_width);
+                var _fy = random_range(-sprite_height, sprite_height);
+                var _p2 = instance_create_depth(x + _fx, y + _fy, depth - 10, oHitParticle);
+                var _ang2 = random(360);
+                var _spd2 = random_range(5, 13);
+                _p2.dir_x = lengthdir_x(1, _ang2) * _spd2;
+                _p2.dir_y = lengthdir_y(1, _ang2) * _spd2;
+                _p2.color = choose(c_aqua, c_blue, c_yellow, c_orange, c_white, c_red, c_purple);
+                _p2.radius = random_range(12, 32);
+                _p2.fade_speed = random_range(0.014, 0.030);
+            }
+            if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 24;
+        }
+    } else {
+        final_explosion_timer--;
+
+        // Duas ondas secundarias, visiveis antes da troca de room.
+        if (final_explosion_timer == 58 || final_explosion_timer == 34) {
+            repeat (54) {
+                var _ring_ang = irandom(359);
+                var _ring = instance_create_depth(x, y, depth - 12, oHitParticle);
+                var _ring_spd = (final_explosion_timer == 58) ? 8 : 5;
+                _ring.dir_x = lengthdir_x(1, _ring_ang) * _ring_spd;
+                _ring.dir_y = lengthdir_y(1, _ring_ang) * _ring_spd;
+                _ring.color = choose(c_white, c_aqua, c_yellow);
+                _ring.radius = random_range(8, 20);
+                _ring.fade_speed = 0.022;
+            }
+            if (instance_exists(oCameraController_boss)) {
+                oCameraController_boss.shake_amount = max(oCameraController_boss.shake_amount, 12);
+            }
         }
 
-        if (instance_exists(oCameraController_boss)) {
-            oCameraController_boss.shake_amount = 16;
-        }
-
-        room_goto(Fase2);
+        if (final_explosion_timer <= 0) room_goto(PhaseTransition);
     }
 	break;
 }
@@ -243,7 +275,9 @@ if (hit_flash_timer > 0) {
     hit_flash_timer -= 1;
 }
 
-image_blend = (hit_flash_timer > 0) ? c_white : c_red;
-if (invuln_timer <= 0) {
-    image_blend = c_white; // volta ao normal fora da invencibilidade
+if (state != "dying") {
+    image_blend = (hit_flash_timer > 0) ? c_white : c_red;
+    if (invuln_timer <= 0) {
+        image_blend = c_white; // volta ao normal fora da invencibilidade
+    }
 }

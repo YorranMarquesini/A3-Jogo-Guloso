@@ -9,8 +9,8 @@
   "name":"oTampaProjetil",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 1",
+    "path":"folders/Objetos/Inimigos/Fase 1.yy",
   },
   "parentObjectId":null,
   "persistent":false,

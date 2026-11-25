@@ -5,15 +5,17 @@ oEnemy.material = "plastico";
 
 // --- VIDA / HITS ---
 hp = 30;
+phase1_max_hp = hp;
 invuln_timer = 0;
 invuln_time = 20;      // frames de invencibilidade após cada hit (evita 1 golpe contar 2x)
 
 // --- ATAQUE ---
 attack_cooldown = 0;
-attack_cooldown_max = 40;   // ~0.8s entre ataques (60fps)
+attack_cooldown_max = 68;   // janela justa para ler e esquivar
 attack_windup = 0;
-attack_windup_time = 10;    // tempo de "preparação" antes de soltar o projétil
+attack_windup_time = 20;    // telegraph mais claro antes do projetil
 hittable = true;
+boss_attack_sound_handle = noone;
 
 // --- TRANSFORMAÇÃO ---
 transform_timer = 0;
@@ -39,10 +41,13 @@ water_spawned = false;
 
 // Ataque de olho caindo
 warning_started = false;
-eyedrop_warning_time = 60;
+eyedrop_warning_time = 76;
 eyedrop_warning_timer = 0;
+last_phase2_attack = irandom(1);
 
 // --- MORTE ---
 phase2_max_hp = 60;
 death_duration = 90;
 death_timer = 0;
+final_explosion_started = false;
+final_explosion_timer = 0;

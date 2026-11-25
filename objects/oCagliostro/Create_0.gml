@@ -1,10 +1,12 @@
-// Cagliostro começa travado: a cutscene libera o combate.
-state = "cutscene";
+// No retry, a arena recomeca direto sem repetir a apresentacao.
+var _retrying_boss = variable_global_exists("boss_retry_no_cutscene")
+                  && global.boss_retry_no_cutscene;
+state = _retrying_boss ? "combat" : "cutscene";
 phase = 2;
 material = "organico";
 hp = 80;
 max_hp = hp;
-hittable = false;
+hittable = _retrying_boss;
 invuln_timer = 0;
 invuln_time = 16;
 hit_flash_timer = 0;
@@ -50,8 +52,11 @@ if (!variable_global_exists("fase2_collectibles_complete")) {
 
 death_duration = 100;
 death_timer = death_duration;
+final_explosion_started = false;
+final_explosion_timer = 0;
+final_explosion_duration = 108;
 
-sprite_index = spr_cagliostro_talk;
+sprite_index = _retrying_boss ? spr_cagliostro_idle : spr_cagliostro_talk;
 image_speed = 0.22;
 // A escala é configurada na room para permitir o enquadramento gigante da arena.
 

@@ -30,6 +30,7 @@ vsp = 0;
 grav = 0.25;
 jump_force = -8;
 max_fall = 10;
+is_underwater = false;
 
 coyote_time = 6;
 coyote_counter = 0;

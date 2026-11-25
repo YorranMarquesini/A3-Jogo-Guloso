@@ -14,11 +14,17 @@ if (sprite_exists(menu_background)) {
         _zoom, _zoom, 0, c_white, 1);
 }
 
-// Vinheta irregular, sem o aspecto de painel moderno.
+// A sombra da interface se dissolve no cenario.
 draw_set_alpha(0.54);
-draw_rectangle_color(0, 0, _gui_w * 0.37, _gui_h, c_black, c_black, c_black, c_black, false);
-draw_set_alpha(0.25);
-draw_rectangle_color(_gui_w * 0.37, 0, _gui_w * 0.54, _gui_h, c_black, c_black, c_black, c_black, false);
+draw_set_colour(c_black);
+draw_rectangle(0, 0, _gui_w * 0.29, _gui_h, false);
+draw_set_alpha(1);
+draw_primitive_begin(pr_trianglestrip);
+draw_vertex_colour(_gui_w * 0.29, 0, c_black, 0.54);
+draw_vertex_colour(_gui_w * 0.29, _gui_h, c_black, 0.54);
+draw_vertex_colour(_gui_w * 0.58, 0, c_black, 0);
+draw_vertex_colour(_gui_w * 0.58, _gui_h, c_black, 0);
+draw_primitive_end();
 draw_set_alpha(1);
 
 // Esporos quadrados combinam com os pixels do cenario.
@@ -32,33 +38,68 @@ for (var p = 0; p < 16; p++) {
 }
 draw_set_alpha(1);
 
-// Logotipo em fonte de bitmap, com sombra dura como um sprite.
+// O heroi e desenhado com o sprite verdadeiro do jogo. Assim a cabeca de
+// pedra e o corpo espiritual nunca parecem uma colagem diferente do gameplay.
+var _hero_x = _gui_w * 0.835;
+var _hero_y = _gui_h * 0.77 + sin(menu_time * 2.2) * 4;
+var _hero_scale = min(_gui_w / 1366, _gui_h / 768) * 3.05;
+gpu_set_blendmode(bm_add);
+for (var _a = 0; _a < 5; _a++) {
+    var _ay = _hero_y - 9 + _a * 16 + ((menu_time * (18 + _a * 2)) mod 22);
+    draw_set_alpha(0.18 - _a * 0.018);
+    draw_set_color(_accent);
+    draw_circle(_hero_x + sin(menu_time * 3 + _a) * 12, _ay, 8 - _a, false);
+}
+gpu_set_blendmode(bm_normal);
+draw_set_alpha(0.22);
+draw_set_color(c_black);
+draw_ellipse(_hero_x - 53, _hero_y - 8, _hero_x + 53, _hero_y + 13, false);
+draw_set_alpha(1);
+draw_sprite_ext(player_right_idle, 0, _hero_x, _hero_y, _hero_scale, _hero_scale, 0, c_white, 1);
+
+// Logotipo entalhado numa placa antiga, com pixels, pedra e musgo.
 draw_set_font(fnt_tutoras);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 var _tx = _gui_w * 0.055;
 var _ty = _gui_h * 0.075;
-var _ts = min(_gui_w / 1366, _gui_h / 768) * 4.35;
+var _ts = min(_gui_w / 1366, _gui_h / 768) * 3.85;
+var _slab_x1 = _tx - 24;
+var _slab_y1 = _ty - 18;
+var _slab_x2 = _tx + 334;
+var _slab_y2 = _ty + 184;
+draw_set_alpha(0.82);
+draw_set_color(make_color_rgb(9, 16, 12));
+draw_rectangle(_slab_x1 + 8, _slab_y1 + 9, _slab_x2 + 8, _slab_y2 + 9, false);
+draw_set_color(make_color_rgb(36, 45, 34));
+draw_rectangle(_slab_x1 + 8, _slab_y1, _slab_x2 - 10, _slab_y2, false);
+draw_rectangle(_slab_x1, _slab_y1 + 10, _slab_x2, _slab_y2 - 8, false);
+draw_set_color(make_color_rgb(76, 76, 52));
+draw_rectangle(_slab_x1 + 7, _slab_y1 + 7, _slab_x2 - 7, _slab_y2 - 7, true);
+draw_set_color(_accent);
+draw_rectangle(_slab_x1 + 18, _slab_y1 + 3, _slab_x1 + 93, _slab_y1 + 8, false);
+draw_rectangle(_slab_x2 - 124, _slab_y2 - 7, _slab_x2 - 20, _slab_y2 - 2, false);
+draw_set_alpha(1);
 draw_set_color(make_color_rgb(7, 13, 10));
-draw_text_transformed(_tx + 7, _ty + 7, "SPIRIT", _ts, _ts, 0);
-draw_text_transformed(_tx + 7, _ty + 82, "AWAKEN", _ts, _ts, 0);
+draw_text_transformed(_tx + 6, _ty + 6, "SPIRIT", _ts, _ts, 0);
+draw_text_transformed(_tx + 6, _ty + 72, "AWAKEN", _ts, _ts, 0);
 draw_set_color(_accent);
 draw_text_transformed(_tx - 2, _ty - 2, "SPIRIT", _ts, _ts, 0);
-draw_text_transformed(_tx - 2, _ty + 73, "AWAKEN", _ts, _ts, 0);
+draw_text_transformed(_tx - 2, _ty + 64, "AWAKEN", _ts, _ts, 0);
 draw_set_color(make_color_rgb(230, 226, 196));
 draw_text_transformed(_tx, _ty, "SPIRIT", _ts, _ts, 0);
-draw_text_transformed(_tx, _ty + 75, "AWAKEN", _ts, _ts, 0);
+draw_text_transformed(_tx, _ty + 66, "AWAKEN", _ts, _ts, 0);
 
 // Galho/musgo decorativo sob o titulo.
 draw_set_color(make_color_rgb(54, 69, 43));
-draw_rectangle(_tx, _ty + 151, _tx + 268, _ty + 157, false);
+draw_rectangle(_tx, _ty + 139, _tx + 268, _ty + 145, false);
 draw_set_color(_accent);
-draw_rectangle(_tx + 9, _ty + 148, _tx + 78, _ty + 152, false);
-draw_rectangle(_tx + 101, _ty + 150, _tx + 181, _ty + 153, false);
-draw_rectangle(_tx + 207, _ty + 147, _tx + 260, _ty + 152, false);
+draw_rectangle(_tx + 9, _ty + 136, _tx + 78, _ty + 140, false);
+draw_rectangle(_tx + 101, _ty + 138, _tx + 181, _ty + 141, false);
+draw_rectangle(_tx + 207, _ty + 135, _tx + 260, _ty + 140, false);
 draw_set_font(fnt_dialogo);
 draw_set_color(make_color_rgb(202, 204, 174));
-draw_text(_tx, _ty + 169, "A NATUREZA VAI DESPERTAR");
+draw_text(_tx, _ty + 153, "A NATUREZA VAI DESPERTAR");
 
 // Placas entalhadas, com cantos em blocos e musgo quebrado.
 var _menu_x = _gui_w * 0.185;

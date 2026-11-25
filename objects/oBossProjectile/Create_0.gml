@@ -4,7 +4,7 @@ image_yscale = 3;
 visible = true;
 depth = -100;
 
-move_spd = 4;
+move_spd = 3.6;
 
 // Mira no player UMA VEZ, no momento que nasce
 if (instance_exists(oPlayer)) {

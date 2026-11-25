@@ -2,6 +2,15 @@
 // STEP EVENT - oPlayer
 // ============================
 
+// Durante o pouso, a cutscene controla a posicao e o input fica travado.
+if (variable_global_exists("player_cutscene_locked") && global.player_cutscene_locked) {
+    hsp = 0;
+    vsp = 0;
+    state = "idle";
+    sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
+    exit;
+}
+
 // --- INPUT ---
 var _left = keyboard_check(vk_left) || keyboard_check(ord("A"));
 var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
@@ -15,6 +24,23 @@ var _heavy_pressed = keyboard_check_pressed(ord("R"));
 var _throw_pressed = mouse_check_button_pressed(mb_right);
 var _move = _right - _left;
 
+// FISICA SUBAQUATICA DA FASE 1
+// O lago nao usa colisao: a area visual do efeito define quando o player esta submerso.
+is_underwater = false;
+var _lake = instance_find(oLakeEffect, 0);
+if (instance_exists(_lake)) {
+    is_underwater = x >= _lake.x
+                 && x <= _lake.x + _lake.lake_width
+                 && y >= _lake.y + 12
+                 && y <= _lake.y + _lake.lake_height;
+}
+
+var _active_grav = is_underwater ? grav * 0.34 : grav;
+var _active_max_fall = is_underwater ? 3.2 : max_fall;
+var _active_jump_force = is_underwater ? -5.6 : jump_force;
+var _active_wall_jump_force_y = is_underwater ? -5.2 : wall_jump_force_y;
+var _active_jump_cut = is_underwater ? 0.82 : jump_cut_multiplier;
+
 if (keyboard_check_pressed(ord("Q"))) {
     scr_switch_weapon(1);
 }
@@ -27,7 +53,7 @@ if (instance_exists(obj_dialogo) || instance_exists(oCagliostroCutscene)) {
 
     var _on_ground_dialog = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);
     if (!_on_ground_dialog) {
-        vsp = min(vsp + grav, max_fall);
+        vsp = min(vsp + _active_grav, _active_max_fall);
     } else {
         vsp = 0;
     }
@@ -140,6 +166,8 @@ if (_throw_pressed && has_weapon && throw_cooldown <= 0 && !is_attacking && !is_
     throw_cooldown = throw_cooldown_max;
     is_throwing = true;
     throw_anim_timer = throw_anim_duration;
+    var _throw_sfx = audio_play_sound(snd_weapon_throw, 3, false);
+    audio_sound_gain(_throw_sfx, 0.68, 0);
 
     var _throw_dir = (facing == "right") ? 1 : -1;
     var _spawn_x = x + (weapon_offset_x * _throw_dir);
@@ -179,6 +207,9 @@ if (_heavy_pressed && has_weapon && heavy_cooldown <= 0 && !is_attacking && !is_
     is_heavy_attacking = true;
     heavy_cooldown = heavy_cooldown_max;
     heavy_attack_timer = (weapon_type == "tesoura") ? sweep_duration : stab_duration;
+    var _heavy_sound = (weapon_type == "tesoura") ? snd_scissors_heavy : snd_harpoon_heavy;
+    var _heavy_sfx = audio_play_sound(_heavy_sound, 3, false);
+    audio_sound_gain(_heavy_sfx, 0.72, 0);
 }
 
 if (is_heavy_attacking) {
@@ -231,6 +262,9 @@ if (_attack_pressed && has_weapon && attack_cooldown <= 0 && !is_attacking && !i
     is_attacking = true;
     attack_timer = attack_duration;
     attack_cooldown = attack_cooldown_max;
+    var _attack_sound = (weapon_type == "tesoura") ? snd_scissors_slash : snd_harpoon_thrust;
+    var _attack_sfx = audio_play_sound(_attack_sound, 3, false);
+    audio_sound_gain(_attack_sfx, 0.64, 0);
 }
 
 if (is_attacking) {
@@ -263,6 +297,8 @@ if (_dash_pressed && can_dash && dash_cooldown <= 0 && !is_dashing) {
     dash_timer = dash_time;
     dash_cooldown = dash_cooldown_max;
     invuln_timer = dash_invuln_time;
+    var _dash_sfx = audio_play_sound(snd_dash, 3, false);
+    audio_sound_gain(_dash_sfx, 0.62, 0);
 
     var _dx = _right - _left;
     var _dy = _down - _up;
@@ -338,14 +374,16 @@ if (is_dashing) {
     // --- PULO ---
     if (jump_buffer_counter > 0 && !is_attacking && !is_heavy_attacking) {
         if (coyote_counter > 0) {
-            vsp = jump_force;
+            vsp = _active_jump_force;
             jump_count = 1;
             jump_buffer_counter = 0;
             coyote_counter = 0;
 			scr_spawn_jump_burst(x, y + 4, false);
+			var _jump_sfx = audio_play_sound(snd_jump, 2, false);
+			audio_sound_pitch(_jump_sfx, random_range(0.96, 1.04));
 
         } else if (wall_coyote_counter > 0 && wall_dir != 0 && wall_dir != wall_jump_used_dir) {
-            vsp = wall_jump_force_y;
+            vsp = _active_wall_jump_force_y;
             hsp = (_effective_move == -wall_dir) ? (-wall_dir * wall_jump_force_x) : 0;
 
             jump_count = max_jumps;
@@ -356,9 +394,11 @@ if (is_dashing) {
             wall_jump_stage = (hsp == 0) ? 1 : 2;
             dir_buffer_counter = 0;
 			scr_spawn_jump_burst(x, y + 4, false);
+			var _wall_jump_sfx = audio_play_sound(snd_jump, 2, false);
+			audio_sound_pitch(_wall_jump_sfx, 0.92);
 
         } else if (wall_jump_stage == 1 && _effective_move == -wall_jump_used_dir) {
-            vsp = wall_jump_force_y;
+            vsp = _active_wall_jump_force_y;
             hsp = -wall_jump_used_dir * wall_jump_force_x;
 
             jump_buffer_counter = 0;
@@ -366,42 +406,69 @@ if (is_dashing) {
             wall_jump_stage = 2;
             dir_buffer_counter = 0;
 			scr_spawn_jump_burst(x, y + 4, false);
+			var _wall_release_sfx = audio_play_sound(snd_jump, 2, false);
+			audio_sound_pitch(_wall_release_sfx, 1.02);
 
         } else if (jump_count < max_jumps) {
-            vsp = jump_force * 0.9;
+            vsp = _active_jump_force * 0.9;
             jump_count += 1;
             jump_buffer_counter = 0;
 			scr_spawn_jump_burst(x, y + 4, true);
+			var _double_jump_sfx = audio_play_sound(snd_jump, 2, false);
+			audio_sound_pitch(_double_jump_sfx, 1.14);
         }
     }
 
     // --- PULO VARIÁVEL ---
     if (_jump_released && vsp < 0) {
-        vsp *= jump_cut_multiplier;
+        vsp *= _active_jump_cut;
     }
 
     // --- GRAVIDADE ---
-    vsp = is_wall_sliding ? min(vsp + grav, wall_slide_speed) : min(vsp + grav, max_fall);
+    var _active_wall_fall = is_underwater ? 1.4 : wall_slide_speed;
+    vsp = is_wall_sliding
+        ? min(vsp + _active_grav, _active_wall_fall)
+        : min(vsp + _active_grav, _active_max_fall);
 }
 
 // ============================
 // COLISÃO
 // ============================
-if (place_meeting(x + hsp, y - 4, oGround) || place_meeting(x + hsp, y - 4, oWall)) {
-    while (!(place_meeting(x + sign(hsp), y - 4, oGround) || place_meeting(x + sign(hsp), y - 4, oWall))) {
-        x += sign(hsp);
+var _step_x = hsp;
+var _step_y = vsp;
+if (room == Fase2 && !is_dashing) {
+    if (_on_ground && vsp >= 0) {
+        var _floor_belt = instance_place(x, y + 1, oFactoryConveyor);
+        if (_floor_belt != noone && abs(dcos(_floor_belt.image_angle)) > 0.99) {
+            var _force = _floor_belt.belt_speed * sign(_floor_belt.image_xscale);
+            _step_x += lengthdir_x(_force, _floor_belt.image_angle);
+        }
+    } else if (_touching_wall && !_wall_release) {
+        var _wall_belt = instance_place(x + wall_dir * wall_check_dist, _wall_y, oFactoryConveyor);
+        if (_wall_belt != noone && abs(dsin(_wall_belt.image_angle)) > 0.99) {
+            var _force = _wall_belt.belt_speed * sign(_wall_belt.image_xscale);
+            _step_y += lengthdir_y(_force, _wall_belt.image_angle);
+        }
     }
+}
+
+if (_step_x != 0 && (place_meeting(x + _step_x, y - 4, oGround) || place_meeting(x + _step_x, y - 4, oWall))) {
+    while (!(place_meeting(x + sign(_step_x), y - 4, oGround) || place_meeting(x + sign(_step_x), y - 4, oWall))) {
+        x += sign(_step_x);
+    }
+    _step_x = 0;
     hsp = 0;
 }
-x += hsp;
+x += _step_x;
 
-if (place_meeting(x, y + vsp, oGround) || place_meeting(x, y + vsp, oWall)) {
-    while (!(place_meeting(x, y + sign(vsp), oGround) || place_meeting(x, y + sign(vsp), oWall))) {
-        y += sign(vsp);
+if (_step_y != 0 && (place_meeting(x, y + _step_y, oGround) || place_meeting(x, y + _step_y, oWall))) {
+    while (!(place_meeting(x, y + sign(_step_y), oGround) || place_meeting(x, y + sign(_step_y), oWall))) {
+        y += sign(_step_y);
     }
+    _step_y = 0;
     vsp = 0;
 }
-y += vsp;
+y += _step_y;
 
 x = round(x);
 y = round(y);

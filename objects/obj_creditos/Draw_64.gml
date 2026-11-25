@@ -57,17 +57,21 @@ draw_text_transformed(_cx, 43, "CREDITOS", 3.15, 3.15, 0);
 
 // Conteudo rolante com hierarquia de fonte de bitmap.
 var _y = pos_y;
+var _clip_top = 194;
+var _clip_bottom = _gui_h - 126;
 for (var s = 0; s < array_length(credit_sections); s++) {
     var _section = credit_sections[s];
     draw_set_font(fnt_tutoras);
     draw_set_color(ui_accent);
-    draw_text_transformed(_cx, _y, _section[0], 1.30, 1.30, 0);
+    if (_y >= _clip_top - 34 && _y <= _clip_bottom) {
+        draw_text_transformed(_cx, _y, _section[0], 1.18, 1.18, 0);
+    }
     _y += 50;
     draw_set_font(fnt_dialogo);
     draw_set_color(make_color_rgb(218, 213, 178));
     var _people = _section[1];
     for (var n = 0; n < array_length(_people); n++) {
-        draw_text(_cx, _y, _people[n]);
+        if (_y >= _clip_top && _y <= _clip_bottom) draw_text(_cx, _y, _people[n]);
         _y += 36;
     }
     _y += 62;
@@ -75,10 +79,14 @@ for (var s = 0; s < array_length(credit_sections); s++) {
 
 draw_set_font(fnt_tutoras);
 draw_set_color(make_color_rgb(234, 224, 184));
-draw_text_transformed(_cx, _y, "SPIRIT AWAKEN", 1.35, 1.35, 0);
+if (_y >= _clip_top - 34 && _y <= _clip_bottom) {
+    draw_text_transformed(_cx, _y, "SPIRIT AWAKEN", 1.22, 1.22, 0);
+}
 _y += 51;
 draw_set_color(ui_accent);
-draw_text_transformed(_cx, _y, "OBRIGADO POR JOGAR", 1.05, 1.05, 0);
+if (_y >= _clip_top - 30 && _y <= _clip_bottom) {
+    draw_text_transformed(_cx, _y, "OBRIGADO POR JOGAR", 0.94, 0.94, 0);
+}
 
 // Pedra opaca mascara a rolagem no topo e no rodape.
 draw_set_alpha(0.98);

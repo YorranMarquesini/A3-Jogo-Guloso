@@ -8,10 +8,13 @@
   "name":"oCogumeloPequeno",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 2",
+    "path":"folders/Objetos/Inimigos/Fase 2.yy",
   },
-  "parentObjectId":{"name":"oCogumelo","path":"objects/oCogumelo/oCogumelo.yy",},
+  "parentObjectId":{
+    "name":"oCogumelo",
+    "path":"objects/oCogumelo/oCogumelo.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

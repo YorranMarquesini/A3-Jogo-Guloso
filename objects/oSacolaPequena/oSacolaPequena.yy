@@ -8,10 +8,13 @@
   "name":"oSacolaPequena",
   "overriddenProperties":[],
   "parent":{
-    "name":"Inimigos",
-    "path":"folders/Objetos/Inimigos.yy",
+    "name":"Fase 1",
+    "path":"folders/Objetos/Inimigos/Fase 1.yy",
   },
-  "parentObjectId":{"name":"oSacola","path":"objects/oSacola/oSacola.yy",},
+  "parentObjectId":{
+    "name":"oSacola",
+    "path":"objects/oSacola/oSacola.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

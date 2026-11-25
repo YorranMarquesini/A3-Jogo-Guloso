@@ -40,6 +40,9 @@ if (portrait != noone) {
 
 // 7. DESENHAR DICA DE AVANÇAR (Canto Inferior Direito)
 
+if (audio_final != noone && pagina == array_length(textos) - 1
+&& caractere_atual >= string_length(textos[pagina])) exit;
+
 var dica_x = box_x + box_w - 30;
 var dica_y = box_y + box_h - 25;
 

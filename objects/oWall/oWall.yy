@@ -6,8 +6,8 @@
   "name":"oWall",
   "overriddenProperties":[],
   "parent":{
-    "name":"Cenarios",
-    "path":"folders/Objetos/Cenarios.yy",
+    "name":"Fase 1",
+    "path":"folders/Objetos/Cenarios/Fase 1.yy",
   },
   "parentObjectId":null,
   "persistent":false,

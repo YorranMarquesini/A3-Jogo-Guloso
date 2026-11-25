@@ -25,3 +25,14 @@ if (screen_needs_fix()) {
 
 // Insiste no tamanho de janela pedido até o Windows obedecer.
 window_apply_pending();
+
+// ENTER pausa somente durante gameplay livre.
+if (keyboard_check_pressed(vk_enter)
+&& !instance_exists(oPauseMenu)
+&& !instance_exists(oGameOver)
+&& !instance_exists(obj_dialogo)
+&& !instance_exists(oCagliostroCutscene)
+&& !instance_exists(oStageTransition)
+&& !instance_exists(oPhase2Landing)) {
+    instance_create_depth(0, 0, -10000, oPauseMenu);
+}

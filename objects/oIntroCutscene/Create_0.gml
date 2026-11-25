@@ -3,12 +3,11 @@ start_ms = current_time;
 finished = false;
 video_started = false;
 video_mix_restored = false;
+destruction_video_started = false;
+destruction_video_closed = false;
 
 intro_path = working_directory + "intro/";
 scene_sprites = [
-    sprite_add(intro_path + "desmatamento.png", 1, false, false, 0, 0),
-    sprite_add(intro_path + "floresta_incendio.png", 1, false, false, 0, 0),
-    sprite_add(intro_path + "queimada_aerea.png", 1, false, false, 0, 0),
     sprite_add(intro_path + "oceano_poluido.png", 1, false, false, 0, 0),
     sprite_add(intro_path + "lago_poluido.png", 1, false, false, 0, 0)
 ];

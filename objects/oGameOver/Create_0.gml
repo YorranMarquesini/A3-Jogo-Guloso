@@ -19,6 +19,13 @@ if (surface_exists(application_surface)) {
 // o 'true' quer dizer "menos eu", então este objeto continua rodando
 instance_deactivate_all(true);
 
-// ---- animação de entrada ----
-fade   = 0;
-atraso = 24;   // ignora teclas nos primeiros frames, pra não reiniciar sem querer
+// ---- animacao / menu ----
+fade = 0;
+atraso = 24;
+opcao = 0;
+pulso = 0;
+
+// Na derrota de chefe, a musica respira por vinte segundos antes do fade.
+eh_chefe = (room == BossRoom || room == Fase2Boss);
+musica_timer = 20 * game_get_speed(gamespeed_fps);
+musica_parada = false;

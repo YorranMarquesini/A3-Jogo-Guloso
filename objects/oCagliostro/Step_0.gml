@@ -110,6 +110,9 @@ switch (state) {
                 var _ring = instance_create_depth(_smoke_x, _smoke_y, depth - 1, oCagliostroSmoke);
                 _ring.direction = point_direction(_smoke_x, _smoke_y, _target_x, _target_y);
                 _ring.speed = 6.5 * boss_speed_multiplier;
+                var _smoke_sfx = audio_play_sound(snd_cagliostro_smoke_attack, 2, false);
+                audio_sound_gain(_smoke_sfx, 0.48, 0);
+                audio_sound_pitch(_smoke_sfx, random_range(0.92, 1.08));
             }
 
             smoke_shots_remaining--;
@@ -137,6 +140,9 @@ switch (state) {
             _hat.owner = id;
             _hat.move_speed *= boss_speed_multiplier;
             _hat.travel_timer = ceil(_hat.travel_timer / boss_speed_multiplier);
+            var _hat_sfx = audio_play_sound(snd_cagliostro_hat_throw, 3, false);
+            audio_sound_gain(_hat_sfx, 0.62, 0);
+            audio_sound_pitch(_hat_sfx, random_range(0.96, 1.04));
         }
 
         if (attack_timer <= 0 && !instance_exists(oCagliostroHat)) {
@@ -148,26 +154,46 @@ switch (state) {
     case "dying":
         hittable = false;
         image_speed = 0;
-        death_timer--;
-        image_blend = (death_timer mod 8 < 4) ? c_white : c_red;
-
-        if (death_timer mod 8 == 0) {
-            repeat (12) {
-                var _p = instance_create_depth(x + random_range(-100, 100), y + random_range(-130, 70), depth - 10, oHitParticle);
-                var _a = random(360);
-                var _s = random_range(2, 7);
-                _p.dir_x = lengthdir_x(_s, _a);
-                _p.dir_y = lengthdir_y(_s, _a);
-                _p.color = choose(c_red, c_orange, c_white, c_gray);
-                _p.radius = random_range(8, 18);
+        if (!final_explosion_started) {
+            death_timer--;
+            image_blend = (death_timer mod 6 < 3) ? c_white : c_red;
+            if (death_timer mod 5 == 0) {
+                repeat (16) {
+                    var _p = instance_create_depth(x + random_range(-120, 120), y + random_range(-150, 80), depth - 10, oHitParticle);
+                    var _a = random(360);
+                    var _s = random_range(2, 9);
+                    _p.dir_x = lengthdir_x(_s, _a);
+                    _p.dir_y = lengthdir_y(_s, _a);
+                    _p.color = choose(c_red, c_orange, c_yellow, c_white, c_gray);
+                    _p.radius = random_range(7, 21);
+                }
+                if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = max(oCameraController_boss.shake_amount, 9);
             }
-        }
-
-        if (death_timer <= 0) {
-            if (variable_global_exists("cagliostro_music")) {
-                audio_sound_gain(global.cagliostro_music, 0, 900);
+            if (death_timer <= 0) {
+                final_explosion_started = true;
+                final_explosion_timer = final_explosion_duration;
+                image_alpha = 0;
+                var _boom = audio_play_sound(snd_cagliostro_explosion, 8, false);
+                audio_sound_gain(_boom, 0.82, 0);
+                if (variable_global_exists("cagliostro_music")) audio_sound_gain(global.cagliostro_music, 0, 650);
+                if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 28;
+                repeat (150) {
+                    var _burst = instance_create_depth(x + random_range(-55, 55), y + random_range(-80, 55), depth - 20, oHitParticle);
+                    var _ba = random(360);
+                    var _bs = random_range(5, 19);
+                    _burst.dir_x = lengthdir_x(_bs, _ba);
+                    _burst.dir_y = lengthdir_y(_bs, _ba);
+                    _burst.color = choose(c_white, c_yellow, c_orange, c_red, make_color_rgb(76, 255, 151));
+                    _burst.radius = random_range(10, 30);
+                    _burst.fade_speed = random_range(0.018, 0.04);
+                }
             }
-            instance_destroy();
+        } else {
+            final_explosion_timer--;
+            if (final_explosion_timer mod 12 == 0 && instance_exists(oCameraController_boss)) {
+                oCameraController_boss.shake_amount = max(oCameraController_boss.shake_amount, 12);
+            }
+            if (final_explosion_timer <= 0) room_goto(FinalCutscene);
         }
     break;
 }

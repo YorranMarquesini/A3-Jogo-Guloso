@@ -7,7 +7,7 @@ ui_background = sprite_add(working_directory + "menu/" + _names[_variant], 1, fa
 
 credit_sections = [
     ["PROGRAMACAO", ["Tiago", "Yorran", "Joao Pedro"]],
-    ["ARTE", ["Joao Pedro", "Rayane"]],
+    ["ARTE", ["Carlos", "Rayane"]],
     ["ASSISTENTE PREMIUM", ["Arthur"]]
 ];
 

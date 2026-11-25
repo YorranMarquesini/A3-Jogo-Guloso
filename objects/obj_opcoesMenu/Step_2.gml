@@ -20,10 +20,13 @@ window_apply_pending();
 
 // A trilha acompanha Menu e Opcoes, mas silencia no jogo e nos Creditos.
 var _menu_music_allowed = (room == rm_menu || room == rm_opcoes);
+var _studio = instance_find(oStudioIntro, 0);
+if (_studio != noone && !_studio.menu_revealing) _menu_music_allowed = false;
 if (_menu_music_allowed) {
     if (!audio_is_playing(menu_music_handle)) {
         menu_music_handle = audio_play_sound(snd_menu_fantasy, 0, true);
-        audio_sound_gain(menu_music_handle, 0.62, 0);
+        audio_sound_gain(menu_music_handle, 0, 0);
+        audio_sound_gain(menu_music_handle, 0.62, 900);
     }
 } else if (audio_is_playing(menu_music_handle)) {
     audio_stop_sound(menu_music_handle);

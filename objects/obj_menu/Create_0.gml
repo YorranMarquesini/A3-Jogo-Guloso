@@ -8,9 +8,9 @@ altura_opcao = 46;
 // Cada abertura do jogo escolhe uma paisagem e a mantem ao voltar de outras salas.
 var _menu_path = working_directory + "menu/";
 menu_sprites = [
-    sprite_add(_menu_path + "menu_dawn.png", 1, false, false, 0, 0),
-    sprite_add(_menu_path + "menu_temple.png", 1, false, false, 0, 0),
-    sprite_add(_menu_path + "menu_wasteland.png", 1, false, false, 0, 0)
+    sprite_add(_menu_path + "menu_dawn_clean.png", 1, false, false, 0, 0),
+    sprite_add(_menu_path + "menu_temple_clean.png", 1, false, false, 0, 0),
+    sprite_add(_menu_path + "menu_wasteland_clean.png", 1, false, false, 0, 0)
 ];
 if (!variable_global_exists("menu_variant")) {
     randomize();

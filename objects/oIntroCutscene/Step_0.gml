@@ -1,5 +1,18 @@
 var _elapsed = (current_time - start_ms) / 1000;
 
+// Os primeiros nove segundos usam recortes reais de desmatamento. O arquivo
+// foi exportado sem audio para preservar a musica, os efeitos e a narracao.
+if (!destruction_video_started && _elapsed >= 0.05) {
+    destruction_video_started = true;
+    video_open(intro_path + "desmatamento_clipes_pixel.mp4");
+    video_set_volume(0);
+}
+
+if (!destruction_video_closed && _elapsed >= 9.15) {
+    destruction_video_closed = true;
+    if (video_get_status() != video_status_closed) video_close();
+}
+
 // Dispara cada fala uma unica vez e abre espaco na mixagem para a voz.
 for (var _voice = 0; _voice < array_length(voice_sounds); _voice++) {
     if (!voice_started[_voice] && _elapsed >= voice_start_times[_voice]) {
@@ -24,6 +37,7 @@ if (voice_ducking && _elapsed >= voice_duck_until) {
 // Abre o video pouco antes da hora de exibi-lo para evitar um quadro vazio.
 if (!video_started && _elapsed >= 14.5) {
     video_started = true;
+    if (video_get_status() != video_status_closed) video_close();
     video_open(intro_path + "nave_destruicao_pixel.mp4");
     video_set_volume(0.62);
     audio_sound_gain(music_instance, 0.10, 700);

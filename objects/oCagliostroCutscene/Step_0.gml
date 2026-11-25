@@ -63,10 +63,22 @@ switch (phase_name) {
         boss.image_speed = 0.12;
 
         if (!audio_is_playing(speech_handle)) {
-            music_started = true;
+            // Continua o trecho musical embutido na fala ja durante o video.
             global.cagliostro_music = audio_play_sound(snd_cagliostro_tema, 2, true);
             audio_sound_set_track_position(global.cagliostro_music, music_resume_seconds);
             audio_sound_gain(global.cagliostro_music, 1, 0);
+
+            phase_name = "video";
+            video_requested = true;
+            video_deadline_ms = current_time + 8000;
+            video_open(working_directory + "boss2/cagliostro_intro.mp4");
+        }
+    break;
+
+    case "video":
+        // O limite evita prender a luta se o player de video nao responder.
+        if (video_finished || video_get_status() == video_status_closed
+        || current_time >= video_deadline_ms) {
             boss.state = "combat";
             boss.hittable = true;
             boss.attack_timer = 90;

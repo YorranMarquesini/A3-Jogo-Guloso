@@ -4,7 +4,9 @@ if (is_invincible) {
 } else if (hp_invuln_timer > 0) {
     image_blend = (hp_invuln_timer div 4) % 2 == 0 ? c_white : c_red;
 } else {
-    image_blend = c_white;
+    image_blend = is_underwater
+        ? merge_color(c_white, make_color_rgb(93, 132, 101), 0.42)
+        : c_white;
 }
 
 // ============================
@@ -63,6 +65,20 @@ var _bob_y = sin(spirit_bob_timer) * spirit_bob_height;
 var _head_draw_y = y - visual_float_height + _bob_y;
 
 draw_sprite_ext(sprite_index, image_index, x, _head_draw_y, image_xscale, image_yscale, 0, image_blend, image_alpha);
+
+// Bolhas bem discretas na frente do personagem preservam a leitura da silhueta.
+if (is_underwater) {
+    draw_set_alpha(0.72);
+    draw_set_colour(make_color_rgb(194, 205, 151));
+    for (var _ub = 0; _ub < 4; _ub++) {
+        var _uba = current_time * (0.045 + _ub * 0.007) + _ub * 91;
+        var _ubx = x + sin(_uba) * (12 + _ub * 3);
+        var _uby = y - 8 - ((current_time * (0.018 + _ub * 0.004) + _ub * 17) mod 48);
+        draw_circle(_ubx, _uby, 2 + (_ub mod 2), true);
+    }
+    draw_set_alpha(1);
+    draw_set_colour(c_white);
+}
 
 // ============================
 // ARMA COM TELECINESE
