@@ -19,6 +19,7 @@ function tocar_voz_pagina() {
 }
 
 function fechar_dialogo() {
+    scr_weapon("tesoura");
     scr_weapon("arpao");
     instance_destroy();
 }
