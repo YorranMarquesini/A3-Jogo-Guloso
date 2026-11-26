@@ -6,7 +6,8 @@ var _pad_dir = pad_directions(_pad);
 // ============================
 
 // Durante o pouso, a cutscene controla a posicao e o input fica travado.
-if (variable_global_exists("player_cutscene_locked") && global.player_cutscene_locked) {
+if ((variable_global_exists("player_cutscene_locked") && global.player_cutscene_locked)
+|| (instance_exists(oCagliostro) && oCagliostro.state == "dying")) {
     hsp = 0;
     vsp = 0;
     wall_hold_frames = 0;

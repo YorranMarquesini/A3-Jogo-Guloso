@@ -1,5 +1,6 @@
 function scr_damage_player(_amount, _source_x) {
     if (!instance_exists(oPlayer)) return;
+    if (instance_exists(oCagliostro) && oCagliostro.state == "dying") return;
 
     with (oPlayer) {
         if (hp_invuln_timer > 0 || is_invincible) {

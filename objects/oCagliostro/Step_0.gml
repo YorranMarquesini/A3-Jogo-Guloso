@@ -280,48 +280,154 @@ switch (state) {
 
     case "dying":
         hittable = false;
-        with (oCagliostroFire) instance_destroy();
-        image_speed = 0;
-        if (!final_explosion_started) {
-            death_timer--;
-            image_blend = (death_timer mod 6 < 3) ? c_white : c_red;
-            if (death_timer mod 5 == 0) {
-                repeat (16) {
-                    var _p = instance_create_depth(x + random_range(-120, 120), y + random_range(-150, 80), depth - 10, oHitParticle);
-                    var _a = random(360);
-                    var _s = random_range(2, 9);
-                    _p.dir_x = lengthdir_x(_s, _a);
-                    _p.dir_y = lengthdir_y(_s, _a);
-                    _p.color = choose(c_red, c_orange, c_yellow, c_white, c_gray);
-                    _p.radius = random_range(7, 21);
+        finale_time += delta_time / 1000000;
+        switch (finale_stage) {
+        case "hold":
+            image_speed = 0;
+            sprite_index = spr_cagliostro_fase2_explosion;
+            image_index = 0;
+            image_blend = c_white;
+            with (oCagliostroFire) instance_destroy();
+            with (oCagliostroMoney) instance_destroy();
+            with (oCagliostroSmoke) instance_destroy();
+            with (oCagliostroHat) instance_destroy();
+            finale_stage = "charge";
+            finale_time = 0;
+        break;
+
+        case "charge":
+            var _frame = floor(finale_time * sprite_get_speed(sprite_index));
+            image_index = min(_frame, image_number - 1);
+            if (_frame >= image_number) {
+                finale_qte_action = finale_actions[irandom(array_length(finale_actions) - 1)];
+                finale_stage = "qte";
+                finale_time = 0;
+            }
+        break;
+
+        case "qte":
+            var _pad = scr_gamepad_slot();
+            var _right = controls_read(finale_qte_action, _pad);
+            var _wrong = false;
+            for (var i = 0; i < array_length(finale_actions); i++) {
+                var _action = finale_actions[i];
+                if (_action != finale_qte_action && controls_read(_action, _pad)) _wrong = true;
+            }
+            if (!_right && (keyboard_check_pressed(vk_anykey) || mouse_check_button_pressed(mb_left) || mouse_check_button_pressed(mb_right) || mouse_check_button_pressed(mb_middle))) _wrong = true;
+            if (!_right && _pad >= 0) {
+                for (var i = 0; i < array_length(global.controls_buttons); i++) {
+                    if (gamepad_button_check_pressed(_pad, global.controls_buttons[i])) { _wrong = true; break; }
                 }
-                if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = max(oCameraController_boss.shake_amount, 9);
             }
-            if (death_timer <= 0) {
-                final_explosion_started = true;
-                final_explosion_timer = final_explosion_duration;
-                image_alpha = 0;
-                var _boom = audio_play_sound(snd_cagliostro_explosion, 8, false);
-                audio_sound_gain(_boom, 0.82, 0);
-                if (variable_global_exists("cagliostro_music")) audio_sound_gain(global.cagliostro_music, 0, 650);
-                if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 28;
-                repeat (150) {
-                    var _burst = instance_create_depth(x + random_range(-55, 55), y + random_range(-80, 55), depth - 20, oHitParticle);
-                    var _ba = random(360);
-                    var _bs = random_range(5, 19);
-                    _burst.dir_x = lengthdir_x(_bs, _ba);
-                    _burst.dir_y = lengthdir_y(_bs, _ba);
-                    _burst.color = choose(c_white, c_yellow, c_orange, c_red, make_color_rgb(76, 255, 151));
-                    _burst.radius = random_range(10, 30);
-                    _burst.fade_speed = random_range(0.018, 0.04);
+            if (_wrong || finale_time >= finale_qte_window) {
+                if (instance_exists(oPlayer)) oPlayer.hp = 0;
+                finale_stage = "defeat";
+                finale_time = 0;
+            } else if (_right) {
+                finale_track = variable_global_exists("cagliostro_music") ? global.cagliostro_music : -1;
+                if (!audio_is_playing(finale_track)) {
+                    finale_track = audio_play_sound(snd_cagliostro_tema, 2, true);
+                    global.cagliostro_music = finale_track;
+                }
+                finale_music_pos = audio_is_playing(finale_track) ? audio_sound_get_track_position(finale_track) : 0;
+                var _idx = 0, _loop = 0, _len = audio_sound_length(snd_cagliostro_tema);
+                while (_idx < array_length(finale_accents) && finale_accents[_idx] < finale_music_pos + 0.95) _idx++;
+                for (var i = 0; i < array_length(finale_chart); i++) {
+                    if (_idx == array_length(finale_accents)) { _idx = 0; _loop += _len; }
+                    finale_cues[i] = _loop + finale_accents[_idx++] - finale_music_pos;
+                }
+                if (instance_exists(oPlayer)) {
+                    repeat (48) {
+                        var _spark = instance_create_depth(oPlayer.x, oPlayer.y - oPlayer.visual_float_height, depth - 20, oHitParticle);
+                        var _angle = random(360), _speed = random_range(3, 15);
+                        _spark.dir_x = lengthdir_x(_speed, _angle);
+                        _spark.dir_y = lengthdir_y(_speed, _angle);
+                        _spark.color = choose(c_white, c_aqua, c_lime);
+                        _spark.radius = random_range(5, 15);
+                    }
+                }
+                audio_sound_gain(audio_play_sound(snd_boss_explosion, 8, false), 0.45, 0);
+                if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 16;
+                finale_stage = "rhythm";
+                finale_time = 0;
+            }
+        break;
+
+        case "defeat":
+            if (finale_time >= 0.9) scr_reiniciar_fase();
+        break;
+
+        case "rhythm":
+            if (audio_is_playing(finale_track)) {
+                var _now = audio_sound_get_track_position(finale_track);
+                var _advance = _now - finale_music_pos;
+                if (_advance < -1) _advance += audio_sound_length(snd_cagliostro_tema);
+                finale_time += max(0, _advance) - delta_time / 1000000;
+                finale_music_pos = _now;
+            }
+            clash_age += delta_time / 1000000;
+            clash_front = lerp(clash_front, clamp(0.5 + (2 * finale_hits - finale_note) * 0.029, 0.15, 0.85), 0.12);
+            var _total = array_length(finale_chart);
+            while (finale_note < _total && finale_time > finale_cues[finale_note] + finale_hit_window) {
+                finale_note++;
+            }
+            if (finale_note < _total) {
+                var _pad = scr_gamepad_slot();
+                var _pressed_lane = -1;
+                for (var i = 0; i < array_length(finale_actions); i++) {
+                    if (controls_read(finale_actions[i], _pad)) {
+                        if (_pressed_lane != -1) { _pressed_lane = -2; break; }
+                        _pressed_lane = i;
+                    }
+                }
+                var _offset = finale_time - finale_cues[finale_note];
+                if (_pressed_lane != -1 && _offset >= -0.24) {
+                    if (_pressed_lane == finale_chart[finale_note] && abs(_offset) <= finale_hit_window) finale_hits++;
+                    finale_note++;
                 }
             }
-        } else {
-            final_explosion_timer--;
-            if (final_explosion_timer mod 12 == 0 && instance_exists(oCameraController_boss)) {
-                oCameraController_boss.shake_amount = max(oCameraController_boss.shake_amount, 12);
+            if (finale_note == _total) {
+                finale_stage = "score";
+                finale_time = 0;
             }
-            if (final_explosion_timer <= 0) room_goto(FinalCutscene);
+        break;
+
+        case "score":
+            clash_age += delta_time / 1000000;
+            clash_front = lerp(clash_front, finale_hits * 4 > array_length(finale_chart) * 3 ? 1 : 0, 0.08);
+            if (finale_time >= 1.3) {
+                global.cagliostro_bad_ending = finale_hits * 4 <= array_length(finale_chart) * 3;
+                if (audio_is_playing(finale_track)) audio_stop_sound(finale_track);
+                if (global.cagliostro_bad_ending) {
+                    room_goto(FinalCutscene);
+                } else {
+                    finale_stage = "victory_burst";
+                }
+            }
+        break;
+
+        case "victory_burst":
+            final_explosion_timer = final_explosion_duration;
+            image_alpha = 0;
+            var _boom = audio_play_sound(snd_cagliostro_explosion, 8, false);
+            audio_sound_gain(_boom, 0.82, 0);
+            if (instance_exists(oCameraController_boss)) oCameraController_boss.shake_amount = 28;
+            repeat (150) {
+                var _burst = instance_create_depth(x + random_range(-55, 55), y + random_range(-80, 55), depth - 20, oHitParticle);
+                var _ba = random(360);
+                var _bs = random_range(5, 19);
+                _burst.dir_x = lengthdir_x(_bs, _ba);
+                _burst.dir_y = lengthdir_y(_bs, _ba);
+                _burst.color = choose(c_white, c_yellow, c_orange, c_red, make_color_rgb(76, 255, 151));
+                _burst.radius = random_range(10, 30);
+                _burst.fade_speed = random_range(0.018, 0.04);
+            }
+            finale_stage = "blast";
+        break;
+        case "blast":
+            if (--final_explosion_timer <= 0) room_goto(FinalCutscene);
+        break;
+
         }
     break;
 }

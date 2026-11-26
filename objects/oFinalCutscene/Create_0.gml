@@ -1,9 +1,20 @@
+bad_ending = variable_global_exists("cagliostro_bad_ending") && global.cagliostro_bad_ending;
+global.cagliostro_bad_ending = false;
 timer = 0;
 finished = false;
 var _path = working_directory + "final/";
-factory_sprite = sprite_add(_path + "final_factory_destroyed.png", 1, false, false, 0, 0);
-forest_sprite = sprite_add(_path + "final_forest_restored.png", 1, false, false, 0, 0);
-animals_sprite = sprite_add(_path + "final_animals_clearing.png", 1, false, false, 0, 0);
+factory_sprite = -1;
+forest_sprite = -1;
+animals_sprite = -1;
+bad_scenes = [];
+if (bad_ending) {
+    var _files = ["bad_construction.png", "bad_profits.png", "bad_guardian.png"];
+    for (var i = 0; i < array_length(_files); i++) bad_scenes[i] = sprite_add(_path + _files[i], 1, false, false, 0, 0);
+} else {
+    factory_sprite = sprite_add(_path + "final_factory_destroyed.png", 1, false, false, 0, 0);
+    forest_sprite = sprite_add(_path + "final_forest_restored.png", 1, false, false, 0, 0);
+    animals_sprite = sprite_add(_path + "final_animals_clearing.png", 1, false, false, 0, 0);
+}
 player_sprite = player_right_idle;
 music_handle = audio_play_sound(snd_theme_transition, 3, true);
 audio_sound_gain(music_handle, 0.45, 900);

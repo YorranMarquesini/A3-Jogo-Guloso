@@ -1,3 +1,6 @@
+for (var i = 0; i < array_length(bad_scenes); i++) {
+    if (sprite_exists(bad_scenes[i])) sprite_delete(bad_scenes[i]);
+}
 if (sprite_exists(factory_sprite)) sprite_delete(factory_sprite);
 if (sprite_exists(forest_sprite)) sprite_delete(forest_sprite);
 if (sprite_exists(animals_sprite)) sprite_delete(animals_sprite);

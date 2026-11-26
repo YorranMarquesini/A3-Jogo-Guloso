@@ -1,6 +1,12 @@
 var _pad = scr_gamepad_slot();
 
 timer++;
+if (bad_ending) {
+    if (timer >= 1190) finish_final_cutscene();
+    exit;
+}
+
+
 for (var _v = 0; _v < array_length(final_voices); _v++) {
     if (!final_voice_started[_v] && timer >= final_voice_frames[_v]) {
         final_voice_started[_v] = true;

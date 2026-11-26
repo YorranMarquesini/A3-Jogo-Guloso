@@ -42,6 +42,9 @@ if (room == Tutoras || room == Room1) {
     }
     music_handle = global.gameplay_music_handle;
     preserve_music_on_cleanup = (room == Tutoras);
+} else if (room == BossRoom) {
+    music_handle = audio_play_sound(snd_boss1_intoxicated, 2, true);
+    audio_sound_gain(music_handle, 0.48, 300);
 } else if (room == Fase2) {
     music_handle = audio_play_sound(snd_theme_fase2, 1, true);
     audio_sound_gain(music_handle, 0.44, 600);

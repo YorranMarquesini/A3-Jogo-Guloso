@@ -1,3 +1,4 @@
+if (instance_exists(oCagliostro) && oCagliostro.state == "dying") exit;
 // Posição fixa na tela (canto inferior esquerdo, por exemplo)
 var _bar_x = 20;
 var _bar_y = display_get_gui_height() - 40;

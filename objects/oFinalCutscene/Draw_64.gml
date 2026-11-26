@@ -28,6 +28,63 @@ var _caption = function(_text, _alpha) {
     draw_text(_gw * 0.5, _gh - 113, _text);
 };
 
+if (bad_ending) {
+    draw_clear(make_color_rgb(14, 12, 18));
+    var _shot_frames = 270;
+    var _shot = timer div _shot_frames;
+    if (_shot < 3) {
+        var _local = timer mod _shot_frames;
+        var _progress = _local / _shot_frames;
+        var _captions = ["As primeiras vigas chegaram antes que a serragem baixasse.",
+            "Enquanto as chaminés cresciam, Cagliostro contava seu lucro.",
+            "Na margem do rio, a última luz do guardião se apagou."];
+        _draw_cover(bad_scenes[_shot], 1.02 + 0.075 * _progress, 1);
+        if (_shot > 0 && _local < 38) _draw_cover(bad_scenes[_shot - 1], 1.095, 1 - _local / 38);
+        _caption(_captions[_shot], clamp(min(_local - 20, _shot_frames - _local) / 28, 0, 1));
+        if (_shot == 2 && _local > 222) {
+            draw_set_color(c_black);
+            draw_set_alpha((_local - 222) / 48);
+            draw_rectangle(0, 0, _w, _h, false);
+        }
+    } else {
+        draw_set_alpha(1);
+        draw_set_font(fnt_dialogo);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_set_color(make_color_rgb(235, 224, 215));
+        draw_text(_cx, _h * 0.42, timer < 920 ? "E esse foi o fim......" : "E esse foi o fim...... Ou sera que não");
+        if (timer >= 990) {
+            var _t = clamp((timer - 990) / 185, 0, 1);
+            gpu_set_blendmode(bm_add);
+            for (var i = 20; i >= 0; i--) {
+                var _p = max(0, _t - i * 0.006);
+                var _ease = _p * _p * (3 - 2 * _p);
+                var _x = lerp(-60, _w + 85, _ease);
+                var _y = _h * (0.61 - 0.11 * sin(pi * _p) + 0.025 * sin(5 * pi * _p));
+                draw_set_alpha((1 - i / 21) * 0.18);
+                draw_set_color(make_color_rgb(255, 48, 64));
+                draw_circle(_x, _y, 5 + (20 - i) * 0.42, false);
+                if (i == 0) {
+                    draw_set_alpha(0.18);
+                    draw_circle(_x, _y, 42, false);
+                    draw_set_alpha(0.82);
+                    draw_set_color(make_color_rgb(255, 104, 111));
+                    draw_circle(_x, _y, 15, false);
+                    draw_set_alpha(1);
+                    draw_set_color(c_white);
+                    draw_circle(_x + 3, _y - 3, 5, false);
+                }
+            }
+            gpu_set_blendmode(bm_normal);
+        }
+    }
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    exit;
+}
+
 draw_clear(c_black);
 if (timer < 330) {
     var _p1 = timer / 330;
