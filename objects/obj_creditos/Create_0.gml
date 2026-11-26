@@ -8,7 +8,7 @@ ui_background = sprite_add(working_directory + "menu/" + _names[_variant], 1, fa
 credit_sections = [
     ["PROGRAMACAO", ["Tiago", "Yorran", "Joao Pedro"]],
     ["ARTE", ["Carlos", "Rayane"]],
-    ["ASSISTENTE PREMIUM", ["Arthur"]]
+    ["ASSISTENTE PREMIUM E DUBLADOR", ["Arthur"]]
 ];
 
 pos_y = display_get_gui_height() * 0.58;
