@@ -21,7 +21,7 @@ switch (state) {
     image_blend = (hit_flash_timer > 0) ? c_white :
                   (sin(current_time / 60) > 0 ? c_yellow : c_white);
 
-    if (image_index >= image_number) {
+    if (image_index >= image_number - 1) {
         var _spawn_x = x;
         var _spawn_y = y - 20;
 		

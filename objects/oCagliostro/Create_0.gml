@@ -61,9 +61,9 @@ fire_hold_time = 22;       // quadros segurando a boca aberta após cuspir
 fire_speed = 12;
 
 // Bônus por completar os coletáveis das fases anteriores.
-// O projeto trabalha a 60 FPS: 30 s = 1800 frames; 60 s = 3600 frames.
+// O projeto trabalha a 60 passos por segundo.
 smoke_break_cooldown = 0;
-smoke_break_cooldown_max = 30 * 60;
+smoke_break_cooldown_max = 60;
 hat_break_cooldown = 0;
 hat_break_cooldown_max = 60 * 60;
 hat_disabled_timer = 0;
