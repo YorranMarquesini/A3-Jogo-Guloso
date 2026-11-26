@@ -16,6 +16,9 @@ function scr_reiniciar_fase() {
     // apresentacao do chefe nao deve tocar outra vez.
     var _retry_de_chefe = (room == BossRoom || room == Fase2Boss);
     global.boss_retry_no_cutscene = _retry_de_chefe;
+    // Guarda EM QUAL arena foi o retry. Sem isso, morrer no boss 1 deixava a
+    // flag ligada e a apresentação do Cagliostro era pulada na fase 2.
+    global.boss_retry_room = _retry_de_chefe ? room : -1;
 
     // Encerra a faixa antiga. A nova sala inicia o tema desde o zero.
     if (variable_global_exists("cagliostro_music")
@@ -78,6 +81,7 @@ function scr_voltar_ao_menu() {
     }
     global.cagliostro_music = noone;
     global.boss_retry_no_cutscene = false;
+    global.boss_retry_room = -1;
     global.fase2_landing_pending = false;
     global.player_cutscene_locked = false;
     global.bonus_hearts         = 0;

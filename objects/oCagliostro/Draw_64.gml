@@ -16,7 +16,7 @@ if (state != "cutscene" && !final_explosion_started) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
     draw_set_font(fnt_dialogo);
-    draw_text(display_get_gui_width() * 0.5, _y - 6, "CAGLIOSTRO");
+    draw_text(display_get_gui_width() * 0.5, _y - 6, (phase == 2) ? "CAGLIOSTRO - FASE 2" : "CAGLIOSTRO");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }

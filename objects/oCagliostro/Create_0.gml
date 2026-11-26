@@ -1,11 +1,29 @@
 // No retry, a arena recomeca direto sem repetir a apresentacao.
+// Só conta como retry se a morte aconteceu NESTA arena.
 var _retrying_boss = variable_global_exists("boss_retry_no_cutscene")
-                  && global.boss_retry_no_cutscene;
+                  && global.boss_retry_no_cutscene
+                  && variable_global_exists("boss_retry_room")
+                  && global.boss_retry_room == room;
+if (!_retrying_boss) global.boss_retry_no_cutscene = false;
 state = _retrying_boss ? "combat" : "cutscene";
-phase = 2;
+// Fase 1: fumaça + chapéu. Ao zerar a vida, scr_try_hit_enemy coloca o
+// estado em "transforming" (mesma lógica do boss da fase 1) e ele volta
+// com vida cheia na fase 2, fazendo chover dinheiro.
+phase = 1;
 material = "organico";
 hp = 80;
 max_hp = hp;
+phase1_max_hp = hp;
+
+// --- TRANSFORMAÇÃO ---
+transform_timer = 0;
+transform_duration = 10;       // frames parado no último quadro antes de voltar a lutar
+transform_started = false;
+
+// --- FASE 2: CHUVA DE DINHEIRO ---
+money_spawn_timer = 0;
+money_spawn_min = 14;
+money_spawn_max = 26;
 hittable = _retrying_boss;
 invuln_timer = 0;
 invuln_time = 16;
@@ -31,6 +49,15 @@ smoke_shot_timer = 0;
 smoke_shot_interval_min = 52;
 smoke_shot_interval_max = 64;
 smoke_end_lag = 28;
+
+// Fase 2: cospe bolas de fogo (spr_cagliostro_atk1 + oCagliostroFire).
+// Cada ataque sorteia de 2 a 4 cuspidas; a animação toca inteira a cada
+// disparo e o fogo sai no último quadro (boca aberta).
+fire_shots_remaining = 0;
+fire_shot_fired = false;
+fire_hold_timer = 0;
+fire_hold_time = 22;       // quadros segurando a boca aberta após cuspir
+fire_speed = 12;
 
 // Bônus por completar os coletáveis das fases anteriores.
 // O projeto trabalha a 60 FPS: 30 s = 1800 frames; 60 s = 3600 frames.
@@ -60,8 +87,8 @@ sprite_index = _retrying_boss ? spr_cagliostro_idle : spr_cagliostro_talk;
 image_speed = 0.22;
 // A escala é configurada na room para permitir o enquadramento gigante da arena.
 
-// O script de dano compartilhado espera esta variável.
-phase2_max_hp = max_hp;
+// Vida da segunda fase (a barra é recarregada durante a transformação).
+phase2_max_hp = 100;
 
 // Na IDE o GameMaker usa a mesma seed a cada execução; sorteamos uma vez.
 if (!variable_global_exists("cagliostro_rng_ready")) {
