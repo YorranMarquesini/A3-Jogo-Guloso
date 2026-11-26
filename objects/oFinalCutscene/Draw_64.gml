@@ -35,9 +35,9 @@ if (bad_ending) {
     if (_shot < 3) {
         var _local = timer mod _shot_frames;
         var _progress = _local / _shot_frames;
-        var _captions = ["As primeiras vigas chegaram antes que a serragem baixasse.",
-            "Enquanto as chaminés cresciam, Cagliostro contava seu lucro.",
-            "Na margem do rio, a última luz do guardião se apagou."];
+        var _captions = ["AS PRIMEIRAS VIGAS CHEGARAM ANTES QUE A SERRAGEM BAIXASSE.",
+            "ENQUANTO AS CHAMINES CRESCIAM, CAGLIOSTRO CONTAVA SEU LUCRO.",
+            "NA MARGEM DO RIO, A ULTIMA LUZ DO GUARDIAO SE APAGOU."];
         _draw_cover(bad_scenes[_shot], 1.02 + 0.075 * _progress, 1);
         if (_shot > 0 && _local < 38) _draw_cover(bad_scenes[_shot - 1], 1.095, 1 - _local / 38);
         _caption(_captions[_shot], clamp(min(_local - 20, _shot_frames - _local) / 28, 0, 1));
@@ -52,7 +52,7 @@ if (bad_ending) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(235, 224, 215));
-        draw_text(_cx, _h * 0.42, timer < 920 ? "E esse foi o fim......" : "E esse foi o fim...... Ou sera que não");
+        draw_text(_cx, _h * 0.42, timer < 920 ? "E ESSE FOI O FIM......" : "E ESSE FOI O FIM...... OU SERA QUE NAO");
         if (timer >= 990) {
             var _t = clamp((timer - 990) / 185, 0, 1);
             gpu_set_blendmode(bm_add);

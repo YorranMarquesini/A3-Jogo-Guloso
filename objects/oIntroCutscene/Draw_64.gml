@@ -265,7 +265,7 @@ else if (_elapsed >= 44.3 && _elapsed < 47.7) {
     _caption_alpha = min(1, (_elapsed - 44.3) / 0.6) * min(1, (47.7 - _elapsed) / 0.6);
 }
 else if (_elapsed >= 51.6 && _elapsed < 55.9) {
-    _caption = "E ELA ESCOLHEU VOCE O ULTIMO GUARDIÃO.";
+    _caption = "E ELA ESCOLHEU VOCE O ULTIMO GUARDIAO.";
     _caption_alpha = min(1, (_elapsed - 51.6) / 0.6) * min(1, (55.9 - _elapsed) / 0.6);
 }
 
