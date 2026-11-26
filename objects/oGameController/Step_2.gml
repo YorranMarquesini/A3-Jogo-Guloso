@@ -31,6 +31,7 @@ window_apply_pending();
 // ENTER pausa somente durante gameplay livre.
 if (controls_read(Bind.pause, _pad)
 && !(instance_exists(oCagliostro) && oCagliostro.state == "dying")
+&& !instance_exists(oBossBriefing)
 && !instance_exists(oPauseMenu)
 && !instance_exists(oGameOver)
 && !instance_exists(obj_dialogo)

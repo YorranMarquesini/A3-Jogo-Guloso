@@ -22,6 +22,7 @@ transform_started = false;
 
 // --- FASE 2: CHUVA DE DINHEIRO ---
 money_spawn_timer = 0;
+money_notes_left = 0;
 money_spawn_min = 14;
 money_spawn_max = 26;
 hittable = _retrying_boss;

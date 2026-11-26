@@ -8,6 +8,11 @@ forest_sprite = -1;
 animals_sprite = -1;
 bad_scenes = [];
 if (bad_ending) {
+    bad_voices = [snd_bad_ending_01, snd_bad_ending_02, snd_bad_ending_03, snd_bad_ending_04];
+    bad_shot = 0;
+    bad_clock = 0;
+    bad_voice = -1;
+    bad_voice_started = false;
     var _files = ["bad_construction.png", "bad_profits.png", "bad_guardian.png"];
     for (var i = 0; i < array_length(_files); i++) bad_scenes[i] = sprite_add(_path + _files[i], 1, false, false, 0, 0);
 } else {

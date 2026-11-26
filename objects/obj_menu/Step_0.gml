@@ -43,7 +43,10 @@ if (_selecao_anterior != opcao_selecionada) menu_selection_time = 0;
 
 if (_entra) {
     switch (opcao_selecionada) {
-        case 0: room_goto(sala_inicial); break;
+        case 0:
+            global.boss1_briefing_seen = false;
+            room_goto(sala_inicial);
+            break;
         case 1: room_goto(rm_opcoes); break;
         case 2: room_goto(rm_creditos); break;
         case 3: game_end(); break;

@@ -1,3 +1,4 @@
+if (bad_ending && audio_is_playing(bad_voice)) audio_stop_sound(bad_voice);
 for (var i = 0; i < array_length(bad_scenes); i++) {
     if (sprite_exists(bad_scenes[i])) sprite_delete(bad_scenes[i]);
 }

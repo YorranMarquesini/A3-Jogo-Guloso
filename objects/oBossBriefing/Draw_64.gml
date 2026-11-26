@@ -1,0 +1,55 @@
+var _w = display_get_gui_width(), _h = display_get_gui_height();
+var _cx = round(_w * 0.5), _cy = round(_h * 0.50);
+var _half = min(355, floor(_w * 0.43));
+var _left = _cx - _half, _right = _cx + _half;
+var _top = _cy - 126, _bottom = _cy + 126;
+var _remaining = deadline == 0 ? 10 : clamp((deadline - get_timer()) / 1000000, 0, 10);
+var _brass = make_color_rgb(206, 174, 105);
+var _moss = make_color_rgb(112, 139, 85);
+
+// Placa rebitada do cais, com cantos recortados e oxidação na borda.
+draw_set_alpha(0.55);
+draw_set_color(c_black);
+draw_rectangle(_left + 7, _top + 9, _right + 7, _bottom + 9, false);
+draw_set_alpha(1);
+draw_set_color(make_color_rgb(62, 75, 62));
+draw_rectangle(_left + 7, _top, _right - 7, _bottom, false);
+draw_rectangle(_left, _top + 7, _right, _bottom - 7, false);
+draw_set_color(_moss);
+draw_rectangle(_left + 9, _top + 3, _right - 9, _top + 6, false);
+draw_rectangle(_left + 3, _top + 9, _left + 6, _bottom - 9, false);
+draw_set_color(make_color_rgb(22, 35, 32));
+draw_rectangle(_left + 14, _top + 14, _right - 14, _bottom - 14, false);
+for (var i = 0; i < 4; i++) {
+    var _x = (i mod 2 == 0) ? _left + 10 : _right - 10;
+    var _y = (i < 2) ? _top + 10 : _bottom - 10;
+    draw_set_color(_brass);
+    draw_circle(_x, _y, 3, false);
+    draw_set_color(make_color_rgb(52, 49, 37));
+    draw_line(_x - 1, _y + 1, _x + 1, _y - 1);
+}
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_set_font(fnt_tutoras);
+draw_set_color(_brass);
+draw_text_transformed(_cx, _top + 49, "ARREMESSO", 1.55, 1.55, 0);
+draw_set_font(fnt_dialogo);
+draw_set_color(make_color_rgb(239, 233, 205));
+draw_text(_cx, _cy - 27, "Arremesse sua arma para atingir o chefe.");
+draw_set_font(fnt_tutoras);
+var _button = controls_label(Bind.toss);
+var _cap = max(65, ceil(string_width(_button) * 0.75) + 22);
+draw_set_color(_brass);
+draw_rectangle(_cx - _cap, _cy + 2, _cx + _cap, _cy + 51, false);
+draw_set_color(make_color_rgb(39, 51, 40));
+draw_rectangle(_cx - _cap + 3, _cy + 5, _cx + _cap - 3, _cy + 48, false);
+draw_set_color(c_white);
+draw_text_transformed(_cx, _cy + 26, _button, 1.5, 1.5, 0);
+draw_set_font(fnt_dialogo);
+draw_set_color(make_color_rgb(198, 207, 178));
+draw_text(_cx, _bottom - 46, "Começar agora [" + controls_label(Bind.confirm) + "]   ou aguarde " + string(ceil(_remaining)) + " s");
+draw_set_color(_moss);
+draw_rectangle(_left + 25, _bottom - 21, lerp(_left + 25, _right - 25, _remaining / 10), _bottom - 18, false);
+draw_set_color(c_white);
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);

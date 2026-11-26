@@ -30,20 +30,20 @@ var _caption = function(_text, _alpha) {
 
 if (bad_ending) {
     draw_clear(make_color_rgb(14, 12, 18));
-    var _shot_frames = 270;
-    var _shot = timer div _shot_frames;
+    var _shot = bad_shot;
     if (_shot < 3) {
-        var _local = timer mod _shot_frames;
-        var _progress = _local / _shot_frames;
+        var _shot_frames = (audio_sound_length(bad_voices[_shot]) + 0.85) * 60;
+        var _local = bad_clock * 60;
+        var _progress = clamp(_local / _shot_frames, 0, 1);
         var _captions = ["AS PRIMEIRAS VIGAS CHEGARAM ANTES QUE A SERRAGEM BAIXASSE.",
             "ENQUANTO AS CHAMINES CRESCIAM, CAGLIOSTRO CONTAVA SEU LUCRO.",
             "NA MARGEM DO RIO, A ULTIMA LUZ DO GUARDIAO SE APAGOU."];
         _draw_cover(bad_scenes[_shot], 1.02 + 0.075 * _progress, 1);
         if (_shot > 0 && _local < 38) _draw_cover(bad_scenes[_shot - 1], 1.095, 1 - _local / 38);
         _caption(_captions[_shot], clamp(min(_local - 20, _shot_frames - _local) / 28, 0, 1));
-        if (_shot == 2 && _local > 222) {
+        if (_shot == 2 && _local > _shot_frames - 24) {
             draw_set_color(c_black);
-            draw_set_alpha((_local - 222) / 48);
+            draw_set_alpha(clamp((_local - _shot_frames + 24) / 24, 0, 1));
             draw_rectangle(0, 0, _w, _h, false);
         }
     } else {
@@ -52,9 +52,9 @@ if (bad_ending) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(235, 224, 215));
-        draw_text(_cx, _h * 0.42, timer < 920 ? "E ESSE FOI O FIM......" : "E ESSE FOI O FIM...... OU SERA QUE NAO");
-        if (timer >= 990) {
-            var _t = clamp((timer - 990) / 185, 0, 1);
+        draw_text(_cx, _h * 0.42, bad_shot == 3 && bad_clock < 3.70 ? "E ESSE FOI O FIM......" : "E ESSE FOI O FIM...... OU SERA QUE NAO");
+        if (bad_shot == 4) {
+            var _t = clamp(bad_clock / 3.1, 0, 1);
             gpu_set_blendmode(bm_add);
             for (var i = 20; i >= 0; i--) {
                 var _p = max(0, _t - i * 0.006);

@@ -1,0 +1,17 @@
+if (!show_hint) exit;
+var _w = display_get_gui_width(), _h = display_get_gui_height();
+var _cx = _w / 2, _y = _h * 0.77;
+draw_set_alpha(0.96);
+draw_set_color(make_color_rgb(20, 34, 31));
+draw_rectangle(_w * 0.09, _y - 25, _w * 0.91, _y + 88, false);
+draw_set_alpha(1);
+draw_set_font(fnt_dialogo);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_set_color(make_color_rgb(255, 221, 135));
+draw_text(_cx, _y, (action == Bind.attack ? "Ataque normal" : "Ataque forte") + "   [" + controls_label(action) + "]");
+draw_set_color(c_white);
+draw_text(_cx, _y + 30, action == Bind.attack ? "Com a arma equipada, bata quando o inimigo estiver perto." : "Com a tesoura, golpeie em arco. Com o arpão, dê uma estocada.");
+draw_text(_cx, _y + 61, "[" + controls_label(Bind.interact) + "] Fechar");
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);

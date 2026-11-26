@@ -31,16 +31,15 @@ switch (state) {
 
     case "combat":
         sprite_index = (phase == 2) ? spr_cagliostro_fase2_idle : spr_cagliostro_idle;
-        image_speed = 0.12;
+        image_speed = (phase == 2) ? 1 : 0.12;
         // Na fase 2 ele ataca um pouco mais rápido.
         attack_timer -= boss_speed_multiplier * ((phase == 2) ? 1.25 : 1);
         if (attack_timer <= 0) {
             var _next_attack;
 
             if (phase == 2) {
-                // Fase 2: o chapéu virou chuva de dinheiro e a fumaça foi
-                // substituída pelas bolas de fogo.
-                _next_attack = 2;
+                // Alterna fogo e chuva de notas.
+                _next_attack = (last_attack_kind == 2) ? 3 : 2;
             } else if (hat_disabled_timer > 0) {
                 // Enquanto está rasgado, o chapéu fica na cabeça e não pode
                 // ser lançado; o chefe usa somente a fumaça.
@@ -83,8 +82,45 @@ switch (state) {
 
             if (attack_kind == 0) state = "smoke_attack";
             else if (attack_kind == 1) state = "hat_attack";
-            else state = "fire_attack";
+            else if (attack_kind == 2) state = "fire_attack";
+            else {
+                state = "money_attack";
+                money_notes_left = irandom_range(4, 6);
+                money_spawn_timer = 0;
+            }
         }
+    break;
+
+    case "money_attack":
+        image_speed = 1;
+        if (money_notes_left == 0) {
+            // Mesmo a ultima nota pode armar ao se aproximar do jogador.
+            if (!instance_exists(oCagliostroMoney)) {
+                state = "combat";
+                attack_timer = irandom_range(attack_cooldown_min, attack_cooldown_max);
+            }
+            break;
+        }
+        var _armed = false;
+        with (oCagliostroMoney) { if (explosive) _armed = true; }
+        if (_armed) break;
+        money_spawn_timer -= boss_speed_multiplier;
+        if (money_spawn_timer > 0) break;
+        money_spawn_timer = irandom_range(money_spawn_min, money_spawn_max);
+        money_notes_left--;
+        var _cam = view_camera[0];
+        var _vx = camera_get_view_x(_cam);
+        var _vy = camera_get_view_y(_cam);
+        var _vw = camera_get_view_width(_cam);
+
+        // De vez em quando uma nota cai mirando perto do jogador.
+        var _mx = _vx + random_range(24, _vw - 24);
+        if (instance_exists(oPlayer) && random(1) < 0.35) {
+            _mx = clamp(oPlayer.x + random_range(-90, 90), _vx + 24, _vx + _vw - 24);
+        }
+
+        var _money = instance_create_depth(_mx, _vy - 32, depth - 3, oCagliostroMoney);
+        _money.fall_speed *= boss_speed_multiplier;
     break;
 
     case "fire_attack":
@@ -132,6 +168,7 @@ switch (state) {
                 } else {
                     state = "combat";
                     sprite_index = spr_cagliostro_fase2_idle;
+                    image_speed = 1;
                     image_index = 0;
                     attack_timer = irandom_range(attack_cooldown_min, attack_cooldown_max);
                 }
@@ -272,8 +309,8 @@ switch (state) {
             attack_timer = 60;
             last_attack_kind = -1;
             attack_repeat_count = 0;
-            money_spawn_timer = 30;
             sprite_index = spr_cagliostro_fase2_idle;
+            image_speed = 1;
             image_index = 0;
         }
     break;
@@ -430,31 +467,4 @@ switch (state) {
 
         }
     break;
-}
-
-// =========================================================
-// FASE 2: CHUVA DE DINHEIRO
-// Enquanto ele está no spr_cagliostro_fase2_idle, notas caem do topo da tela.
-// =========================================================
-if (phase == 2
-&& (sprite_index == spr_cagliostro_fase2_idle || sprite_index == spr_cagliostro_atk1)
-&& state != "dying") {
-    money_spawn_timer -= boss_speed_multiplier;
-    if (money_spawn_timer <= 0) {
-        money_spawn_timer = irandom_range(money_spawn_min, money_spawn_max);
-
-        var _cam = view_camera[0];
-        var _vx = camera_get_view_x(_cam);
-        var _vy = camera_get_view_y(_cam);
-        var _vw = camera_get_view_width(_cam);
-
-        // De vez em quando uma nota cai mirando perto do jogador.
-        var _mx = _vx + random_range(24, _vw - 24);
-        if (instance_exists(oPlayer) && random(1) < 0.35) {
-            _mx = clamp(oPlayer.x + random_range(-90, 90), _vx + 24, _vx + _vw - 24);
-        }
-
-        var _money = instance_create_depth(_mx, _vy - 32, depth - 3, oCagliostroMoney);
-        _money.fall_speed *= boss_speed_multiplier;
-    }
 }
