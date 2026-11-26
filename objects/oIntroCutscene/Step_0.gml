@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 var _elapsed = (current_time - start_ms) / 1000;
 
 // Os primeiros nove segundos usam recortes reais de desmatamento. O arquivo
@@ -54,9 +56,9 @@ if (!video_mix_restored && _elapsed >= 44) {
 }
 
 // Evita que o mesmo apertar usado no menu pule a cutscene imediatamente.
-if (_elapsed > 1 && (keyboard_check_pressed(vk_space)
-|| keyboard_check_pressed(vk_enter)
-|| keyboard_check_pressed(vk_escape))) {
+if (_elapsed > 1 && (controls_menu_space()
+|| controls_read(Bind.confirm, _pad)
+|| controls_read(Bind.back, _pad))) {
     finish_intro();
 }
 

@@ -1,3 +1,4 @@
+if (bindings_open) { controls_editor_draw(); exit; }
 if (pause_exit != 0) exit;
 
 var _w = display_get_gui_width();
@@ -54,13 +55,14 @@ if (pagina == 0) {
         "RESOLUCAO  " + string(_res[0]) + " X " + string(_res[1]),
         "TELA CHEIA  " + (fullscreen ? "LIGADO" : "DESLIGADO"),
         "VOLUME  " + string(volume_level) + "%",
+        "CONTROLES",
         "VOLTAR"
     ];
 }
 
 var _count = array_length(_labels);
 for (var _i = 0; _i < _count; _i++) {
-    var _spacing = (pagina == 0) ? 86 : 70;
+    var _spacing = (pagina == 0) ? 86 : 62;
     var _yy = _y1 + 158 + _i * _spacing;
     var _sel = (_i == opcao);
     draw_set_colour(_sel ? make_color_rgb(78, 67, 35) : make_color_rgb(43, 34, 22));
@@ -75,17 +77,12 @@ for (var _i = 0; _i < _count; _i++) {
     draw_set_colour(_sel ? make_color_rgb(242, 226, 170) : make_color_rgb(190, 181, 143));
     draw_text_transformed(_cx, _yy, _labels[_i], 1.05, 1.05, 0);
 
-    if (pagina == 1 && _i == 2) {
-        draw_set_colour(make_color_rgb(18, 31, 28));
-        draw_rectangle(_cx - 150, _yy + 39, _cx + 150, _yy + 49, false);
-        draw_set_colour(make_color_rgb(117, 158, 72));
-        draw_rectangle(_cx - 150, _yy + 39, _cx - 150 + 300 * volume_level / 100, _yy + 49, false);
-    }
+
 }
 
 draw_set_font(fnt_dialogo);
 draw_set_colour(make_color_rgb(156, 149, 116));
-draw_text(_cx, _y2 - 28, pagina == 0 ? "W/S  ESCOLHER   -   ENTER  CONFIRMAR   -   ESC  RESUMIR" : "A/D  ALTERAR   -   ESC  VOLTAR");
+draw_text(_cx, _y2 - 28, pagina == 0 ? controls_label(Bind.up) + "/" + controls_label(Bind.down) + " ESCOLHER   -   " + controls_label(Bind.confirm) + " CONFIRMAR" + "   -   " + controls_label(Bind.back) + " RESUMIR" : controls_label(Bind.left) + "/" + controls_label(Bind.right) + " ALTERAR   -   " + controls_label(Bind.back) + " VOLTAR");
 draw_set_alpha(1);
 draw_set_colour(c_white);
 draw_set_halign(fa_left);

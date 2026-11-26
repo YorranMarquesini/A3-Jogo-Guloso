@@ -36,6 +36,6 @@
     "name":"player_right_idle",
     "path":"sprites/player_right_idle/player_right_idle.yy",
   },
-  "spriteMaskId":null,
+  "spriteMaskId":{"name":"player_right_idle","path":"sprites/player_right_idle/player_right_idle.yy",},
   "visible":true,
 }

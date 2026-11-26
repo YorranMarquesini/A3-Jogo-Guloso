@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 // ============================================================
 //  F11 alterna tela cheia.
 //
@@ -27,7 +29,7 @@ if (screen_needs_fix()) {
 window_apply_pending();
 
 // ENTER pausa somente durante gameplay livre.
-if (keyboard_check_pressed(vk_enter)
+if (controls_read(Bind.pause, _pad)
 && !instance_exists(oPauseMenu)
 && !instance_exists(oGameOver)
 && !instance_exists(obj_dialogo)

@@ -1,6 +1,10 @@
+var _pad = scr_gamepad_slot();
+var _pad_dir = pad_directions(_pad);
+if (bindings_open) { controls_editor_step(_pad, _pad_dir); exit; }
+
 // A reativacao so e concluida ao fim do evento que a solicitou.
 if (pause_exit != 0) {
-    if (keyboard_check(vk_enter) || keyboard_check(vk_space) || keyboard_check(vk_escape)) exit;
+    if (controls_read(Bind.pause, _pad, BindState.held) || controls_read(Bind.confirm, _pad, BindState.held) || controls_read(Bind.back, _pad, BindState.held)) exit;
     if (pause_exit == 2) scr_voltar_ao_menu();
     instance_destroy();
     exit;
@@ -15,22 +19,22 @@ if (atraso > 0) {
     exit;
 }
 
-var _up = keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"));
-var _down = keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"));
-var _left = keyboard_check(vk_left) || keyboard_check(ord("A"));
-var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
-var _confirm = keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space);
-var _back = keyboard_check_pressed(vk_escape);
+var _up = (_pad_dir.press_y < 0);
+var _down = (_pad_dir.press_y > 0);
+var _left = (_pad_dir.dx < 0);
+var _right = (_pad_dir.dx > 0);
+var _confirm = controls_read(Bind.confirm, _pad) || controls_menu_space();
+var _back = controls_read(Bind.back, _pad) || (_pad >= 0 && gamepad_button_check_pressed(_pad, global.controls_pad[Bind.pause]) && global.controls_pad[Bind.pause] != global.controls_pad[Bind.confirm]);
 
 if (mouse_check_button_pressed(mb_left)) {
     var _gui_h = display_get_gui_height();
     var _cx = display_get_gui_width() * 0.5;
     var _panel_top = (_gui_h - min(520, _gui_h * 0.76)) * 0.5;
     var _mouse_y = device_mouse_y_to_gui(0);
-    var _spacing = pagina == 0 ? 86 : 70;
+    var _spacing = pagina == 0 ? 86 : 62;
     var _choice = round((_mouse_y - _panel_top - 158) / _spacing);
     if (abs(device_mouse_x_to_gui(0) - _cx) <= 250
-    && _choice >= 0 && _choice < (pagina == 0 ? 3 : 4)
+    && _choice >= 0 && _choice < (pagina == 0 ? 3 : 5)
     && abs(_mouse_y - (_panel_top + 158 + _choice * _spacing)) <= 30) {
         opcao = _choice;
         _confirm = true;
@@ -49,13 +53,13 @@ if (pagina == 0) {
         pause_close(2);
     }
 } else {
-    if (_up) opcao = (opcao + 3) mod 4;
-    if (_down) opcao = (opcao + 1) mod 4;
+    if (_up) opcao = (opcao + 4) mod 5;
+    if (_down) opcao = (opcao + 1) mod 5;
 
     if (opcao == 0) {
-        var _res_change = keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))
+        var _res_change = (_pad_dir.press_x > 0)
                         ? 1
-                        : (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A")) ? -1 : 0);
+                        : ((_pad_dir.press_x < 0) ? -1 : 0);
         if (_res_change != 0) {
             res_index = (res_index + _res_change + array_length(lista_resolucoes)) mod array_length(lista_resolucoes);
             var _res = lista_resolucoes[res_index];
@@ -78,7 +82,8 @@ if (pagina == 0) {
         window_set_fullscreen(fullscreen);
     }
 
-    if (_back || (_confirm && opcao == 3)) {
+    if (_confirm && opcao == 3) controls_editor_open();
+    if (_back || (_confirm && opcao == 4)) {
         pagina = 0;
         opcao = 1;
     }

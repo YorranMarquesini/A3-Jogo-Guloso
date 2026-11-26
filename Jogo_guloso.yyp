@@ -218,6 +218,7 @@
     {"id":{"name":"scr_iniciar_dialogo","path":"scripts/scr_iniciar_dialogo/scr_iniciar_dialogo.yy",},},
     {"id":{"name":"scr_spawn_jump_burst","path":"scripts/scr_spawn_jump_burst/scr_spawn_jump_burst.yy",},},
     {"id":{"name":"scr_try_hit_enemy","path":"scripts/scr_try_hit_enemy/scr_try_hit_enemy.yy",},},
+    {"id":{"name":"scr_gamepad","path":"scripts/scr_gamepad/scr_gamepad.yy",},},
     {"id":{"name":"scr_weapon","path":"scripts/scr_weapon/scr_weapon.yy",},},
     {"id":{"name":"snd_ambient_factory","path":"sounds/snd_ambient_factory/snd_ambient_factory.yy",},},
     {"id":{"name":"snd_ambient_forest","path":"sounds/snd_ambient_forest/snd_ambient_forest.yy",},},

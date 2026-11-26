@@ -1,3 +1,4 @@
+bindings_open = false;
 depth = -10000;
 tela = -1;
 if (surface_exists(application_surface)) {

@@ -1,8 +1,10 @@
+var _pad = scr_gamepad_slot();
+
 timer++;
 
 // A cutscene pode ser adiantada depois que a primeira paisagem apareceu.
 if (stage_transition_type == 1 && !room_switched && timer > 75
-&& keyboard_check_pressed(vk_escape)) {
+&& controls_read(Bind.back, _pad)) {
     timer = max(timer, duration_out - 45);
 }
 

@@ -48,7 +48,6 @@ jump_count = 0;
 // ============================
 can_dash = true;
 is_dashing = false;
-dash_hitbox_yoffset = 4;
 dash_speed = 12;
 dash_time = 8;
 dash_timer = 0;
@@ -78,6 +77,9 @@ wall_check_yoffset = 8;   // altura acima dos pés pra checar parede (evita conf
 wall_slide_speed = 2;
 is_wall_sliding = false;
 wall_dir = 0;
+wall_hold_dir = 0;
+wall_hold_frames = 0;
+wall_release_frames = 30;
 
 wall_coyote_time = 5;
 wall_coyote_counter = 0;
@@ -89,10 +91,6 @@ wall_jump_lock_time = 10;
 
 wall_jump_used_dir = 0;
 wall_touch_prev = false;
-
-// --- WALL RELEASE BUFFER (soltar segurando o lado contrário) ---
-wall_release_time = 12;   // frames segurando a direção contrária pra soltar da parede
-wall_release_counter = 0;
 
 // --- WALL JUMP EM 2 ESTÁGIOS (1 pra cima, 1 pra longe) ---
 wall_jump_stage = 0;      // 0 = nenhum usado, 1 = já fez o pulo pra cima (pode fazer o pra longe), 2 = já usou os dois
@@ -176,3 +174,27 @@ weapon_ui_bg_alpha = 0.5;
 weapon_ui_border_color = c_white;
 weapon_ui_selected_color = c_yellow;
 weapon_ui_icon_padding = 0.7; // % do slot que o ícone ocupa (0.7 = 70%)
+
+// O residuo conserva movimento subpixel, mas a mascara sempre anda em pixels inteiros.
+move_remainder_x = 0;
+move_remainder_y = 0;
+move_player_axis = function(_amount, _horizontal) {
+    var _total = _amount + (_horizontal ? move_remainder_x : move_remainder_y);
+    var _pixels = round(_total);
+    var _remainder = _total - _pixels;
+    var _dx = _horizontal ? sign(_pixels) : 0;
+    var _dy = _horizontal ? 0 : sign(_pixels);
+    var _hit = false;
+    repeat (abs(_pixels)) {
+        if (place_meeting(x + _dx, y + _dy, oGround) || place_meeting(x + _dx, y + _dy, oWall)) {
+            _hit = true;
+            _remainder = 0;
+            break;
+        }
+        x += _dx;
+        y += _dy;
+    }
+    if (_horizontal) move_remainder_x = _remainder;
+    else move_remainder_y = _remainder;
+    return _hit;
+};

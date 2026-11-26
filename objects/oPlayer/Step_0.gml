@@ -1,3 +1,6 @@
+var _pad = scr_gamepad_slot();
+var _pad_dir = pad_directions(_pad);
+
 // ============================
 // STEP EVENT - oPlayer
 // ============================
@@ -6,22 +9,23 @@
 if (variable_global_exists("player_cutscene_locked") && global.player_cutscene_locked) {
     hsp = 0;
     vsp = 0;
+    wall_hold_frames = 0;
     state = "idle";
     sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
     exit;
 }
 
 // --- INPUT ---
-var _left = keyboard_check(vk_left) || keyboard_check(ord("A"));
-var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
-var _up = keyboard_check(vk_up) || keyboard_check(ord("W"));
-var _down = keyboard_check(vk_down) || keyboard_check(ord("S"));
-var _jump_pressed = keyboard_check_pressed(vk_space);
-var _jump_released = keyboard_check_released(vk_space);
-var _dash_pressed = keyboard_check_pressed(vk_shift);
-var _attack_pressed = mouse_check_button_pressed(mb_left);
-var _heavy_pressed = keyboard_check_pressed(ord("R"));
-var _throw_pressed = mouse_check_button_pressed(mb_right);
+var _left = (_pad_dir.dx < 0);
+var _right = (_pad_dir.dx > 0);
+var _up = (_pad_dir.dy < 0);
+var _down = (_pad_dir.dy > 0);
+var _jump_pressed = controls_read(Bind.jump, _pad);
+var _jump_released = controls_read(Bind.jump, _pad, BindState.released);
+var _dash_pressed = controls_read(Bind.dash, _pad);
+var _attack_pressed = controls_read(Bind.attack, _pad);
+var _heavy_pressed = controls_read(Bind.heavy, _pad);
+var _throw_pressed = controls_read(Bind.toss, _pad);
 var _move = _right - _left;
 
 // FISICA SUBAQUATICA DA FASE 1
@@ -41,7 +45,7 @@ var _active_jump_force = is_underwater ? -5.6 : jump_force;
 var _active_wall_jump_force_y = is_underwater ? -5.2 : wall_jump_force_y;
 var _active_jump_cut = is_underwater ? 0.82 : jump_cut_multiplier;
 
-if (keyboard_check_pressed(ord("Q"))) {
+if (controls_read(Bind.weapon, _pad)) {
     scr_switch_weapon(1);
 }
 
@@ -51,6 +55,7 @@ if (keyboard_check_pressed(ord("Q"))) {
 if (instance_exists(obj_dialogo) || instance_exists(oCagliostroCutscene)) {
     hsp = 0;
 
+    wall_hold_frames = 0;
     var _on_ground_dialog = place_meeting(x, y + 1, oGround) || place_meeting(x, y + 1, oWall);
     if (!_on_ground_dialog) {
         vsp = min(vsp + _active_grav, _active_max_fall);
@@ -58,13 +63,7 @@ if (instance_exists(obj_dialogo) || instance_exists(oCagliostroCutscene)) {
         vsp = 0;
     }
 
-    if (place_meeting(x, y + vsp, oGround) || place_meeting(x, y + vsp, oWall)) {
-        while (!(place_meeting(x, y + sign(vsp), oGround) || place_meeting(x, y + sign(vsp), oWall))) {
-            y += sign(vsp);
-        }
-        vsp = 0;
-    }
-    y += vsp;
+    if (move_player_axis(vsp, false)) vsp = 0;
 
     state = "idle";
     sprite_index = (facing == "right") ? player_right_idle : player_left_idle;
@@ -74,10 +73,10 @@ if (instance_exists(obj_dialogo) || instance_exists(oCagliostroCutscene)) {
 // =========================================================
 
 // --- DIRECTION BUFFER ---
-if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) {
+if ((_pad_dir.press_x > 0)) {
     dir_buffer_dir = 1;
     dir_buffer_counter = dir_buffer_time;
-} else if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))) {
+} else if ((_pad_dir.press_x < 0)) {
     dir_buffer_dir = -1;
     dir_buffer_counter = dir_buffer_time;
 } else {
@@ -100,8 +99,8 @@ if (_on_ground) {
 
 // --- WALL CHECK ---
 var _wall_y = y - wall_check_yoffset;
-var _wall_right = place_meeting(x + wall_check_dist, _wall_y, oWall);
-var _wall_left  = place_meeting(x - wall_check_dist, _wall_y, oWall);
+var _wall_right = place_meeting(x + wall_check_dist, y, oWall) && place_meeting(x + wall_check_dist, _wall_y, oWall);
+var _wall_left  = place_meeting(x - wall_check_dist, y, oWall) && place_meeting(x - wall_check_dist, _wall_y, oWall);
 
 if (_wall_right) {
     wall_dir = 1;
@@ -114,13 +113,15 @@ if (_wall_right) {
 var _touching_wall = (wall_dir != 0 && !_on_ground);
 var _new_wall_contact = (_touching_wall && !wall_touch_prev);
 
-// --- WALL RELEASE BUFFER ---
-if (_touching_wall && wall_dir != 0 && _move == -wall_dir) {
-    wall_release_counter += 1;
+if (_touching_wall && _move == -wall_dir) {
+    if (wall_hold_dir != wall_dir) wall_hold_frames = 0;
+    wall_hold_frames += 1;
+    wall_hold_dir = wall_dir;
 } else {
-    wall_release_counter = 0;
+    wall_hold_frames = 0;
+    wall_hold_dir = 0;
 }
-var _wall_release = (wall_release_counter >= wall_release_time);
+var _wall_release = wall_hold_frames >= wall_release_frames;
 
 is_wall_sliding = (_touching_wall && vsp > 0 && !is_dashing && !_wall_release);
 
@@ -343,11 +344,6 @@ if (is_dashing) {
 		_ghost.image_yscale = image_yscale;
 		}
 
-    if (place_meeting(x + hsp, y - dash_hitbox_yoffset, oGround) || place_meeting(x + hsp, y - dash_hitbox_yoffset, oWall)) {
-		is_dashing = false;
-		dash_timer = 0;
-		hsp = 0;
-	}
 
     if (dash_timer <= 0) {
         is_dashing = false;
@@ -370,6 +366,9 @@ if (is_dashing) {
     } else if (!is_heavy_attacking) {
         hsp = approach(hsp, 0, _on_ground ? dec : air_acc);
     }
+
+    // Saia do alcance da parede neste Step; o pulo abaixo ainda pode assumir o movimento.
+    if (wall_hold_frames == wall_release_frames) hsp = -wall_dir * move_speed;
 
     // --- PULO ---
     if (jump_buffer_counter > 0 && !is_attacking && !is_heavy_attacking) {
@@ -452,26 +451,14 @@ if (room == Fase2 && !is_dashing) {
     }
 }
 
-if (_step_x != 0 && (place_meeting(x + _step_x, y - 4, oGround) || place_meeting(x + _step_x, y - 4, oWall))) {
-    while (!(place_meeting(x + sign(_step_x), y - 4, oGround) || place_meeting(x + sign(_step_x), y - 4, oWall))) {
-        x += sign(_step_x);
-    }
-    _step_x = 0;
-    hsp = 0;
+var _hit_x = move_player_axis(_step_x, true);
+var _hit_y = move_player_axis(_step_y, false);
+if (_hit_x) hsp = 0;
+if (_hit_y) vsp = 0;
+if (_hit_x || _hit_y) {
+    is_dashing = false;
+    dash_timer = 0;
 }
-x += _step_x;
-
-if (_step_y != 0 && (place_meeting(x, y + _step_y, oGround) || place_meeting(x, y + _step_y, oWall))) {
-    while (!(place_meeting(x, y + sign(_step_y), oGround) || place_meeting(x, y + sign(_step_y), oWall))) {
-        y += sign(_step_y);
-    }
-    _step_y = 0;
-    vsp = 0;
-}
-y += _step_y;
-
-x = round(x);
-y = round(y);
 
 // ============================
 // FACING E ANIMAÇÃO

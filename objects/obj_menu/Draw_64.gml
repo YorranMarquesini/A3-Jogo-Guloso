@@ -157,7 +157,7 @@ draw_set_font(fnt_dialogo);
 draw_set_halign(fa_left);
 draw_set_valign(fa_bottom);
 draw_set_color(make_color_rgb(157, 164, 137));
-draw_text(24, _gui_h - 18, "W/S OU SETAS  -  ENTER PARA CONFIRMAR");
+draw_text(24, _gui_h - 18, controls_label(Bind.up) + "/" + controls_label(Bind.down) + " ESCOLHER   -   " + controls_label(Bind.confirm) + " CONFIRMAR");
 
 var _fade = clamp(1 - menu_time / 0.85, 0, 1);
 if (_fade > 0) {

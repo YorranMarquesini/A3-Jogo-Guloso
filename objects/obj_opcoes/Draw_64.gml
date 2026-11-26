@@ -1,3 +1,4 @@
+if (bindings_open) { controls_editor_draw(); exit; }
 var _gui_w = display_get_gui_width();
 var _gui_h = display_get_gui_height();
 var _cx = _gui_w * 0.5;
@@ -128,7 +129,7 @@ for (var i = 0; i < total_opcoes; i++) {
         draw_text_transformed(_cx + 255, _y, string(volume_level) + "%", 1.35, 1.35, 0);
     } else {
         draw_set_halign(fa_center);
-        draw_text_transformed(_cx, _y, "VOLTAR", 1.35, 1.35, 0);
+        draw_text_transformed(_cx, _y, string_upper(opcoes[i]), 1.35, 1.35, 0);
     }
 }
 
@@ -136,6 +137,6 @@ draw_set_font(fnt_dialogo);
 draw_set_halign(fa_center);
 draw_set_valign(fa_bottom);
 draw_set_color(make_color_rgb(151, 159, 130));
-draw_text(_cx, _gui_h - 22, "A/D OU SETAS PARA ALTERAR   -   ESC PARA VOLTAR");
+draw_text(_cx, _gui_h - 22, controls_label(Bind.left) + "/" + controls_label(Bind.right) + " ALTERAR   -   " + controls_label(Bind.back) + " VOLTAR");
 draw_set_alpha(1);
 draw_set_color(c_white);

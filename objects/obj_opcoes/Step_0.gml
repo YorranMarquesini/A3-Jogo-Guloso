@@ -1,20 +1,24 @@
+var _pad = scr_gamepad_slot();
+var _pad_dir = pad_directions(_pad);
+if (bindings_open) { controls_editor_step(_pad, _pad_dir); exit; }
+
 ui_time += delta_time / 1000000;
 
 // --- 1. ENTRADAS DE TECLADO E MOUSE ---
-var _cima           = keyboard_check_pressed(vk_up)    || keyboard_check_pressed(ord("W"));
-var _baixo          = keyboard_check_pressed(vk_down)  || keyboard_check_pressed(ord("S"));
+var _cima           = (_pad_dir.press_y < 0);
+var _baixo          = (_pad_dir.press_y > 0);
 
-var _esquerda_hold  = keyboard_check(vk_left)          || keyboard_check(ord("A"));
-var _direita_hold   = keyboard_check(vk_right)         || keyboard_check(ord("D"));
+var _esquerda_hold  = (_pad_dir.dx < 0);
+var _direita_hold   = (_pad_dir.dx > 0);
 
-var _esquerda_press = keyboard_check_pressed(vk_left)  || keyboard_check_pressed(ord("A"));
-var _direita_press  = keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"));
+var _esquerda_press = (_pad_dir.press_x < 0);
+var _direita_press  = (_pad_dir.press_x > 0);
 
-var _entra          = keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space);
+var _entra          = controls_read(Bind.confirm, _pad) || controls_menu_space();
 var _clique_press   = mouse_check_button_pressed(mb_left);
 var _clique_hold    = mouse_check_button(mb_left);
 var _clique_soltou  = mouse_check_button_released(mb_left);
-var _voltar         = keyboard_check_pressed(vk_escape);
+var _voltar         = controls_read(Bind.back, _pad);
 
 if (_voltar) {
     room_goto(rm_menu);
@@ -36,6 +40,9 @@ var _gui_w = display_get_gui_width();
 var _gui_h = display_get_gui_height();
 var _mouse_x = device_mouse_x_to_gui(0);
 var _mouse_y = device_mouse_y_to_gui(0);
+var _mouse_active = _clique_press || _mouse_x != menu_mouse_x || _mouse_y != menu_mouse_y;
+menu_mouse_x = _mouse_x;
+menu_mouse_y = _mouse_y;
 
 // Posições da barra de volume (devem bater com o Draw GUI)
 var _base_y = _gui_h * 0.40;
@@ -75,7 +82,7 @@ if (!arrastando_volume) {
         var _y1 = _pos_y - (altura_opcao / 2);
         var _y2 = _pos_y + (altura_opcao / 2);
 
-        if (_mouse_x >= _x1 && _mouse_x <= _x2 && _mouse_y >= _y1 && _mouse_y <= _y2) {
+        if (_mouse_active && _mouse_x >= _x1 && _mouse_x <= _x2 && _mouse_y >= _y1 && _mouse_y <= _y2) {
             opcao_selecionada = i;
             if (_clique_press && i != 2) _entra = true; // Clique confirma apenas para botões normais
         }
@@ -146,7 +153,10 @@ if (_entra) {
             }
             break;
             
-        case 3: // Voltar
+        case 3:
+            controls_editor_open();
+            break;
+        case 4: // Voltar
             room_goto(rm_menu);
             break;
     }

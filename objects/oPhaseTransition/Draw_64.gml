@@ -108,7 +108,7 @@ draw_rectangle(0, _h - 54, _w, _h, false);
 draw_set_font(fnt_dialogo);
 draw_set_halign(fa_right);
 draw_set_colour(make_color_rgb(145, 170, 158));
-draw_text(_w - 22, _h - 30, "ENTER PARA PULAR");
+draw_text(_w - 22, _h - 30, controls_label(Bind.confirm) + " PARA PULAR");
 draw_set_halign(fa_left);
 draw_set_colour(c_white);
 draw_set_alpha(1);

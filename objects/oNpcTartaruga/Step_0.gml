@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 var player = instance_find(oPlayer, 0);
 
 if (player != noone) {
@@ -6,7 +8,7 @@ if (player != noone) {
     // Só permite abrir um novo diálogo se a caixa NÃO existir
     if (dist <= distancia_interacao && !instance_exists(obj_dialogo)) {
         
-        if (keyboard_check_pressed(ord("E"))) {
+        if (controls_read(Bind.interact, _pad)) {
             var falas = [
                 "Oi, eu sou o Tartaruga Canudo!",
                 "Estou procurando ajuda para limpar este rio...",

@@ -15,9 +15,9 @@ if (player_near && !activated) {
     draw_set_colour(make_color_rgb(42, 92, 66));
     draw_rectangle(_cx - 94, _top - 20, _cx + 94, _top + 20, true);
     draw_set_colour(c_black);
-    draw_text_transformed(_cx + 2, _top + 2, "E - LER PLACA", 1.08, 1.08, 0);
+    draw_text_transformed(_cx + 2, _top + 2, controls_label(Bind.interact) + " - LER PLACA", 1.08, 1.08, 0);
     draw_set_colour(make_color_rgb(222, 255, 214));
-    draw_text_transformed(_cx, _top, "E - LER PLACA", 1.08, 1.08, 0);
+    draw_text_transformed(_cx, _top, controls_label(Bind.interact) + " - LER PLACA", 1.08, 1.08, 0);
 }
 
 if (message_timer > 0) {

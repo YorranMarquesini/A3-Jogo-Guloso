@@ -4,7 +4,7 @@ var _cx = (bbox_left + bbox_right) * 0.5;
 var _top = bbox_top - 20;
 var _text = "";
 
-if (player_near && !activated) _text = "E - DESLIGAR SERRAS";
+if (player_near && !activated) _text = controls_label(Bind.interact) + " - DESLIGAR SERRAS";
 else if (message_timer > 0) _text = "SERRAS DESLIGADAS";
 
 if (_text != "") {

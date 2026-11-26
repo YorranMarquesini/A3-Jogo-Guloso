@@ -1,10 +1,12 @@
+var _pad = scr_gamepad_slot();
+
 if (tocando_final) {
     if (!audio_is_playing(voz_atual)) fechar_dialogo();
     exit;
 }
 
 var _texto = textos[pagina];
-var _input_avancar = keyboard_check_pressed(ord("E")) || mouse_check_button_pressed(mb_left);
+var _input_avancar = controls_read(Bind.interact, _pad) || mouse_check_button_pressed(mb_left);
 var _ultimo = pagina == array_length(textos) - 1;
 
 if (caractere_atual < string_length(_texto)) {

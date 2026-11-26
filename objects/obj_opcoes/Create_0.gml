@@ -1,3 +1,4 @@
+bindings_open = false;
 // --- 1. DETECTAR RESOLUÇÕES SUPORTADAS ---
 var _tela_w = display_get_width();
 var _tela_h = display_get_height();
@@ -58,6 +59,7 @@ opcoes = [
     "Resolucao", 
     fullscreen ? "Tela Cheia: LIGADO" : "Tela Cheia: DESLIGADO", 
     "Volume", 
+    "Controles",
     "Voltar"
 ];
 
@@ -76,3 +78,6 @@ ui_accent = _colors[_variant];
 ui_background = sprite_add(working_directory + "menu/" + _names[_variant], 1, false, false, 0, 0);
 largura_opcao = 620;
 altura_opcao = 58;
+
+menu_mouse_x = -1;
+menu_mouse_y = -1;

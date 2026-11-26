@@ -288,7 +288,7 @@ if (_elapsed > 1 && _elapsed < 55.2) {
     draw_set_valign(fa_bottom);
     draw_set_color(c_white);
     draw_set_alpha(0.42 + sin(_elapsed * 3) * 0.10);
-    draw_text_transformed(_w - 24, _h - 13, "ESPACO PARA PULAR", 0.58, 0.58, 0);
+    draw_text_transformed(_w - 24, _h - 13, controls_label(Bind.confirm) + " PARA PULAR", 0.58, 0.58, 0);
 }
 
 draw_set_alpha(1);

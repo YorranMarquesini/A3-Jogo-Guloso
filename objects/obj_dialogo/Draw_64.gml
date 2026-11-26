@@ -49,31 +49,11 @@ var dica_y = box_y + box_h - 25;
 var _alpha_pisca = 0.6 + sin(current_time / 200) * 0.4;
 draw_set_alpha(_alpha_pisca);
 
-// Posição base do ícone do mouse
-var mx = dica_x - 110;
-var my = dica_y - 18;
-
-// 1. Corpo do Mouse (Cinza Escuro)
-draw_set_color(c_dkgray);
-draw_roundrect_ext(mx, my, mx + 16, my + 24, 6, 6, false);
-draw_set_color(c_white);
-draw_roundrect_ext(mx, my, mx + 16, my + 24, 6, 6, true);
-
-// 2. Botão Esquerdo Destacado (Amarelo)
-draw_set_color(c_yellow);
-draw_roundrect_ext(mx + 1, my + 1, mx + 7, my + 10, 3, 3, false);
-
-// 3. Linha Divisória Central e da Rodinha
-draw_set_color(c_white);
-draw_line(mx + 8, my + 2, mx + 8, my + 11); // Linha vertical do topo
-draw_line(mx + 2, my + 11, mx + 14, my + 11); // Linha horizontal dos botões
-
-// 4. Texto "ou [E] >"
 draw_set_halign(fa_right);
 draw_set_valign(fa_bottom);
 draw_set_font(fnt_dialogo);
 draw_set_color(c_yellow);
-draw_text(dica_x, dica_y, " ou [E] >");
+draw_text(dica_x, dica_y, "[" + controls_label(Bind.interact) + "] >");
 
 // Reseta padrões
 draw_set_halign(fa_left);

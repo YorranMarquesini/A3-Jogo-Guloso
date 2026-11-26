@@ -23,6 +23,6 @@ if (player != noone) {
         // Texto amarelo
         draw_set_alpha(1.0);
         draw_set_color(c_yellow);
-        draw_text(texto_x, texto_y, "[E] Conversar");
+        draw_text(texto_x, texto_y, "[" + controls_label(Bind.interact) + "] Conversar");
     }
 }

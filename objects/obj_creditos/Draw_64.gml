@@ -104,5 +104,5 @@ draw_set_font(fnt_dialogo);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_color(make_color_rgb(161, 167, 136));
-draw_text(_cx, _gui_h - 88, "ESC, ENTER OU CLIQUE PARA VOLTAR");
+draw_text(_cx, _gui_h - 88, controls_label(Bind.back) + " PARA VOLTAR");
 draw_set_color(c_white);

@@ -8,7 +8,7 @@ draw_text_transformed(x, y - 20, title_text, font_scale * 1.3, font_scale * 1.3,
 
 // Descrição (linha de baixo, menor)
 draw_set_color(text_color);
-draw_text_transformed(x, y + 5, desc_text, font_scale, font_scale, 0);
+draw_text_transformed(x, y + 5, string_replace_all(desc_text, "{pulo}", controls_label(Bind.jump)), font_scale, font_scale, 0);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);

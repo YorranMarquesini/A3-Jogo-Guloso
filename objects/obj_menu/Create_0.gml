@@ -23,3 +23,6 @@ menu_selection_time = 0;
 
 // Cor ambiental de cada tela: amanhecer, templo e mundo poluido.
 menu_accent = [make_color_rgb(147, 190, 88), make_color_rgb(87, 181, 132), make_color_rgb(190, 145, 61)];
+
+menu_mouse_x = -1;
+menu_mouse_y = -1;

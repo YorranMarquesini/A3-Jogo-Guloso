@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 if (message_timer > 0) message_timer--;
 
 var _player = instance_find(oPlayer, 0);
@@ -5,7 +7,7 @@ var _cx = x + sprite_width * abs(image_xscale) * 0.5;
 var _cy = y + sprite_height * abs(image_yscale) * 0.55;
 player_near = instance_exists(_player) && point_distance(_cx, _cy, _player.x, _player.y) <= 105;
 
-if (player_near && !activated && keyboard_check_pressed(ord("E"))) {
+if (player_near && !activated && controls_read(Bind.interact, _pad)) {
     activated = true;
 
     var _total_signs = instance_number(oPlaca);

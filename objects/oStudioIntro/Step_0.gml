@@ -1,6 +1,8 @@
+var _pad = scr_gamepad_slot();
+
 var _elapsed = (current_time - start_ms) / 1000;
-var _skip = _elapsed > 1 && (keyboard_check_pressed(vk_escape)
-    || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space));
+var _skip = _elapsed > 1 && (controls_read(Bind.back, _pad)
+    || controls_read(Bind.confirm, _pad) || controls_menu_space());
 
 if (room != rm_menu) {
     if (_skip) {

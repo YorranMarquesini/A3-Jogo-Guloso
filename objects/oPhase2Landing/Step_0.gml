@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 timer++;
 
 if (!started && instance_exists(oPlayer)) {
@@ -23,7 +25,7 @@ if (started && instance_exists(player)) {
     }
 }
 
-if (keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {
+if (controls_read(Bind.confirm, _pad) || controls_menu_space()) {
     if (started && instance_exists(player)) player.y = target_y;
     global.player_cutscene_locked = false;
     instance_destroy();

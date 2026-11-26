@@ -1,3 +1,5 @@
+var _pad = scr_gamepad_slot();
+
 timer++;
 
 for (var _v = 0; _v < array_length(transition_voices); _v++) {
@@ -17,9 +19,9 @@ if (transition_voice_ducking && timer >= transition_voice_duck_until) {
 }
 
 // A transicao completa dura cerca de 14 segundos e pode ser pulada.
-if (keyboard_check_pressed(vk_enter)
-||  keyboard_check_pressed(vk_space)
-||  keyboard_check_pressed(vk_escape)) {
+if (controls_read(Bind.confirm, _pad)
+||  controls_menu_space()
+||  controls_read(Bind.back, _pad)) {
     finish_transition();
     exit;
 }

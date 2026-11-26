@@ -68,7 +68,7 @@ for (var _i = 0; _i < 2; _i++) {
 
 draw_set_font(fnt_dialogo);
 draw_set_colour(make_color_rgb(150, 142, 125));
-draw_text(_cx, _y2 - 30, "W/S PARA ESCOLHER   -   ENTER PARA CONFIRMAR");
+draw_text(_cx, _y2 - 30, controls_label(Bind.up) + "/" + controls_label(Bind.down) + " ESCOLHER   -   " + controls_label(Bind.confirm) + " CONFIRMAR");
 draw_set_alpha(1);
 draw_set_colour(c_white);
 draw_set_halign(fa_left);
